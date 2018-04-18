@@ -18,9 +18,13 @@ extension ViewController {
     /**
      Setup UI for main screen.
      */
-    func setupUI() {
+    func setupUIElements() {
         setupSceneView()
         setupScreenshotButton()
+        setupCreateButton()
+        setupIndicatorButton()
+        setupResetButton()
+        setupUserButton()
     }
     
     /**
@@ -40,20 +44,73 @@ extension ViewController {
         view.addSubview(screenshotButton)
         setButtonBasics(screenshotButton)
         screenshotButton.setImage(UIImage(named: "ic_camera_alt"), for: .normal)
-        screenshotButton.setBackgroundImage(.from(color: UIColor.white.withAlphaComponent(buttonAlpha)), for: .normal)
-        screenshotButton.setBackgroundImage(.from(color: UIColor.gray.withAlphaComponent(buttonAlpha)), for: .selected)
         screenshotButton.setWidthConstraint(buttonLength)
         screenshotButton.setHeightConstraint(buttonLength)
         screenshotButton.setBottomConstraint(equalTo: view.bottomAnchor, offset: screenHeight * -0.02)
         screenshotButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: screenWidth * -0.05)
-//        screenshotButton.addTarget(self, action: #selector(onScreenshotButton), for: .touchUpInside)
+    }
+    
+    /**
+     Setup createButton located on top right of main screen.
+     */
+    private func setupCreateButton() {
+        view.addSubview(createButton)
+        setButtonBasics(createButton)
+        createButton.setImage(UIImage(named: "ic_add"), for: .normal)
+        createButton.setWidthConstraint(buttonLength)
+        createButton.setHeightConstraint(buttonLength)
+        createButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
+        createButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: screenWidth * -0.05)
+    }
+    
+    /**
+     Setup createButton located on top right of main screen.
+     */
+    private func setupIndicatorButton() {
+        view.addSubview(indicatorButton)
+        setButtonBasics(indicatorButton)
+        indicatorButton.setWidthConstraint(buttonLength)
+        indicatorButton.setHeightConstraint(buttonLength)
+        indicatorButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
+        indicatorButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: screenWidth * 0.05)
+    }
+    
+    /**
+     Setup resetButton located on top right of main screen.
+     */
+    private func setupResetButton() {
+        view.addSubview(resetButton)
+        setButtonBasics(resetButton)
+        resetButton.setImage(UIImage(named: "ic_refresh"), for: .normal)
+        resetButton.setWidthConstraint(buttonLength)
+        resetButton.setHeightConstraint(buttonLength)
+        resetButton.setBottomConstraint(equalTo: view.bottomAnchor, offset: screenHeight * -0.02)
+        resetButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: screenWidth * 0.05)
+    }
+    
+    /**
+     Setup userButton located on top right of main screen.
+     */
+    private func setupUserButton() {
+        view.addSubview(userButton)
+        setButtonBasics(userButton)
+        userButton.setImage(UIImage(named: "ic_perm_identity"), for: .normal)
+        userButton.setWidthConstraint(buttonLength)
+        userButton.setHeightConstraint(buttonLength)
+        userButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
+        userButton.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
     }
 }
 
+/**
+ Tune button basics for buttons on main screen.
+ */
 fileprivate func setButtonBasics(_ button: UIButton) {
     button.translatesAutoresizingMaskIntoConstraints = false
     button.clipsToBounds = true
     button.layer.cornerRadius = 0.5 * buttonLength
+    button.setBackgroundImage(.from(color: UIColor.white.withAlphaComponent(buttonAlpha)), for: .normal)
+    button.setBackgroundImage(.from(color: UIColor.gray.withAlphaComponent(buttonAlpha)), for: .selected)
 }
 
 

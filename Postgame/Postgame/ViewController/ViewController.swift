@@ -9,16 +9,30 @@
 import UIKit
 import SceneKit
 import ARKit
+import RxSwift
+import RxCocoa
 
 class ViewController: UIViewController, ARSCNViewDelegate {
+    private let disposeBag = DisposeBag()
 
     // MARK:- UI Elements
     let sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
-    var screenshotButton = UIButton()
+    let screenshotButton = UIButton()
+    let createButton = UIButton()
+    let resetButton = UIButton()
+    let userButton = UIButton()
+    let indicatorButton = IndicatorButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        setupUIElements()
+        
+        // Take a screenshot - react to screenshotButton tap gesture
+        screenshotButton.rx.tap
+            .subscribe(onNext: {_ in
+                let screenshot = self.sceneView.snapshot()
+                UIImageWriteToSavedPhotosAlbum(screenshot, self, nil, nil)
+            }).disposed(by: disposeBag)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -37,35 +51,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Release any cached data, images, etc that aren't in use.
-    }
 
     // MARK: - ARSCNViewDelegate
-    
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
-    }
-*/
-    
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
-        
-    }
-    
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
-    }
-    
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.vertical]
+        sceneView.session.run(configuration, options: .removeExistingAnchors)
     }
 }

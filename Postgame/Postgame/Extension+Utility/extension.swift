@@ -67,4 +67,18 @@ extension UIView {
         trailingAnchor.constraint(equalTo: anchor, constant: offset).isActive = true
     }
     
+    /**
+     Set centerX anchor constraint of UIView.
+     */
+    func setCenterXConstraint(equalTo anchor: NSLayoutXAxisAnchor , offset: CGFloat) {
+        centerXAnchor.constraint(equalTo: anchor, constant: offset).isActive = true
+    }
+    
+    /**
+     Set centerY anchor constraint of UIView.
+     */
+    func setCenterYConstraint(equalTo anchor: NSLayoutYAxisAnchor , offset: CGFloat) {
+        centerYAnchor.constraint(equalTo: anchor, constant: offset).isActive = true
+    }
+    
 }
