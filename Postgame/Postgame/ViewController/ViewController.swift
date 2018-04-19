@@ -13,7 +13,12 @@ import RxSwift
 import RxCocoa
 
 class ViewController: UIViewController, ARSCNViewDelegate {
-    private let disposeBag = DisposeBag()
+    fileprivate let disposeBag = DisposeBag()
+    fileprivate let trackingConfiguration: ARWorldTrackingConfiguration = {
+        let config = ARWorldTrackingConfiguration()
+        config.planeDetection = [.vertical]
+        return config
+    }()
 
     // MARK:- UI Elements
     let sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
@@ -25,24 +30,33 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUIElements()
         
-        // Take a screenshot - react to screenshotButton tap gesture
+        // Setup buttons design on the main screen
+        setupUILayout()
+        
+        // Take a screenshot - React to screenshotButton tap gesture
         screenshotButton.rx.tap
             .subscribe(onNext: {_ in
                 let screenshot = self.sceneView.snapshot()
                 UIImageWriteToSavedPhotosAlbum(screenshot, self, nil, nil)
-            }).disposed(by: disposeBag)
+            })
+            .disposed(by: disposeBag)
+        
+        // Reset ARScnView - Rreact to resetButton tap gesture
+        resetButton.rx.tap
+            .subscribe(onNext: {_ in
+                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+            })
+            .disposed(by: disposeBag)
+        
+        view.addSubview(CreationView())
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Create a session configuration
-        let configuration = ARWorldTrackingConfiguration()
-
+    
         // Run the view's session
-        sceneView.session.run(configuration)
+        sceneView.session.run(trackingConfiguration)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,8 +69,6 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // MARK: - ARSCNViewDelegate
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = [.vertical]
-        sceneView.session.run(configuration, options: .removeExistingAnchors)
+        sceneView.session.run(trackingConfiguration, options: .removeExistingAnchors)
     }
 }

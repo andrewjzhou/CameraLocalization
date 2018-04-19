@@ -16,9 +16,9 @@ fileprivate let screenWidth = UIScreen.main.bounds.width
 
 extension ViewController {
     /**
-     Setup UI for main screen.
+     Setup UI layout for main screen.
      */
-    func setupUIElements() {
+    func setupUILayout() {
         setupSceneView()
         setupScreenshotButton()
         setupCreateButton()
@@ -35,6 +35,7 @@ extension ViewController {
         sceneView.delegate = self
         let scene = SCNScene()
         sceneView.scene = scene
+//        sceneView.showsStatistics = true
     }
     
     /**
@@ -44,8 +45,6 @@ extension ViewController {
         view.addSubview(screenshotButton)
         setButtonBasics(screenshotButton)
         screenshotButton.setImage(UIImage(named: "ic_camera_alt"), for: .normal)
-        screenshotButton.setWidthConstraint(buttonLength)
-        screenshotButton.setHeightConstraint(buttonLength)
         screenshotButton.setBottomConstraint(equalTo: view.bottomAnchor, offset: screenHeight * -0.02)
         screenshotButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: screenWidth * -0.05)
     }
@@ -57,8 +56,6 @@ extension ViewController {
         view.addSubview(createButton)
         setButtonBasics(createButton)
         createButton.setImage(UIImage(named: "ic_add"), for: .normal)
-        createButton.setWidthConstraint(buttonLength)
-        createButton.setHeightConstraint(buttonLength)
         createButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
         createButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: screenWidth * -0.05)
     }
@@ -69,8 +66,6 @@ extension ViewController {
     private func setupIndicatorButton() {
         view.addSubview(indicatorButton)
         setButtonBasics(indicatorButton)
-        indicatorButton.setWidthConstraint(buttonLength)
-        indicatorButton.setHeightConstraint(buttonLength)
         indicatorButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
         indicatorButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: screenWidth * 0.05)
     }
@@ -82,8 +77,6 @@ extension ViewController {
         view.addSubview(resetButton)
         setButtonBasics(resetButton)
         resetButton.setImage(UIImage(named: "ic_refresh"), for: .normal)
-        resetButton.setWidthConstraint(buttonLength)
-        resetButton.setHeightConstraint(buttonLength)
         resetButton.setBottomConstraint(equalTo: view.bottomAnchor, offset: screenHeight * -0.02)
         resetButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: screenWidth * 0.05)
     }
@@ -95,8 +88,6 @@ extension ViewController {
         view.addSubview(userButton)
         setButtonBasics(userButton)
         userButton.setImage(UIImage(named: "ic_perm_identity"), for: .normal)
-        userButton.setWidthConstraint(buttonLength)
-        userButton.setHeightConstraint(buttonLength)
         userButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
         userButton.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
     }
@@ -111,6 +102,8 @@ fileprivate func setButtonBasics(_ button: UIButton) {
     button.layer.cornerRadius = 0.5 * buttonLength
     button.setBackgroundImage(.from(color: UIColor.white.withAlphaComponent(buttonAlpha)), for: .normal)
     button.setBackgroundImage(.from(color: UIColor.gray.withAlphaComponent(buttonAlpha)), for: .selected)
+    button.setWidthConstraint(buttonLength)
+    button.setHeightConstraint(buttonLength)
 }
 
 
