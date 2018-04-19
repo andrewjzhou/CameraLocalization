@@ -27,6 +27,7 @@ class CreationView: UIView {
         super.init(frame: frame)
         backgroundColor = .red
         
+        // Setup layout of main UIButtons and slateView
         setupSlateView()
         setupDrawButton()
         setupTextButton()
@@ -34,7 +35,41 @@ class CreationView: UIView {
         setupFinishButton()
         setupCancelButton()
         
-        setupDrawingComponents()
+        // Setup layout and functions of drawing components
+        setupDrawingLayoutAndRx()
+        
+        // Control main UIButtons (excluding drawing components) - React to drawButton tap gesture
+        drawButton.rx.tap
+            .subscribe(onNext: { (_) in
+                if self.drawButton.isSelected {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        // Move drawButton back to original position
+                        self.drawButton.transform = .identity
+                        
+                        // Hide all other UIButtons (excluding drawing components)
+                        self.textButton.alpha = 1
+                        self.photoLibraryButton.alpha = 1
+                        self.finishButton.alpha = 1
+                        self.cancelButton.alpha = 1
+                    })
+                    
+                } else {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        // Move drawButton to offset at -0.2*screenWidth w.r.t current trailing anchor
+                        self.drawButton.transform = CGAffineTransform(translationX: screenWidth * 0.17, y: 0)
+                        
+                        // Show all other UIButtons (excluding drawing components)
+                        self.textButton.alpha = 0
+                        self.photoLibraryButton.alpha = 0
+                        self.finishButton.alpha = 0
+                        self.cancelButton.alpha = 0
+                    })
+                }
+                
+                // Toggle isSelected state
+                self.drawButton.isSelected = !self.drawButton.isSelected
+            })
+            .disposed(by: disposeBag)
     }
     
     override func didMoveToSuperview() {
@@ -57,24 +92,6 @@ class CreationView: UIView {
             self.finishButton.transform = .identity
             self.cancelButton.transform = .identity
         }
-
-        // Control main buttons UI (excluding drawing components) - React to DrawButton tap gesture
-        drawButton.rx.tap
-            .subscribe(onNext: { (_) in
-                if self.drawButton.isSelected {
-                  
-                } else {
-                    UIView.animate(withDuration: 0.1, animations: {
-                        // Move drawButton
-                        self.drawButton.transform = CGAffineTransform(translationX: screenWidth * 0.17, y: 0)
-                    })
-                }
-                // Toggle isSelected state
-                self.drawButton.isSelected = !self.drawButton.isSelected
-            })
-            .disposed(by: disposeBag)
-      
-    
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -142,7 +159,7 @@ extension CreationView {
         addSubview(finishButton)
         finishButton.setImage(UIImage(named: "ic_done"), for: .normal)
         setButtonBasics(finishButton)
-        finishButton.setTrailingConstraint(equalTo: slateView.trailingAnchor, offset: -0.05 * screenWidth)
+        finishButton.setTrailingConstraint(equalTo: slateView.trailingAnchor, offset: -0.015 * screenWidth)
         finishButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
         finishButton.transform = CGAffineTransform(translationX: 0, y: -screenHeight)
     }
@@ -154,7 +171,7 @@ extension CreationView {
         addSubview(cancelButton)
         cancelButton.setImage(UIImage(named: "ic_close"), for: .normal)
         setButtonBasics(cancelButton)
-        cancelButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: 0.05 * screenWidth)
+        cancelButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: 0.015 * screenWidth)
         cancelButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
         cancelButton.transform = CGAffineTransform(translationX: 0, y: -screenHeight)
     }
@@ -167,7 +184,7 @@ extension CreationView {
     /**
      Setup drawView, undoButton, and colorslilder. Connect them.
      */
-    private func setupDrawingComponents() {
+    private func setupDrawingLayoutAndRx() {
         // Setup drawView, which auto-sets own constraints
         let drawView = DrawView()
         slateView.addSubview(drawView)
@@ -185,7 +202,7 @@ extension CreationView {
         drawColorSlider.setTopConstraint(equalTo: slateView.bottomAnchor, offset: screenHeight * 0.07)
         drawColorSlider.alpha = 0
         
-        // Set drawView color - React to drawColorSlider's colorObservable
+        // Set drawView color using drawColorSlider - React to drawColorSlider's colorObservable
         drawColorSlider.colorObservable
             .asDriver(onErrorJustReturn: .red)
             .drive(onNext: { (color) in
@@ -201,7 +218,7 @@ extension CreationView {
         undoButton.setImage(UIImage(named: "ic_undo"), for: .normal)
         undoButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: screenHeight * 0.05)
         undoButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: screenWidth * 0.03)
-//        undoButton.alpha = 0
+        undoButton.alpha = 0
         
         // Undo drawing - React to undoButton tap gesture
         undoButton.rx.tap
@@ -217,14 +234,18 @@ extension CreationView {
                 if self.drawButton.isSelected {
                     // Hide drawing components
                     drawView.isActive = false
+                    UIView.animate(withDuration: 0.15, animations: {
+                        drawColorSlider.alpha = 0
+                    })
                     undoButton.alpha = 0
-                    drawColorSlider.alpha = 0
                 } else {
                     // Show drawing components
                     drawView.isActive = true
                     self.slateView.bringSubview(toFront: drawView)
+                    UIView.animate(withDuration: 0.15, animations: {
+                        drawColorSlider.alpha = 1
+                    })
                     undoButton.alpha = 1
-                    drawColorSlider.alpha = 1
                 }
             })
             .disposed(by: disposeBag)
