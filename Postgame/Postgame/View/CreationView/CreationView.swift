@@ -345,12 +345,14 @@ extension CreationView {
         textColorSlider.setBottomConstraint(equalTo: slateView.topAnchor, offset: screenHeight * -0.04)
         textColorSlider.alpha = 0
         
-        
+        /**
+         Show textView - React to textButton tap gesture
+         */
         textButton.rx.tap
             .debug("TextButton")
             .subscribe(onNext: { (_) in
                 if self.textView == nil {
-                    // Add textView
+                    // Add textView, if it does not already exist
                     self.textView = ResizableView()
                     self.textView!.frame = CGRect.init(x: 0.3 * self.slateView.bounds.width,
                                                  y: 0.4 * self.slateView.bounds.height,
@@ -358,21 +360,51 @@ extension CreationView {
                                                  height: 0.2 * self.slateView.bounds.height)
                     self.textView!.autocorrectionType = .no
                     self.slateView.addSubview(self.textView!)
-                    self.textView!.becomeFirstResponder()
                     
+                    /**
+                     Show textColorSlider and handles. Hide finishButton and cancelButton when editing begins - React to textView didBeginEditing
+                     */
                     self.textView!.rx.didBeginEditing
                         .subscribe(onNext: { (_) in
                             self.textView!.showHandles = true
                             UIView.animate(withDuration: 0.1, animations: {
                                 self.textView!.showHandles = true
+                                self.bringSubview(toFront: self.textView!)
                                 textColorSlider.alpha = 1
+                                self.finishButton.alpha = 0
+                                self.cancelButton.alpha = 0
                             })
                         })
                         .disposed(by: self.disposeBag)
                     
+                    /**
+                     Hide textColorSlider and handles. Show finishButton and cancelButton when editing begins - React to textView didEndEditing
+                     */
+                    self.textView!.rx.didEndEditing
+                        .subscribe(onNext: { (_) in
+                            UIView.animate(withDuration: 0.1, animations: {
+                                textColorSlider.alpha = 0
+                                self.finishButton.alpha = 1
+                                self.cancelButton.alpha = 1
+                            })
+                        })
+                        .disposed(by: self.disposeBag)
+                    
+                    /**
+                     Select textView texColor using textColorSlider. - React to textColorSlider colorObservable
+                     */
+                    textColorSlider.colorObservable
+                        .subscribe(onNext: { (color) in
+                            self.textView!.textColor = color
+                        })
+                        .disposed(by: self.disposeBag)
+                    
+                    self.textView!.becomeFirstResponder()
+                    
                 } else {
                     // Select current TextView, if it already exists
-                    self.textView!.showHandles = true
+                    self.textView!.becomeFirstResponder()
+                    self.bringSubview(toFront: self.textView!)
                 }
             })
             .disposed(by: disposeBag)
