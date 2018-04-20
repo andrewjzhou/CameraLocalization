@@ -30,7 +30,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     // Variables for posting
     private var currImageToPost: UIImage?
-    private lazy var isPostingSubject = BehaviorSubject<Bool>(value: false)
+    private var isPosting: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,10 +42,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
          Take a screenshot - React to screenshotButton tap gesture
          */
         screenshotButton.rx.tap
-            .subscribe(onNext: {_ in
+            .bind {
                 let screenshot = self.sceneView.snapshot()
                 UIImageWriteToSavedPhotosAlbum(screenshot, self, nil, nil)
-            })
+            }
             .disposed(by: disposeBag)
        
         
@@ -53,16 +53,20 @@ class ViewController: UIViewController, ARSCNViewDelegate {
          Reset ARScnView - React to resetButton tap gesture
          */
         resetButton.rx.tap
-            .subscribe(onNext: {_ in
-                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
-            })
+            .bind {
+                 self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+            }
             .disposed(by: disposeBag)
         
         
         /**
-         Activate CreationView - React to createButton tap gesture
+         React to createButton tap gesture
          */
-        createButton.rx.tap
+        let createButtonTapObservable = createButton.rx.tap.share()
+        
+        // Activate CreationView and isPosting
+        createButtonTapObservable
+            .filter { self.isPosting == false }
             .subscribe(onNext: {_ in
                 // Create new CreationView
                 let creationView = CreationView()
@@ -81,6 +85,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                         } else {
                             self.createButton.setImage(image!, for: .normal)
                             creationView.animateExit()
+                            self.isPosting = true
                         }
                         
                         // Set currImageToPost
@@ -102,6 +107,15 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 UIView.animate(withDuration: 0.3, animations: {
                     self.hideUIButtons()
                 })
+            })
+            .disposed(by: disposeBag)
+        
+        // Deactivate CreationView and isPosting
+        createButtonTapObservable
+            .filter { self.isPosting == true }
+            .subscribe(onNext: {_ in
+                self.createButton.setImage(UIImage(named: "ic_add"), for: .normal) // default image
+                self.isPosting = false
             })
             .disposed(by: disposeBag)
     }
