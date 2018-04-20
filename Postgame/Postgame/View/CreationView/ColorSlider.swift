@@ -38,8 +38,8 @@ import RxSwift
         return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1)
     }
     
-    /// Public color to subscribers
-    public var colorObservable = PublishSubject<UIColor>()
+    /// Publish color to subscribers
+    public var colorSubject = PublishSubject<UIColor>()
     
     
     // MARK: Customization
@@ -257,7 +257,7 @@ import RxSwift
             }
         }
         
-        colorObservable.onNext(UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1))
+        colorSubject.onNext(UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: 1))
     }
     
     /// Draws necessary parts of the `ColorSlider`.

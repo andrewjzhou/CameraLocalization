@@ -21,8 +21,13 @@ class CreationView: UIView {
     private let finishButton = UIButton()
     
     // Subviews
-    let slateView = UIImageView()
-    var textView: ResizableView?
+    private let slateView = UIImageView()
+    private var textView: ResizableView?
+    
+    
+    // Observable to publish and communicate with ViewController
+    public lazy var exitSubject = PublishSubject<UIImage?>()
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,6 +49,7 @@ class CreationView: UIView {
          Control ViewDidLoad UIButtons (excluding drawing components) - React to drawButton tap gesture
         */
         drawButton.rx.tap
+            .share()
             .subscribe(onNext: { (_) in
                 if self.drawButton.isSelected {
                     UIView.animate(withDuration: 0.3, animations: {
@@ -75,20 +81,54 @@ class CreationView: UIView {
             })
             .disposed(by: disposeBag)
         
+        
+        /**
+         Capture image on slateView and publish - React to finishButton tap gesture
+         */
+        finishButton.rx.tap
+            .map {return self.captureSlateImage()}
+            .bind(to: exitSubject)
+            .disposed(by: disposeBag)
+        
+
+        /**
+         Exit creationView and publish nil image - React to cancelButton tap gesture
+         */
+        cancelButton.rx.tap
+            .map {return nil}
+            .bind(to: exitSubject)
+            .disposed(by: disposeBag)
     }
-    
+
+
     override func didMoveToSuperview() {
         // Setup layout of CreationView inside superview
         guard let parent = superview else {
-            fatalError("CreationView: No Superview Found")
+            return
         }
         translatesAutoresizingMaskIntoConstraints = false
         setWidthConstraint(parent.frame.width)
         setHeightConstraint(parent.frame.height)
         setCenterXConstraint(equalTo: parent.centerXAnchor, offset: 0)
         setCenterYConstraint(equalTo: parent.centerYAnchor, offset: 0)
-        
+
         // Animate main UI elements upon entrance
+        self.animateEntrance()
+    
+    }
+    
+    override func removeFromSuperview() {
+        animateExit()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            super.removeFromSuperview()
+        }
+    }
+    
+    /**
+     Animate entrance of UI elements in creationView.
+     */
+    func animateEntrance() {
+        self.alpha = 1
         UIView.animate(withDuration: 0.3) {
             self.slateView.transform = .identity
             self.drawButton.transform = .identity
@@ -99,6 +139,34 @@ class CreationView: UIView {
         }
     }
     
+    /**
+     Animate exit of UI elements in creationView.
+     */
+    func animateExit() {
+        UIView.animate(withDuration: 0.3, animations: { // animate exit
+            self.drawButton.transform = CGAffineTransform(translationX: 0, y: screenHeight)
+            self.textButton.transform = CGAffineTransform(translationX: 0, y: screenHeight)
+            self.photoPickerButton.transform = CGAffineTransform(translationX: 0, y: screenHeight)
+            self.finishButton.transform = CGAffineTransform(translationX: 0, y: -screenHeight)
+            self.cancelButton.transform = CGAffineTransform(translationX: 0, y: -screenHeight)
+            self.slateView.transform = CGAffineTransform(translationX: 0, y: -screenHeight)
+        }) { (true) in
+            self.alpha = 0
+        }
+    }
+    
+    
+    /**
+     Capture user-created image inside slateView.
+     */
+    private func captureSlateImage() -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.slateView.bounds.size, false, UIScreen.main.scale)
+        self.slateView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let capturedImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return capturedImage
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -191,7 +259,7 @@ extension CreationView {
      Setup drawView, undoButton, and colorslilder. Connect them.
      */
     private func setupDrawingLayoutAndRx() {
-        // Setup drawView layout
+        
         let drawView = DrawView()
         slateView.addSubview(drawView)
         drawView.translatesAutoresizingMaskIntoConstraints = false
@@ -214,7 +282,7 @@ extension CreationView {
         drawColorSlider.alpha = 0
         
         // Set drawView color using drawColorSlider - React to drawColorSlider's colorObservable
-        drawColorSlider.colorObservable
+        drawColorSlider.colorSubject
             .asDriver(onErrorJustReturn: .red)
             .drive(onNext: { (color) in
                 drawView.color = color.cgColor
@@ -245,6 +313,7 @@ extension CreationView {
          Activate/Hide drawing components - React to DrawButton
          */
         drawButton.rx.tap
+            .share()
             .subscribe(onNext: { (_) in
                 if self.drawButton.isSelected {
                     // Hide drawing components
@@ -284,9 +353,9 @@ extension CreationView {
         translationBottomConstraint.isActive = true
         
         /**
-         Set slateView background image - React to photoPickerView imageObservable
+         Set slateView background image - React to photoPickerView imageSubject
          */
-        photoPickerView.imageObservable
+        photoPickerView.imageSubject
             .subscribe(onNext: { (image) in
                 self.slateView.image = image
             })
@@ -349,7 +418,6 @@ extension CreationView {
          Show textView - React to textButton tap gesture
          */
         textButton.rx.tap
-            .debug("TextButton")
             .subscribe(onNext: { (_) in
                 if self.textView == nil {
                     // Add textView, if it does not already exist
@@ -393,7 +461,7 @@ extension CreationView {
                     /**
                      Select textView texColor using textColorSlider. - React to textColorSlider colorObservable
                      */
-                    textColorSlider.colorObservable
+                    textColorSlider.colorSubject
                         .subscribe(onNext: { (color) in
                             self.textView!.textColor = color
                         })

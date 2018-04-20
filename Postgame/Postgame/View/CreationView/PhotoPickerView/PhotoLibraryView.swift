@@ -13,7 +13,7 @@ import RxSwift
 
 class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     /// Publish image to subscriber
-    public var imageObservable = PublishSubject<UIImage>()
+    public var imageSubject = PublishSubject<UIImage>()
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -96,7 +96,7 @@ class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionViewDele
                                         }
                                         
                                         // Publish image after selection
-                                        self.imageObservable.onNext(image)
+                                        self.imageSubject.onNext(image)
             })
         }
     }

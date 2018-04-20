@@ -22,7 +22,7 @@ class PhotoPickerView: UIStackView {
     private let gridView = PhotoLibraryView()
     
     // Image published
-    public var imageObservable = PublishSubject<UIImage>()
+    public var imageSubject = PublishSubject<UIImage>()
     
     init(frame: CGRect, buttonSize: CGFloat) {
         self.buttonSize = buttonSize
@@ -51,11 +51,11 @@ class PhotoPickerView: UIStackView {
         
         
         /**
-         Publish image clicked in gridView - React to gridView imageObservable
+         Publish image clicked in gridView - React to gridView imageSubject
          */
-        gridView.imageObservable
+        gridView.imageSubject
             .subscribe(onNext: { (image) in
-                self.imageObservable.onNext(image)
+                self.imageSubject.onNext(image)
             })
             .disposed(by: disposeBag)
     }
