@@ -23,6 +23,8 @@
 		6AEC1AAD20882BB0008E0FF8 /* ColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AAC20882BB0008E0FF8 /* ColorSlider.swift */; };
 		6AEC1AAF20885E8C008E0FF8 /* PhotoLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AAE20885E8C008E0FF8 /* PhotoLibraryView.swift */; };
 		6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AB02088630C008E0FF8 /* PhotoPickerView.swift */; };
+		6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AB42089A698008E0FF8 /* ResizableView.swift */; };
+		6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AB62089A6C3008E0FF8 /* DragHandle.swift */; };
 		D453523150F84F268FA5C265 /* Pods_PostgameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */; };
 		FD6547AD0525C6433731BAF5 /* Pods_PostgameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */; };
 /* End PBXBuildFile section */
@@ -71,6 +73,8 @@
 		6AEC1AAC20882BB0008E0FF8 /* ColorSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSlider.swift; sourceTree = "<group>"; };
 		6AEC1AAE20885E8C008E0FF8 /* PhotoLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryView.swift; sourceTree = "<group>"; };
 		6AEC1AB02088630C008E0FF8 /* PhotoPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerView.swift; sourceTree = "<group>"; };
+		6AEC1AB42089A698008E0FF8 /* ResizableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableView.swift; sourceTree = "<group>"; };
+		6AEC1AB62089A6C3008E0FF8 /* DragHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragHandle.swift; sourceTree = "<group>"; };
 		A1424D84FBAFFF7B1B5B2869 /* Pods-PostgameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostgameUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostgameUITests/Pods-PostgameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostgameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7777FCF3D8FDFE72C7E814E /* Pods-Postgame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postgame.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Postgame/Pods-Postgame.debug.xcconfig"; sourceTree = "<group>"; };
@@ -215,10 +219,28 @@
 				6AEC1AA82087C514008E0FF8 /* CreationView.swift */,
 				6AEC1AAA2088280B008E0FF8 /* DrawView.swift */,
 				6AEC1AAC20882BB0008E0FF8 /* ColorSlider.swift */,
+				6AEC1AB32089A678008E0FF8 /* PhotoPickerView */,
+				6AEC1AB22089A65A008E0FF8 /* ResizableView */,
+			);
+			path = CreationView;
+			sourceTree = "<group>";
+		};
+		6AEC1AB22089A65A008E0FF8 /* ResizableView */ = {
+			isa = PBXGroup;
+			children = (
+				6AEC1AB42089A698008E0FF8 /* ResizableView.swift */,
+				6AEC1AB62089A6C3008E0FF8 /* DragHandle.swift */,
+			);
+			path = ResizableView;
+			sourceTree = "<group>";
+		};
+		6AEC1AB32089A678008E0FF8 /* PhotoPickerView */ = {
+			isa = PBXGroup;
+			children = (
 				6AEC1AB02088630C008E0FF8 /* PhotoPickerView.swift */,
 				6AEC1AAE20885E8C008E0FF8 /* PhotoLibraryView.swift */,
 			);
-			path = CreationView;
+			path = PhotoPickerView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -514,12 +536,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */,
+				6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */,
 				6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */,
 				6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */,
 				6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */,
 				6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */,
 				6AEC1AA0208799B2008E0FF8 /* ViewController+UISetup.swift in Sources */,
 				6AEC1AA320879B23008E0FF8 /* extension.swift in Sources */,
+				6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */,
 				6AEC1AAF20885E8C008E0FF8 /* PhotoLibraryView.swift in Sources */,
 				6AEC1AAD20882BB0008E0FF8 /* ColorSlider.swift in Sources */,
 				6AEC1AA92087C514008E0FF8 /* CreationView.swift in Sources */,

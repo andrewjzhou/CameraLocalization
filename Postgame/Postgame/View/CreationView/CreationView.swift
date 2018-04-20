@@ -22,6 +22,7 @@ class CreationView: UIView {
     
     // Subviews
     let slateView = UIImageView()
+    var textView: ResizableView?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,6 +38,7 @@ class CreationView: UIView {
         // Setup layout and rx of drawing-, photoPicker-, and text-specific components
         setupDrawingLayoutAndRx()
         setupPhotoPickerLayoutAndRx()
+        setupTextLayoutAndRx()
         
         /**
          Control ViewDidLoad UIButtons (excluding drawing components) - React to drawButton tap gesture
@@ -110,6 +112,7 @@ extension CreationView {
      */
     private func setupSlateView() {
         addSubview(slateView)
+        slateView.isUserInteractionEnabled = true
         slateView.translatesAutoresizingMaskIntoConstraints = false
         slateView.backgroundColor = .white
         slateView.setWidthConstraint(screenWidth * 0.9)
@@ -325,6 +328,59 @@ extension CreationView {
     }
     
 }
+
+
+// MARK:- Text-specific Rx
+extension CreationView {
+    private func setupTextLayoutAndRx() {
+        // Setup textColorSlider
+        let textColorSlider = ColorSlider()
+        addSubview(textColorSlider)
+        textColorSlider.translatesAutoresizingMaskIntoConstraints = false
+        textColorSlider.orientation = .horizontal
+        textColorSlider.previewEnabled = true
+        textColorSlider.setWidthConstraint(screenWidth * 0.45)
+        textColorSlider.setHeightConstraint(screenHeight * 0.03)
+        textColorSlider.setCenterXConstraint(equalTo: centerXAnchor, offset: 0)
+        textColorSlider.setBottomConstraint(equalTo: slateView.topAnchor, offset: screenHeight * -0.04)
+        textColorSlider.alpha = 0
+        
+        
+        textButton.rx.tap
+            .debug("TextButton")
+            .subscribe(onNext: { (_) in
+                if self.textView == nil {
+                    // Add textView
+                    self.textView = ResizableView()
+                    self.textView!.frame = CGRect.init(x: 0.3 * self.slateView.bounds.width,
+                                                 y: 0.4 * self.slateView.bounds.height,
+                                                 width: 0.4 * self.slateView.bounds.width,
+                                                 height: 0.2 * self.slateView.bounds.height)
+                    self.textView!.autocorrectionType = .no
+                    self.slateView.addSubview(self.textView!)
+                    self.textView!.becomeFirstResponder()
+                    
+                    self.textView!.rx.didBeginEditing
+                        .subscribe(onNext: { (_) in
+                            self.textView!.showHandles = true
+                            UIView.animate(withDuration: 0.1, animations: {
+                                self.textView!.showHandles = true
+                                textColorSlider.alpha = 1
+                            })
+                        })
+                        .disposed(by: self.disposeBag)
+                    
+                } else {
+                    // Select current TextView, if it already exists
+                    self.textView!.showHandles = true
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        
+    }
+}
+
 
 // Constants
 fileprivate let buttonLength : CGFloat = 54.0
