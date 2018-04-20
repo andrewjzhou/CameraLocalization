@@ -42,14 +42,25 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             })
             .disposed(by: disposeBag)
         
-        // Reset ARScnView - Rreact to resetButton tap gesture
+        // Reset ARScnView - React to resetButton tap gesture
         resetButton.rx.tap
             .subscribe(onNext: {_ in
                 self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
             })
             .disposed(by: disposeBag)
         
-        view.addSubview(CreationView())
+       // Activate CreationView - React to createButton tap gesture
+        createButton.rx.tap
+            .subscribe(onNext: {_ in
+                // Create new CreationView
+                self.view.addSubview(CreationView())
+                
+                // Hide ViewDidLoad UIButtons
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.hideUIButtons()
+                })
+            })
+            .disposed(by: disposeBag)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,5 +81,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
         sceneView.session.run(trackingConfiguration, options: .removeExistingAnchors)
+    }
+    
+    /**
+        Hide ViewDidLoad UIButtons
+     */
+    private func hideUIButtons() {
+        screenshotButton.alpha = 0
+        createButton.alpha = 0
+        resetButton.alpha = 0
+        userButton.alpha = 0
+        indicatorButton.alpha = 0
     }
 }

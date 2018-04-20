@@ -13,32 +13,34 @@ import RxCocoa
 class CreationView: UIView {
     fileprivate let disposeBag = DisposeBag()
     
-    // UI Buttons
+    // viewDidLoad UI Buttons (buttons that appear immediately when view loads)
     private let drawButton = UIButton()
     private let textButton = UIButton()
-    private let photoLibraryButton = UIButton()
+    private let photoPickerButton = UIButton()
     private let cancelButton = UIButton()
     private let finishButton = UIButton()
     
     // Subviews
-    let slateView = UIView()
+    let slateView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
         
-        // Setup layout of main UIButtons and slateView
+        // Setup layout of viewDidLoad UIButtons and slateView
         setupSlateView()
         setupDrawButton()
         setupTextButton()
-        setupPhotoLibraryButton()
+        setupPhotoPickerButton()
         setupFinishButton()
         setupCancelButton()
-        
-        // Setup layout and functions of drawing components
+    
+        // Setup layout and rx of drawing-, photoPicker-, and text-specific components
         setupDrawingLayoutAndRx()
+        setupPhotoPickerLayoutAndRx()
         
-        // Control main UIButtons (excluding drawing components) - React to drawButton tap gesture
+        /**
+         Control ViewDidLoad UIButtons (excluding drawing components) - React to drawButton tap gesture
+        */
         drawButton.rx.tap
             .subscribe(onNext: { (_) in
                 if self.drawButton.isSelected {
@@ -48,7 +50,7 @@ class CreationView: UIView {
                         
                         // Hide all other UIButtons (excluding drawing components)
                         self.textButton.alpha = 1
-                        self.photoLibraryButton.alpha = 1
+                        self.photoPickerButton.alpha = 1
                         self.finishButton.alpha = 1
                         self.cancelButton.alpha = 1
                     })
@@ -60,7 +62,7 @@ class CreationView: UIView {
                         
                         // Show all other UIButtons (excluding drawing components)
                         self.textButton.alpha = 0
-                        self.photoLibraryButton.alpha = 0
+                        self.photoPickerButton.alpha = 0
                         self.finishButton.alpha = 0
                         self.cancelButton.alpha = 0
                     })
@@ -70,6 +72,7 @@ class CreationView: UIView {
                 self.drawButton.isSelected = !self.drawButton.isSelected
             })
             .disposed(by: disposeBag)
+        
     }
     
     override func didMoveToSuperview() {
@@ -88,7 +91,7 @@ class CreationView: UIView {
             self.slateView.transform = .identity
             self.drawButton.transform = .identity
             self.textButton.transform = .identity
-            self.photoLibraryButton.transform = .identity
+            self.photoPickerButton.transform = .identity
             self.finishButton.transform = .identity
             self.cancelButton.transform = .identity
         }
@@ -100,7 +103,7 @@ class CreationView: UIView {
 }
 
 
-// MARK:- Setup main UI elements layout (excluding drawing-, text-, and photoLibrary-specific elements)
+// MARK:- Setup viewDidLoad UI layout (excluding drawing-, text-, and photoLibrary-specific elements)
 extension CreationView {
     /**
      Setup slateView where creation happens close to center of view.
@@ -115,6 +118,7 @@ extension CreationView {
         slateView.setCenterYConstraint(equalTo: centerYAnchor, offset: -0.06 * screenHeight)
         slateView.transform = CGAffineTransform(translationX: 0, y: -screenHeight)
     }
+    
     
     /**
      Setup drawButton positioned under slateView to right.
@@ -143,13 +147,13 @@ extension CreationView {
     /**
      Setup photoLibraryButton positioned under slateView.
      */
-    private func setupPhotoLibraryButton() {
-        addSubview(photoLibraryButton)
-        photoLibraryButton.setImage(UIImage(named: "ic_photo_white"), for: .normal)
-        setButtonBasics(photoLibraryButton)
-        photoLibraryButton.setCenterXConstraint(equalTo: slateView.centerXAnchor, offset: 0)
-        photoLibraryButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.05 * screenHeight)
-        photoLibraryButton.transform = CGAffineTransform(translationX: 0, y: screenHeight)
+    private func setupPhotoPickerButton() {
+        addSubview(photoPickerButton)
+        photoPickerButton.setImage(UIImage(named: "ic_photo_white"), for: .normal)
+        setButtonBasics(photoPickerButton)
+        photoPickerButton.setCenterXConstraint(equalTo: slateView.centerXAnchor, offset: 0)
+        photoPickerButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.05 * screenHeight)
+        photoPickerButton.transform = CGAffineTransform(translationX: 0, y: screenHeight)
     }
     
     /**
@@ -175,20 +179,24 @@ extension CreationView {
         cancelButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
         cancelButton.transform = CGAffineTransform(translationX: 0, y: -screenHeight)
     }
-    
 }
 
 
-// MARK:- Drawing-specific UI elements + functions
+// MARK:- Drawing-specific UI + Rx
 extension CreationView {
     /**
      Setup drawView, undoButton, and colorslilder. Connect them.
      */
     private func setupDrawingLayoutAndRx() {
-        // Setup drawView, which auto-sets own constraints
+        // Setup drawView layout
         let drawView = DrawView()
         slateView.addSubview(drawView)
-        drawView.isActive = false
+        drawView.translatesAutoresizingMaskIntoConstraints = false
+        drawView.setTopConstraint(equalTo: slateView.topAnchor, offset: 0)
+        drawView.setBottomConstraint(equalTo: slateView.bottomAnchor, offset: 0)
+        drawView.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: 0)
+        drawView.setTrailingConstraint(equalTo: slateView.trailingAnchor, offset: 0)
+        drawView.isActive = false // Make drawView initially unactive
         
         // Setup colorSlider, then hide
         let drawColorSlider = ColorSlider()
@@ -220,7 +228,9 @@ extension CreationView {
         undoButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: screenWidth * 0.03)
         undoButton.alpha = 0
         
-        // Undo drawing - React to undoButton tap gesture
+        /**
+         Undo drawing - React to undoButton tap gesture
+         */
         undoButton.rx.tap
             .subscribe(onNext: { (_) in
                 drawView.undo()
@@ -228,7 +238,9 @@ extension CreationView {
             .disposed(by: disposeBag)
         
         
-        // Activate/Hide drawing components - React to DrawButton
+        /**
+         Activate/Hide drawing components - React to DrawButton
+         */
         drawButton.rx.tap
             .subscribe(onNext: { (_) in
                 if self.drawButton.isSelected {
@@ -252,13 +264,73 @@ extension CreationView {
     }
 }
 
+// MARK:- PhotoPicker-specific UI + Rx
+extension CreationView {
+    /**
+     Setup photoPickerView layout and Rx.
+     */
+    private func setupPhotoPickerLayoutAndRx(){
+        // setup photoPicker layout
+        let photoPickerView = PhotoPickerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 0.3 * screenHeight),
+                                              buttonSize: buttonLength)
+        addSubview(photoPickerView)
+        photoPickerView.translatesAutoresizingMaskIntoConstraints = false
+        photoPickerView.setCenterXConstraint(equalTo: centerXAnchor, offset: 0)
+        let identityBottomConstraint = photoPickerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0)
+        let translationBottomConstraint = photoPickerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: screenHeight)
+        translationBottomConstraint.isActive = true
+        
+        /**
+         Set slateView background image - React to photoPickerView imageObservable
+         */
+        photoPickerView.imageObservable
+            .subscribe(onNext: { (image) in
+                self.slateView.image = image
+            })
+            .disposed(by: disposeBag)
+        
+        
+        /**
+         Hide PhotoPicker - React to downButton inside photoPickerView tap gesture
+         */
+        photoPickerView.downButton.rx.tap
+            .subscribe(onNext: { (_) in
+                identityBottomConstraint.isActive = false
+                translationBottomConstraint.isActive = true
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.layoutIfNeeded()
+                    self.drawButton.alpha = 1
+                    self.photoPickerButton.alpha = 1
+                    self.textButton.alpha = 1
+                })
+            })
+            .disposed(by: disposeBag)
+        
+        
+        /**
+         Show PhotoPicker - React to photoPickerButton tap gesture
+         */
+        photoPickerButton.rx.tap
+            .subscribe(onNext: { (_) in
+                translationBottomConstraint.isActive = false
+                identityBottomConstraint.isActive = true
+                UIView.animate(withDuration: 0.3, animations: {
+                    self.layoutIfNeeded()
+                    self.drawButton.alpha = 0
+                    self.photoPickerButton.alpha = 0
+                    self.textButton.alpha = 0
+                })
+            })
+            .disposed(by: disposeBag)
+    }
+    
+}
 
 // Constants
 fileprivate let buttonLength : CGFloat = 54.0
 fileprivate let buttonAlpha : CGFloat = 0.5
 fileprivate let screenHeight = UIScreen.main.bounds.height
 fileprivate let screenWidth = UIScreen.main.bounds.width
-
 
 /**
  Tune button basics for buttons on main screen.

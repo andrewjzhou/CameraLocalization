@@ -12,25 +12,17 @@ class DrawView: UIView {
     private var lines : [Line] = []
     private var lastPoint : CGPoint?
     private var currentLine: Line?
+    
+    // isActive is true to draw
     var isActive = true
     
+    // Line color (default is red)
     var color = UIColor.red.cgColor
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.isUserInteractionEnabled = true
         backgroundColor = UIColor.clear
-    }
-    
-    override func didMoveToSuperview() {
-        guard let parent = superview else {
-            fatalError("DrawView: No SuperView Found")
-        }
-        translatesAutoresizingMaskIntoConstraints = false
-        setTopConstraint(equalTo: parent.topAnchor, offset: 0)
-        setBottomConstraint(equalTo: parent.bottomAnchor, offset: 0)
-        setLeadingConstraint(equalTo: parent.leadingAnchor, offset: 0)
-        setTrailingConstraint(equalTo: parent.trailingAnchor, offset: 0)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -51,13 +43,6 @@ class DrawView: UIView {
         }
     }
     
-    func undo() {
-        if !lines.isEmpty {
-            lines.remove(at: lines.count - 1)
-            setNeedsDisplay()
-        }
-    }
-    
     override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
         context?.setLineCap(.round)
@@ -71,6 +56,14 @@ class DrawView: UIView {
                 context?.setStrokeColor(line.color)
                 context?.strokePath()
             }
+        }
+    }
+    
+    // Delete most recently drawn line
+    func undo() {
+        if !lines.isEmpty {
+            lines.remove(at: lines.count - 1)
+            setNeedsDisplay()
         }
     }
     
