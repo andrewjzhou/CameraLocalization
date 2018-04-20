@@ -38,30 +38,77 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Setup buttons design on the main screen
         setupUILayout()
         
-        /**
-         Take a screenshot - React to screenshotButton tap gesture
-         */
+        // Setup Rx functions
+        setupScreenshoButtonRx()
+        setupResetButtonRx()
+        setupCreateButtonRx()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    
+        // Run the view's session
+        sceneView.session.run(trackingConfiguration)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Pause the view's session
+        sceneView.session.pause()
+    }
+
+    // MARK: - ARSCNViewDelegate
+    func sessionInterruptionEnded(_ session: ARSession) {
+        // Reset tracking and/or remove existing anchors if consistent tracking is required
+        sceneView.session.run(trackingConfiguration, options: .removeExistingAnchors)
+    }
+    
+    
+    /**
+        Hide ViewDidLoad UIButtons
+     */
+    private func hideUIButtons() {
+        screenshotButton.alpha = 0
+        createButton.alpha = 0
+        resetButton.alpha = 0
+        userButton.alpha = 0
+        indicatorButton.alpha = 0
+    }
+}
+
+/**
+ Rx for ViewDidLoad Buttons
+ */
+extension ViewController {
+    /**
+     Take a screenshot - React to screenshotButton tap gesture
+     */
+    private func setupScreenshoButtonRx() {
         screenshotButton.rx.tap
             .bind {
                 let screenshot = self.sceneView.snapshot()
                 UIImageWriteToSavedPhotosAlbum(screenshot, self, nil, nil)
             }
             .disposed(by: disposeBag)
-       
-        
-        /**
-         Reset ARScnView - React to resetButton tap gesture
-         */
+    }
+    
+    /**
+     Reset ARScnView - React to resetButton tap gesture
+     */
+    private func setupResetButtonRx() {
         resetButton.rx.tap
             .bind {
-                 self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
             }
             .disposed(by: disposeBag)
         
-        
-        /**
-         React to createButton tap gesture
-         */
+    }
+    
+    /**
+     React to createButton tap gesture
+     */
+    private func setupCreateButtonRx() {
         let createButtonTapObservable = createButton.rx.tap.share()
         
         // Activate CreationView and isPosting
@@ -84,7 +131,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                             creationView.removeFromSuperview()
                         } else {
                             self.createButton.setImage(image!, for: .normal)
-                            creationView.animateExit()
+                            creationView.removeFromSuperview()
                             self.isPosting = true
                         }
                         
@@ -110,7 +157,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             })
             .disposed(by: disposeBag)
         
-        // Deactivate CreationView and isPosting
+        // Deactivate CreationView and isPosing
         createButtonTapObservable
             .filter { self.isPosting == true }
             .subscribe(onNext: {_ in
@@ -118,36 +165,5 @@ class ViewController: UIViewController, ARSCNViewDelegate {
                 self.isPosting = false
             })
             .disposed(by: disposeBag)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    
-        // Run the view's session
-        sceneView.session.run(trackingConfiguration)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        // Pause the view's session
-        sceneView.session.pause()
-    }
-
-    // MARK: - ARSCNViewDelegate
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        sceneView.session.run(trackingConfiguration, options: .removeExistingAnchors)
-    }
-    
-    /**
-        Hide ViewDidLoad UIButtons
-     */
-    private func hideUIButtons() {
-        screenshotButton.alpha = 0
-        createButton.alpha = 0
-        resetButton.alpha = 0
-        userButton.alpha = 0
-        indicatorButton.alpha = 0
     }
 }
