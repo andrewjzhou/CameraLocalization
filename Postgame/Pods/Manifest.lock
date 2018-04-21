@@ -1,16 +1,30 @@
 PODS:
+  - AWSCognitoIdentityProvider (2.6.13):
+    - AWSCognitoIdentityProviderASF (= 1.0.1)
+    - AWSCore (= 2.6.13)
+  - AWSCognitoIdentityProviderASF (1.0.1)
+  - AWSCore (2.6.13)
+  - AWSS3 (2.6.13):
+    - AWSCore (= 2.6.13)
   - RxCocoa (4.1.2):
     - RxSwift (~> 4.0)
   - RxSwift (4.1.2)
 
 DEPENDENCIES:
+  - AWSCognitoIdentityProvider (~> 2.6.13)
+  - AWSCore (~> 2.6.13)
+  - AWSS3
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
 
 SPEC CHECKSUMS:
+  AWSCognitoIdentityProvider: c532434167c99ec42126447a83c6a2f2ea18f678
+  AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
+  AWSCore: 5da797bc476188fdaf00dec134fa18d84708eca9
+  AWSS3: 7c178c82c2e648559b7075a663335055327dd4f5
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
   RxSwift: e49536837d9901277638493ea537394d4b55f570
 
-PODFILE CHECKSUM: 73db16339f6b95639c303433371826aee445e7d6
+PODFILE CHECKSUM: d3d8881026c4f68776ec54123ebdca86a3f5f874
 
 COCOAPODS: 1.4.0

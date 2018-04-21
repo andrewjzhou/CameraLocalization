@@ -11,6 +11,8 @@ import SceneKit
 import ARKit
 import RxSwift
 import RxCocoa
+import CoreLocation
+import AWSCognitoIdentityProvider
 
 class ViewController: UIViewController, ARSCNViewDelegate {
     fileprivate let disposeBag = DisposeBag()
@@ -32,6 +34,13 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     private var currImageToPost: UIImage?
     private var isPosting: Bool = false
     
+    // Location
+    private var location: CLLocationCoordinate2D?
+    
+    // AWS Cognito
+    var user:AWSCognitoIdentityUser?
+    var userAttributes:[AWSCognitoIdentityProviderAttributeType]?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -42,6 +51,10 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         setupScreenshoButtonRx()
         setupResetButtonRx()
         setupCreateButtonRx()
+        
+        // Setup Location
+        setupLocationServiceAndDescriptorCache()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,6 +62,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
         // Run the view's session
         sceneView.session.run(trackingConfiguration)
+        
+        // AWS Cognito
+        fetchUserAttributes()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -82,7 +98,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
  */
 extension ViewController {
     /**
-     Take a screenshot - React to screenshotButton tap gesture
+     React to screenshotButton tap gesture - Take a screenshot
      */
     private func setupScreenshoButtonRx() {
         screenshotButton.rx.tap
@@ -94,7 +110,7 @@ extension ViewController {
     }
     
     /**
-     Reset ARScnView - React to resetButton tap gesture
+     React to resetButton tap gesture - Reset ARScnView
      */
     private func setupResetButtonRx() {
         resetButton.rx.tap
@@ -165,5 +181,68 @@ extension ViewController {
                 self.isPosting = false
             })
             .disposed(by: disposeBag)
+    }
+}
+
+
+/**
+ Location Service.
+ */
+extension ViewController {
+    // Note on GPS coordinates:
+    // The third decimal place of coordinate is worth up to 110 m: it can identify a large agricultural field or institutional campus.
+    // The fourth decimal place is worth up to 11 m: it can identify a parcel of land. It is comparable to the typical accuracy of an uncorrected GPS unit with no interference.
+    // The fifth decimal place is worth up to 1.1 m: it distinguish trees from each other. Accuracy to this level with commercial GPS units can only be achieved with differential correction.
+    
+    /**
+     React to GeolocationService Updates
+     */
+    private func setupLocationServiceAndDescriptorCache() {
+        let geolocationService = GeolocationService.instance
+        
+        geolocationService.location
+            .map{
+                // Convert CLLocation coordinates to 4 decimal places
+                (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
+            }
+            .distinctUntilChanged({ (location1, location2) -> Bool in
+                if abs(location1.0 - location2.0) < 0.0002 && abs(location1.1 - location2.1) < 0.0002{
+                    return true
+                } else {
+                    return false
+                }
+            })
+            .drive(onNext: { (location) in
+                // Request URL list here
+            })
+            .disposed(by: disposeBag)
+      
+    }
+    
+    fileprivate func roundToDecimal4(_ value: Double) -> Double{
+        return Double(round(10000*value)/10000)
+    }
+}
+
+
+/**
+ AWS Cognito.
+ */
+extension ViewController {
+    func fetchUserAttributes() {
+        
+        user = AppDelegate.defaultUserPool().currentUser()
+        user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
+            guard task.result != nil else {
+                
+                return nil
+            }
+            
+            self.userAttributes = task.result?.userAttributes
+            self.userAttributes?.forEach({ (attribute) in
+                
+            })
+            return nil
+        })
     }
 }

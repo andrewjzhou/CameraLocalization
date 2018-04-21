@@ -25,6 +25,16 @@
 		6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AB02088630C008E0FF8 /* PhotoPickerView.swift */; };
 		6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AB42089A698008E0FF8 /* ResizableView.swift */; };
 		6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AB62089A6C3008E0FF8 /* DragHandle.swift */; };
+		6AF52780208AC3E80039363B /* GeolocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5277F208AC3E80039363B /* GeolocationService.swift */; };
+		6AF52782208AC4190039363B /* CLLocation+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52781208AC4190039363B /* CLLocation+Rx.swift */; };
+		6AF52784208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52783208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift */; };
+		6AF52786208BBCE60039363B /* AWSS3Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52785208BBCE60039363B /* AWSS3Service.swift */; };
+		6AF52788208BBFEC0039363B /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52787208BBFEC0039363B /* SignInViewController.swift */; };
+		6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52789208BC0690039363B /* SignUpViewController.swift */; };
+		6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */; };
+		6AF5278E208BC0990039363B /* ForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */; };
+		6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278F208BC0B00039363B /* UpdatePasswordViewController.swift */; };
+		6AF52792208BC12F0039363B /* AWSConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52791208BC12F0039363B /* AWSConstants.swift */; };
 		D453523150F84F268FA5C265 /* Pods_PostgameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */; };
 		FD6547AD0525C6433731BAF5 /* Pods_PostgameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */; };
 /* End PBXBuildFile section */
@@ -75,6 +85,16 @@
 		6AEC1AB02088630C008E0FF8 /* PhotoPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerView.swift; sourceTree = "<group>"; };
 		6AEC1AB42089A698008E0FF8 /* ResizableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableView.swift; sourceTree = "<group>"; };
 		6AEC1AB62089A6C3008E0FF8 /* DragHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragHandle.swift; sourceTree = "<group>"; };
+		6AF5277F208AC3E80039363B /* GeolocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeolocationService.swift; sourceTree = "<group>"; };
+		6AF52781208AC4190039363B /* CLLocation+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Rx.swift"; sourceTree = "<group>"; };
+		6AF52783208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxCLLocationManagerDelegateProxy.swift; sourceTree = "<group>"; };
+		6AF52785208BBCE60039363B /* AWSS3Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Service.swift; sourceTree = "<group>"; };
+		6AF52787208BBFEC0039363B /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		6AF52789208BC0690039363B /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSignUpViewController.swift; sourceTree = "<group>"; };
+		6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewController.swift; sourceTree = "<group>"; };
+		6AF5278F208BC0B00039363B /* UpdatePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordViewController.swift; sourceTree = "<group>"; };
+		6AF52791208BC12F0039363B /* AWSConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSConstants.swift; sourceTree = "<group>"; };
 		A1424D84FBAFFF7B1B5B2869 /* Pods-PostgameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostgameUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostgameUITests/Pods-PostgameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostgameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7777FCF3D8FDFE72C7E814E /* Pods-Postgame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postgame.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Postgame/Pods-Postgame.debug.xcconfig"; sourceTree = "<group>"; };
@@ -159,8 +179,9 @@
 			children = (
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
 				6AEC1A9E20879941008E0FF8 /* ViewController */,
-				6AEC1AA120879B06008E0FF8 /* Extension+Utility */,
+				6AF5277E208AC3C30039363B /* Model */,
 				6AEC1AA42087AD66008E0FF8 /* View */,
+				6AEC1AA120879B06008E0FF8 /* Extension+Utility */,
 				6AEC1A702085BF06008E0FF8 /* art.scnassets */,
 				6AEC1A772085BF07008E0FF8 /* Assets.xcassets */,
 				6AEC1A792085BF07008E0FF8 /* LaunchScreen.storyboard */,
@@ -192,6 +213,7 @@
 			children = (
 				6AEC1A722085BF06008E0FF8 /* ViewController.swift */,
 				6AEC1A9F208799B2008E0FF8 /* ViewController+UISetup.swift */,
+				6AF52793208BC2E20039363B /* UserAuthentication */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -200,6 +222,9 @@
 			isa = PBXGroup;
 			children = (
 				6AEC1AA220879B23008E0FF8 /* extension.swift */,
+				6AF52781208AC4190039363B /* CLLocation+Rx.swift */,
+				6AF52783208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift */,
+				6AF52791208BC12F0039363B /* AWSConstants.swift */,
 			);
 			path = "Extension+Utility";
 			sourceTree = "<group>";
@@ -241,6 +266,27 @@
 				6AEC1AAE20885E8C008E0FF8 /* PhotoLibraryView.swift */,
 			);
 			path = PhotoPickerView;
+			sourceTree = "<group>";
+		};
+		6AF5277E208AC3C30039363B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				6AF5277F208AC3E80039363B /* GeolocationService.swift */,
+				6AF52785208BBCE60039363B /* AWSS3Service.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		6AF52793208BC2E20039363B /* UserAuthentication */ = {
+			isa = PBXGroup;
+			children = (
+				6AF52787208BBFEC0039363B /* SignInViewController.swift */,
+				6AF52789208BC0690039363B /* SignUpViewController.swift */,
+				6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */,
+				6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */,
+				6AF5278F208BC0B00039363B /* UpdatePasswordViewController.swift */,
+			);
+			path = UserAuthentication;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -386,11 +432,19 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Postgame/Pods-Postgame-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AWSCognitoIdentityProvider/AWSCognitoIdentityProvider.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSCognitoIdentityProviderASF/AWSCognitoIdentityProviderASF.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSCore/AWSCore.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSS3/AWSS3.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCognitoIdentityProvider.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCognitoIdentityProviderASF.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSS3.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
@@ -536,16 +590,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */,
+				6AF52782208AC4190039363B /* CLLocation+Rx.swift in Sources */,
 				6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */,
+				6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */,
 				6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */,
+				6AF52792208BC12F0039363B /* AWSConstants.swift in Sources */,
 				6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */,
 				6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */,
+				6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */,
 				6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */,
+				6AF52788208BBFEC0039363B /* SignInViewController.swift in Sources */,
+				6AF52786208BBCE60039363B /* AWSS3Service.swift in Sources */,
+				6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */,
 				6AEC1AA0208799B2008E0FF8 /* ViewController+UISetup.swift in Sources */,
+				6AF52780208AC3E80039363B /* GeolocationService.swift in Sources */,
 				6AEC1AA320879B23008E0FF8 /* extension.swift in Sources */,
 				6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */,
 				6AEC1AAF20885E8C008E0FF8 /* PhotoLibraryView.swift in Sources */,
+				6AF5278E208BC0990039363B /* ForgotPasswordViewController.swift in Sources */,
 				6AEC1AAD20882BB0008E0FF8 /* ColorSlider.swift in Sources */,
+				6AF52784208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift in Sources */,
 				6AEC1AA92087C514008E0FF8 /* CreationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
