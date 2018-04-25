@@ -36,8 +36,8 @@ class AWSS3Service {
         return Observable.create({ observer in
             for location in locations {
                 // Produce prefix for listRequest
-//                let prefix = String(location.0) + "/" + String(location.1) + "/" + "descriptor"
-                let prefix = String(location.0) + "/" + String(location.1) 
+                let prefix = String(location.0) + "/" + String(location.1) + "/" + "descriptor"
+//                let prefix = String(location.0) + "/" + String(location.1)
                 
                 // Produce listRequest for S3
                 let listRequest: AWSS3ListObjectsRequest = AWSS3ListObjectsRequest()
@@ -64,42 +64,56 @@ class AWSS3Service {
     
     }
     
-    func download(for objectURL: String) {
-        let expression = AWSS3TransferUtilityDownloadExpression()
-        expression.progressBlock = {(task, progress) in DispatchQueue.main.async(execute: {
-            // Do something e.g. Update a progress bar.
-        })
-        }
-        
-        var completionHandler: AWSS3TransferUtilityDownloadCompletionHandlerBlock?
-        completionHandler = { (task, URL, data, error) -> Void in
-            DispatchQueue.main.async(execute: {
+    /**
+     Download descriptor from S3 using key.
+     */
+    func downloadDescriptor(_ key: String) -> Observable<Descriptor> {
+        return Observable.create({ (observer) in
+            // Track progress
+            let expression = AWSS3TransferUtilityDownloadExpression()
+            expression.progressBlock = {(task, progress) in DispatchQueue.main.async(execute: {
+                // Do something e.g. Update a progress bar.
+            })
+            }
+            
+            // Completion
+            var completionHandler: AWSS3TransferUtilityDownloadCompletionHandlerBlock?
+            completionHandler = { (task, URL, data, error) -> Void in
+               
                 // Do something e.g. Alert a user for transfer completion.
                 // On failed downloads, `error` contains the error object.
-
+                
                 if let _ = data {
-                    let descriptor = Array(data!)
+                    let descriptor = Descriptor(key: key, value: Array(data!))
+                    
+                    observer.onNext(descriptor)
+                    observer.onCompleted()
                 }
-                
-            })
-        }
+                    
+              
+            }
+            
+            // Download task
+            let transferUtility = AWSS3TransferUtility.default()
+            transferUtility.downloadData(
+                fromBucket: S3Bucket,
+                key: key,
+                expression: expression,
+                completionHandler: completionHandler
+                ).continueWith {
+                    (task) -> AnyObject! in if let error = task.error {
+                        print("Error: \(error.localizedDescription)")
+                    }
+                    
+                    if let _ = task.result {
+                        // Do something with downloadTask.
+                        
+                    }
+                    return nil
+            }
+            
+            return Disposables.create()
+        })
         
-        let transferUtility = AWSS3TransferUtility.default()
-        transferUtility.downloadData(
-            fromBucket: S3Bucket,
-            key: objectURL,
-            expression: expression,
-            completionHandler: completionHandler
-            ).continueWith {
-                (task) -> AnyObject! in if let error = task.error {
-                    print("Error: \(error.localizedDescription)")
-                }
-                
-                if let _ = task.result {
-                    // Do something with downloadTask.
-                
-                }
-                return nil
-        }
     }
 }

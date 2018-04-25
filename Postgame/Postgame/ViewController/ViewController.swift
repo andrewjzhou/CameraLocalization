@@ -41,6 +41,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     // AWS Cognito
     var user:AWSCognitoIdentityUser?
     var userAttributes:[AWSCognitoIdentityProviderAttributeType]?
+    var descriptorCache = [String: [UInt8]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -203,46 +204,64 @@ extension ViewController {
      React to GeolocationService Updates
      */
     private func setupLocationServiceAndDescriptorCache() {
+        // FOR TESTING: Change prefix in urlList() and change return value in first map function
+        
         let geolocationService = GeolocationService.instance
+        
         // Get the current user coordinate
         let userLocation = geolocationService.location
             .debug("Before map1")
-            .map{ test -> (Double, Double) in
+            .map{
+//                test -> (Double, Double) in
                 // Convert CLLocation coordinates to 4 decimal places
-//                (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
-                return (40.3496, -74.6574)
+                (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
+//                return (40.3496, -74.6574)
             }
             .debug("After map1")
             .distinctUntilChanged({ (location1, location2) -> Bool in
-                if abs(location1.0 - location2.0) < 0.0002 && abs(location1.1 - location2.1) < 0.0002{
+                // Only send request if output changed
+                let precision = 0.0002
+                if abs(location1.0 - location2.0) < precision && abs(location1.1 - location2.1) < precision {
                     return true
                 } else {
                     return false
                 }
             })
+            .do(onNext: { (location) in
+                // Refresh cache. Remove descriptors that are not inside user region
+                for key in self.descriptorCache.keys {
+                    if !self.keyCloseToLocation(key: key, location: location) {
+                        self.descriptorCache.removeValue(forKey: key)
+                    }
+                }
+            })
             .debug("After distinct until changed")
             .asObservable()
+    
         
         // Cache descritpors based on user location
         userLocation
             .map { coordinate in
+                // Get surrounding coordinates
                 return self.surroundingCoordinates(for: coordinate)
             }
             .debug("After map2")
             .flatMap { locations in
+                // Get list or URLs asscossiated with coordinates
                 return self.s3.urlList(for: locations)
             }
             .debug("After flat-map")
-            .subscribe(onNext: { (url) in
-                // cache descriptors
-
+            .flatMap({ (url) in
+                // Download descriptors
+                return self.s3.downloadDescriptor(url)
+            })
+            .subscribe(onNext: { (descriptor) in
+                // Cache descriptors
+                self.descriptorCache.updateValue(descriptor.value, forKey: descriptor.key)
             }, onError: { (error) in
                 print("Descriptor Cache Error: ", error)
             })
             .disposed(by: disposeBag)
-
-            
-      
     }
     
     /**
@@ -271,6 +290,21 @@ extension ViewController {
         }
        
         return coordinates
+    }
+    
+    /**
+     Check if descriptor is in the approximate region that the user is in by checking descriptor key.
+     */
+    fileprivate func keyCloseToLocation(key: String, location: (Double, Double)) -> Bool {
+        let keyArr = key.split(separator: "/")
+        guard let lat = Double(keyArr[0]),
+            let long = Double(keyArr[1]) else {
+                print("keyCloseToLocation: Conversion Error")
+                return false
+        }
+    
+        let precision = 0.0003
+        return (abs(lat - location.0) < precision) && (abs(long - location.1) < precision)
     }
 }
 
