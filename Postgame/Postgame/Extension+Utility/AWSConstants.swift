@@ -8,10 +8,12 @@
 
 import AWSCognitoIdentityProvider
 
+// Cognito Constants
 let CognitoIdentityUserPoolRegion: AWSRegionType = .USEast1
 let CognitoIdentityUserPoolId = "us-east-1_Tw4aJtJJb"
 let CognitoIdentityUserPoolAppClientId = "7qhvb4jbhbcbqfuk9h6il1k82u"
 let CognitoIdentityUserPoolAppClientSecret = "v8eg6jd7e2s96jb1bjvkkr4hbv9kp151gs39kfasps5pdqacolf"
-
 let AWSCognitoUserPoolsSignInProviderKey = "UserPool"
 
+// S3 Constants
+let S3Bucket = "project-ajzhou"

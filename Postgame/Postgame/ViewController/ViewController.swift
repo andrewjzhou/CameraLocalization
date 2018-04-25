@@ -36,6 +36,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     // Location
     private var location: CLLocationCoordinate2D?
+    private let s3 = AWSS3Service()
     
     // AWS Cognito
     var user:AWSCognitoIdentityUser?
@@ -54,7 +55,11 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Setup Location
         setupLocationServiceAndDescriptorCache()
-
+        
+        // AWS S3
+//        setupAWSS3Service()
+//        let key = "40.3496/-74.6574/2018-04-09@10:28:26/surface"
+//        s3.download(for: key)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -199,12 +204,15 @@ extension ViewController {
      */
     private func setupLocationServiceAndDescriptorCache() {
         let geolocationService = GeolocationService.instance
-        
-        geolocationService.location
-            .map{
+        // Get the current user coordinate
+        let userLocation = geolocationService.location
+            .debug("Before map1")
+            .map{ test -> (Double, Double) in
                 // Convert CLLocation coordinates to 4 decimal places
-                (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
+//                (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
+                return (40.3496, -74.6574)
             }
+            .debug("After map1")
             .distinctUntilChanged({ (location1, location2) -> Bool in
                 if abs(location1.0 - location2.0) < 0.0002 && abs(location1.1 - location2.1) < 0.0002{
                     return true
@@ -212,18 +220,75 @@ extension ViewController {
                     return false
                 }
             })
-            .drive(onNext: { (location) in
-                // Request URL list here
+            .debug("After distinct until changed")
+            .asObservable()
+        
+        // Cache descritpors based on user location
+        userLocation
+            .map { coordinate in
+                return self.surroundingCoordinates(for: coordinate)
+            }
+            .debug("After map2")
+            .flatMap { locations in
+                return self.s3.urlList(for: locations)
+            }
+            .debug("After flat-map")
+            .subscribe(onNext: { (url) in
+                // cache descriptors
+
+            }, onError: { (error) in
+                print("Descriptor Cache Error: ", error)
             })
             .disposed(by: disposeBag)
+
+            
       
     }
     
+    /**
+     Round double to 4 decimal digits
+     */
     fileprivate func roundToDecimal4(_ value: Double) -> Double{
         return Double(round(10000*value)/10000)
     }
+    
+    /**
+     Get coordinates surrounding estimated coordinate
+     */
+    fileprivate func surroundingCoordinates(for coordinate: (Double, Double)) -> [(Double, Double)]{
+        var coordinates = [(Double, Double)]()
+        let lattitude = coordinate.0,
+            longitude = coordinate.1
+    
+        // +/- 0.0002
+        let lats = [lattitude-0.0002, lattitude-0.0001, lattitude, lattitude+0.0001, lattitude+0.0002]
+        let longs = [longitude-0.0002, longitude-0.0001, longitude, longitude+0.0001, longitude+0.0002]
+        
+        for lat in lats {
+            for long in longs {
+                coordinates.append((lat, long))
+            }
+        }
+       
+        return coordinates
+    }
 }
 
+/**
+ AWS S3.
+ */
+extension ViewController {
+//    func setupAWSS3Service() {
+//
+//        let s3 = AWSS3Service()
+//        let key = "40.3496/-74.6574/2018-04-09@10:28:26/surface"
+//        s3.download(for: key)
+//
+////        AppDelegate.defaultUserPool().currentUser()?.signOut()
+//
+//
+//    }
+}
 
 /**
  AWS Cognito.
