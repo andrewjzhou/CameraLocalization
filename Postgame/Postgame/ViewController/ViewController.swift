@@ -13,7 +13,7 @@ import Vision
 import RxSwift
 import RxCocoa
 import CoreLocation
-import AWSCognitoIdentityProvider
+
 
 class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate{
     fileprivate let disposeBag = DisposeBag()
@@ -37,12 +37,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate{
     
     // Location
     private var location: CLLocationCoordinate2D?
-    private let s3 = AWSS3Service()
-    
-    // AWS Cognito
-    var user:AWSCognitoIdentityUser?
-    var userAttributes:[AWSCognitoIdentityProviderAttributeType]?
-    private var descriptorCache = [String: [UInt8]]()
     
     // Poster Rx
     private let frameSubject = PublishSubject<ARFrame>()
@@ -63,11 +57,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate{
         // Setup Location
 //        setupLocationServiceAndDescriptorCache()
         
-        // AWS S3
-//        setupAWSS3Service()
-//        let key = "40.3496/-74.6574/2018-04-09@10:28:26/surface"
-//        s3.download(for: key)
-        
         // Setup AR Poster Discovery and Placement Rx
         setupARPosetrDiscoveryAndPlacementRx()
     }
@@ -78,9 +67,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate{
         // Run the view's session
         sceneView.session.run(trackingConfiguration)
         sceneView.session.delegate = self
-        
-        // AWS Cognito
-        fetchUserAttributes()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -220,7 +206,6 @@ extension ViewController {
             .map{ // test -> (Double, Double) in
                 // Convert CLLocation coordinates to 4 decimal places
                 (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
-//                return (40.3496, -74.6574)
             }
             .debug("Descriptor Cache: After map1")
             .distinctUntilChanged({ (location1, location2) -> Bool in
@@ -232,41 +217,42 @@ extension ViewController {
                     return false
                 }
             })
-            .do(onNext: { (location) in
-                // Refresh cache. Remove descriptors that are not inside user region
-                for key in self.descriptorCache.keys {
-                    if !self.keyCloseToLocation(key: key, location: location) {
-                        self.descriptorCache.removeValue(forKey: key)
-                    }
-                }
-            })
-            .debug("After distinct until changed")
-            .asObservable()
+//            .do(onNext: { (location) in
+//                // Refresh cache. Remove descriptors that are not inside user region
+//                for key in self.descriptorCache.keys {
+//                    if !self.keyCloseToLocation(key: key, location: location) {
+//                        self.descriptorCache.removeValue(forKey: key)
+//                    }
+//                }
+//            })
+//            .debug("After distinct until changed")
+//            .asObservable()
     
         
         // Cache descritpors based on user location
-        userLocation
-            .map { coordinate in
-                // Get surrounding coordinates
-                return self.surroundingCoordinates(for: coordinate)
-            }
-            .debug("Descriptor Cache: After map2")
-            .flatMap { locations in
-                // Get list or URLs asscossiated with coordinates
-                return self.s3.urlList(for: locations)
-            }
-            .debug("Descriptor Cache: After flat-map")
-            .flatMap({ (url) in
-                // Download descriptors
-                return self.s3.downloadDescriptor(url)
-            })
-            .subscribe(onNext: { (descriptor) in
-                // Cache descriptors
-                self.descriptorCache.updateValue(descriptor.value, forKey: descriptor.key)
-            }, onError: { (error) in
-                print("Descriptor Cache Error: ", error)
-            })
-            .disposed(by: disposeBag)
+        // Switch out S3 function with mobilehub version
+//        userLocation
+//            .map { coordinate in
+//                // Get surrounding coordinates
+//                return self.surroundingCoordinates(for: coordinate)
+//            }
+//            .debug("Descriptor Cache: After map2")
+//            .flatMap { locations in
+//                // Get list or URLs asscossiated with coordinates
+//                return self.s3.urlList(for: locations)
+//            }
+//            .debug("Descriptor Cache: After flat-map")
+//            .flatMap({ (url) in
+//                // Download descriptors
+//                return self.s3.downloadDescriptor(url)
+//            })
+//            .subscribe(onNext: { (descriptor) in
+//                // Cache descriptors
+//                self.descriptorCache.updateValue(descriptor.value, forKey: descriptor.key)
+//            }, onError: { (error) in
+//                print("Descriptor Cache Error: ", error)
+//            })
+//            .disposed(by: disposeBag)
     }
     
     /**
@@ -313,43 +299,6 @@ extension ViewController {
     }
 }
 
-/**
- MARK:- AWS S3.
- */
-extension ViewController {
-//    func setupAWSS3Service() {
-//
-//        let s3 = AWSS3Service()
-//        let key = "40.3496/-74.6574/2018-04-09@10:28:26/surface"
-//        s3.download(for: key)
-//
-////        AppDelegate.defaultUserPool().currentUser()?.signOut()
-//
-//
-//    }
-}
-
-/**
- MARK:- AWS Cognito.
- */
-extension ViewController {
-    func fetchUserAttributes() {
-        
-        user = AppDelegate.defaultUserPool().currentUser()
-        user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
-            guard task.result != nil else {
-                
-                return nil
-            }
-            
-            self.userAttributes = task.result?.userAttributes
-            self.userAttributes?.forEach({ (attribute) in
-                
-            })
-            return nil
-        })
-    }
-}
 
 /**
  MARK:- ARSession Controls.
