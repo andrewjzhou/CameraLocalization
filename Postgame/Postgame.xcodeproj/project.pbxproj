@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		342C81AF448FA8D9BBE2BF86 /* Pods_Postgame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9079E5E578EF2222B8112 /* Pods_Postgame.framework */; };
 		6AD9115920901AF900286826 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD9115820901AF900286826 /* Descriptor.swift */; };
+		6AEBAB5420CDC21B00741EB0 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */; };
 		6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */; };
 		6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A702085BF06008E0FF8 /* art.scnassets */; };
 		6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A722085BF06008E0FF8 /* ViewController.swift */; };
 		6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A772085BF07008E0FF8 /* Assets.xcassets */; };
-		6AEC1A7B2085BF07008E0FF8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A792085BF07008E0FF8 /* LaunchScreen.storyboard */; };
 		6AEC1A862085BF08008E0FF8 /* PostgameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A852085BF08008E0FF8 /* PostgameTests.swift */; };
 		6AEC1A912085BF08008E0FF8 /* PostgameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A902085BF08008E0FF8 /* PostgameUITests.swift */; };
 		6AEC1AA0208799B2008E0FF8 /* ViewController+UISetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A9F208799B2008E0FF8 /* ViewController+UISetup.swift */; };
@@ -62,12 +62,12 @@
 		6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostgameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67F9079E5E578EF2222B8112 /* Pods_Postgame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Postgame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AD9115820901AF900286826 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
+		6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6AEC1A6B2085BF06008E0FF8 /* Postgame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Postgame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6AEC1A702085BF06008E0FF8 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		6AEC1A722085BF06008E0FF8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		6AEC1A772085BF07008E0FF8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6AEC1A7A2085BF07008E0FF8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6AEC1A7C2085BF07008E0FF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6AEC1A812085BF08008E0FF8 /* PostgameTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PostgameTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEC1A852085BF08008E0FF8 /* PostgameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostgameTests.swift; sourceTree = "<group>"; };
@@ -176,13 +176,13 @@
 			isa = PBXGroup;
 			children = (
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
+				6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */,
 				6AEC1A9E20879941008E0FF8 /* ViewController */,
 				6AF5277E208AC3C30039363B /* Model */,
 				6AEC1AA42087AD66008E0FF8 /* View */,
 				6AEC1AA120879B06008E0FF8 /* Extension+Utility */,
 				6AEC1A702085BF06008E0FF8 /* art.scnassets */,
 				6AEC1A772085BF07008E0FF8 /* Assets.xcassets */,
-				6AEC1A792085BF07008E0FF8 /* LaunchScreen.storyboard */,
 				6AEC1A7C2085BF07008E0FF8 /* Info.plist */,
 			);
 			path = Postgame;
@@ -400,8 +400,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */,
-				6AEC1A7B2085BF07008E0FF8 /* LaunchScreen.storyboard in Resources */,
 				6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */,
+				6AEBAB5420CDC21B00741EB0 /* awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -429,11 +429,25 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Postgame/Pods-Postgame-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AWSAuthCore/AWSAuthCore.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSAuthUI/AWSAuthUI.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSCognitoIdentityProvider/AWSCognitoIdentityProvider.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSCognitoIdentityProviderASF/AWSCognitoIdentityProviderASF.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSCore/AWSCore.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSMobileClient/AWSMobileClient.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSUserPoolsSignIn/AWSUserPoolsSignIn.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAuthCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAuthUI.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCognitoIdentityProvider.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCognitoIdentityProviderASF.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCore.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSMobileClient.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSUserPoolsSignIn.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
@@ -632,17 +646,6 @@
 			targetProxy = 6AEC1A8D2085BF08008E0FF8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		6AEC1A792085BF07008E0FF8 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				6AEC1A7A2085BF07008E0FF8 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		6AEC1A932085BF08008E0FF8 /* Debug */ = {

@@ -7,18 +7,37 @@
 //
 
 import UIKit
+import AWSMobileClient
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    // Add a AWSMobileClient call in application:open url
+    func application(_ application: UIApplication, open url: URL,
+                     sourceApplication: String?, annotation: Any) -> Bool {
+        
+        return AWSMobileClient.sharedInstance().interceptApplication(
+            application, open: url,
+            sourceApplication: sourceApplication,
+            annotation: annotation)
+        
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        let navigationController =  UINavigationController()
+        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.pushViewController(ViewController(), animated: false)
         
         window = UIWindow(frame: UIScreen.main.bounds)
-        window!.rootViewController = ViewController()
+        window!.rootViewController = navigationController
         window!.makeKeyAndVisible()
-        return true
+        
+        // Create AWSMobileClient to connect with AWS
+        return AWSMobileClient.sharedInstance().interceptApplication(
+            application,
+            didFinishLaunchingWithOptions: launchOptions)
     }
     
     

@@ -13,6 +13,9 @@ import Vision
 import RxSwift
 import RxCocoa
 import CoreLocation
+import AWSMobileClient
+import AWSAuthCore
+import AWSAuthUI
 
 
 class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate{
@@ -43,6 +46,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate{
     private let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer?>(value: nil)
     private var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -59,6 +63,23 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate{
         
         // Setup AR Poster Discovery and Placement Rx
         setupARPosetrDiscoveryAndPlacementRx()
+        
+        // SignIn View Controller
+        // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
+        // Get rid of email field in sign-up
+        if !AWSSignInManager.sharedInstance().isLoggedIn {
+            AWSAuthUIViewController
+                .presentViewController(with: self.navigationController!,
+                                       configuration: nil,
+                                       completionHandler: { (provider: AWSSignInProvider, error: Error?) in
+                                        if error != nil {
+                                            print("Error occurred: \(String(describing: error))")
+                                        } else {
+                                            // Sign in successful.
+                                        }
+                })
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -202,12 +223,12 @@ extension ViewController {
         
         // Get the current user coordinate
         let userLocation = geolocationService.location
-            .debug("Descriptor Cache: Before map1")
+//            .debug("Descriptor Cache: Before map1")
             .map{ // test -> (Double, Double) in
                 // Convert CLLocation coordinates to 4 decimal places
                 (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
             }
-            .debug("Descriptor Cache: After map1")
+//            .debug("Descriptor Cache: After map1")
             .distinctUntilChanged({ (location1, location2) -> Bool in
                 // Only send request if output changed
                 let precision = 0.0002
@@ -345,9 +366,9 @@ extension ViewController {
         // Observe Detected Rectangles per ARFrame. Slow down frame rate. Remove drawn outlines for selected rectangles, if any exist
         let rectObservable =
             frameSubject.asObservable()
-                .debug("Poster: Before Throttle")
+//                .debug("Poster: Before Throttle")
                 .throttle(0.1, scheduler:  MainScheduler.instance) // slow down requests
-                .debug("Poster: After Throttle")
+//                .debug("Poster: After Throttle")
                 .do(onNext: { (_) in
                     self.removeRectOutlineLayers() // clean up drawings, if there is any
                 })
@@ -361,17 +382,16 @@ extension ViewController {
                 if bool == false { return observations }
                 else { return nil }
             }
-            .debug("After Post")
+//            .debug("After Post")
             .filter{ $0 != nil }
             .withLatestFrom(longPressSubject.asObservable()) { (observations, sender) -> VNRectangleObservation? in
-                print("Inside")
                 if sender == nil { return nil }
                 else if sender!.state == .began || sender!.state == .ended {
                     return self.selectRectangle(observations: observations, sender: sender)
                 }
                 else { return nil }
             }
-            .debug("After selction")
+//            .debug("After selction")
             .filter{ $0 != nil }
         
         stream1.asDriver(onErrorJustReturn: nil)

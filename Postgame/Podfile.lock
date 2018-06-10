@@ -1,16 +1,41 @@
 PODS:
+  - AWSAuthCore (2.6.21):
+    - AWSCore (= 2.6.21)
+  - AWSAuthUI (2.6.21):
+    - AWSAuthCore (= 2.6.21)
+    - AWSCore (= 2.6.21)
+  - AWSCognitoIdentityProvider (2.6.21):
+    - AWSCognitoIdentityProviderASF (= 1.0.1)
+    - AWSCore (= 2.6.21)
+  - AWSCognitoIdentityProviderASF (1.0.1)
+  - AWSCore (2.6.21)
+  - AWSMobileClient (2.6.21):
+    - AWSAuthCore (= 2.6.21)
+  - AWSUserPoolsSignIn (2.6.21):
+    - AWSAuthCore (= 2.6.21)
+    - AWSCognitoIdentityProvider (= 2.6.21)
   - RxCocoa (4.1.2):
     - RxSwift (~> 4.0)
   - RxSwift (4.1.2)
 
 DEPENDENCIES:
+  - AWSAuthUI (~> 2.6.13)
+  - AWSMobileClient (~> 2.6.13)
+  - AWSUserPoolsSignIn (~> 2.6.13)
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
 
 SPEC CHECKSUMS:
+  AWSAuthCore: f912e4f032092818ee21860a44386c485329a92b
+  AWSAuthUI: 8549f06975c03b653e45623f19d4cb34f16f2e8f
+  AWSCognitoIdentityProvider: 1f724c5e43528580cd9f60f0a1290888793ed473
+  AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
+  AWSCore: a1ff1d32ea7af235fe64be301c204b34cb1f9f83
+  AWSMobileClient: f61ef1ca52cf561a3831f4c29b8bfc43234db8f3
+  AWSUserPoolsSignIn: 5c2a162e62cdcb47fb0f3f5ede4dec492fc00307
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
   RxSwift: e49536837d9901277638493ea537394d4b55f570
 
-PODFILE CHECKSUM: 8e45a2272c8f35b15396c35a6c6acb13350c169b
+PODFILE CHECKSUM: d39551d17102295223c5977c426b171c998d2611
 
 COCOAPODS: 1.4.0
