@@ -11,6 +11,8 @@
 		6AD9115920901AF900286826 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD9115820901AF900286826 /* Descriptor.swift */; };
 		6AEBAB5420CDC21B00741EB0 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */; };
 		6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */; };
+		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
+		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
 		6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */; };
 		6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A702085BF06008E0FF8 /* art.scnassets */; };
 		6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A722085BF06008E0FF8 /* ViewController.swift */; };
@@ -65,6 +67,8 @@
 		6AD9115820901AF900286826 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
 		6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Servie.swift; sourceTree = "<group>"; };
+		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
+		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
 		6AEC1A6B2085BF06008E0FF8 /* Postgame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Postgame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6AEC1A702085BF06008E0FF8 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -152,6 +156,24 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		6AEBAB5920CEE20300741EB0 /* RxCLLocation */ = {
+			isa = PBXGroup;
+			children = (
+				6AF52783208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift */,
+				6AF52781208AC4190039363B /* CLLocation+Rx.swift */,
+			);
+			path = RxCLLocation;
+			sourceTree = "<group>";
+		};
+		6AEBAB5A20CEE24A00741EB0 /* RxARSession */ = {
+			isa = PBXGroup;
+			children = (
+				6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */,
+				6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */,
+			);
+			path = RxARSession;
+			sourceTree = "<group>";
+		};
 		6AEC1A622085BF06008E0FF8 = {
 			isa = PBXGroup;
 			children = (
@@ -222,8 +244,8 @@
 			isa = PBXGroup;
 			children = (
 				6AEC1AA220879B23008E0FF8 /* extension.swift */,
-				6AF52781208AC4190039363B /* CLLocation+Rx.swift */,
-				6AF52783208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift */,
+				6AEBAB5A20CEE24A00741EB0 /* RxARSession */,
+				6AEBAB5920CEE20300741EB0 /* RxCLLocation */,
 			);
 			path = "Extension+Utility";
 			sourceTree = "<group>";
@@ -616,9 +638,11 @@
 				6AEC1AA320879B23008E0FF8 /* extension.swift in Sources */,
 				6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */,
 				6AEC1AAF20885E8C008E0FF8 /* PhotoLibraryView.swift in Sources */,
+				6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */,
 				6AF5278E208BC0990039363B /* ForgotPasswordViewController.swift in Sources */,
 				6AEC1AAD20882BB0008E0FF8 /* ColorSlider.swift in Sources */,
 				6AF52784208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift in Sources */,
+				6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */,
 				6AEC1AA92087C514008E0FF8 /* CreationView.swift in Sources */,
 				6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */,
 			);

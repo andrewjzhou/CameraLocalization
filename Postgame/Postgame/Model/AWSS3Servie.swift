@@ -13,6 +13,9 @@ import AWSAuthCore
 import RxSwift
 import RxCocoa
 
+// Add User File Storage: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-data-storage.html
+// Transfer Utility: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/how-to-transfer-files-with-transfer-utility.html
+
 class AWSS3Service {
     
     private(set) var transferUtility: AWSS3TransferUtility
@@ -30,6 +33,7 @@ class AWSS3Service {
         // Create S3 Client and TransferUtility
         client = AWSS3.default()
         transferUtility = AWSS3TransferUtility.default()
+        
     
     }
     
@@ -47,8 +51,9 @@ class AWSS3Service {
                 let listRequest: AWSS3ListObjectsRequest = AWSS3ListObjectsRequest()
                 
                 
-                listRequest.bucket = S3Bucket
-                listRequest.prefix = prefix
+                
+//                listRequest.bucket = S3Bucket
+//                listRequest.prefix = prefix
                 
                 
                 // Emit urls through observer
@@ -103,8 +108,7 @@ class AWSS3Service {
             // Download task
             let transferUtility = AWSS3TransferUtility.default()
             transferUtility.downloadData(
-                fromBucket: S3Bucket,
-                key: key,
+                forKey: key,
                 expression: expression,
                 completionHandler: completionHandler
                 ).continueWith {

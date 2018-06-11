@@ -32,7 +32,7 @@ extension ViewController {
      */
     private func setupSceneView() {
         view.addSubview(sceneView)
-        sceneView.delegate = self
+//        sceneView.delegate = self
         let scene = SCNScene()
         sceneView.scene = scene
 //        sceneView.showsStatistics = true
