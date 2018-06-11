@@ -62,7 +62,7 @@ class ViewController: UIViewController {
         
         // Setup AR Poster Discovery and Placement Rx
 //        setupARPosetrDiscoveryAndPlacementRx()
-        setupPosterRx()
+        setupPostRx()
         
         // SignIn View Controllers
         // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
@@ -328,12 +328,13 @@ extension ViewController {
 }
 
 extension ViewController {
-    func setupPosterRx() {
+    func setupPostRx() {
         let detectRectanglesObservable = DetectRectanglesObservable.create(sceneView.session.rx.didUpdateFrame)
         detectRectanglesObservable
-            // Highlight detected rectangles
+            .map{ self.filterVerticalRectangles($0) } // Keep only rectangles that reside on vertical planes
             .subscribe(onNext: { (observations) in
                 self.removeRectOutlineLayers()
+                // Highlight detected rectangles
                 if let _ = observations {
                     for observation in observations! {
                         self.highlightObservation(observation)
@@ -343,44 +344,20 @@ extension ViewController {
 
     }
     
-    /**
-     Outline selected rectangle observation.
-     */
-    fileprivate func highlightObservation(_ observation: VNRectangleObservation) {
-        let points = [observation.topLeft, observation.topRight, observation.bottomRight, observation.bottomLeft]
-        let convertedPoints = points.map { self.sceneView.convertFromCamera($0) }
-        let layer = drawPolygon(convertedPoints, color: .red)
-        self.highlightedRectangleOutlineLayers.append(layer)
-        self.sceneView.layer.addSublayer(layer)
+    fileprivate func filterVerticalRectangles(_ observations: [VNRectangleObservation]?) -> [VNRectangleObservation]? {
+        var verticalObservations = [VNRectangleObservation]()
+        guard let _ = observations else {return nil}
+        for observation in observations! {
+            let center = sceneView.convertFromCamera(observation.center)
+            if isOnVerticalPlane(center) {
+                verticalObservations.append(observation)
+            }
+        }
+        return verticalObservations
+        
     }
     
-    /**
-     Draw outline given set of points and color.
-     */
-    fileprivate func drawPolygon(_ points: [CGPoint], color: UIColor) -> CAShapeLayer {
-        let layer = CAShapeLayer()
-        layer.fillColor = nil
-        layer.strokeColor = color.cgColor
-        layer.lineWidth = 5
-        let path = UIBezierPath()
-        path.move(to: points.last!)
-        points.forEach { point in
-            path.addLine(to: point)
-        }
-        layer.path = path.cgPath
-        return layer
-    }
-    
-    /**
-     Remove outlines drawn for selected rectangles.
-     */
-    fileprivate func removeRectOutlineLayers() {
-        // Remove outline for observed rectangles
-        for layer in self.highlightedRectangleOutlineLayers {
-            layer.removeFromSuperlayer()
-        }
-        self.highlightedRectangleOutlineLayers.removeAll()
-    }
+  
 
 }
 
@@ -621,14 +598,57 @@ extension ViewController {
 //
 //
 //
-//    /**
-//     Check if touch location is on a vertical plane.
-//     */
-//    fileprivate func isOnVerticalPlane(_ point: CGPoint) -> Bool {
-//        let results = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
-//        if let _ = results.first{
-//        return true
-//        }
-//        return false
-//    }
 //}
+
+// Highlighting Rectangle Observations
+extension ViewController {
+    /**
+     Outline selected rectangle observation.
+     */
+    fileprivate func highlightObservation(_ observation: VNRectangleObservation) {
+        let points = [observation.topLeft, observation.topRight, observation.bottomRight, observation.bottomLeft]
+        let convertedPoints = points.map { self.sceneView.convertFromCamera($0) }
+        let layer = drawPolygon(convertedPoints, color: .red)
+        self.highlightedRectangleOutlineLayers.append(layer)
+        self.sceneView.layer.addSublayer(layer)
+    }
+    
+    /**
+     Draw outline given set of points and color.
+     */
+    fileprivate func drawPolygon(_ points: [CGPoint], color: UIColor) -> CAShapeLayer {
+        let layer = CAShapeLayer()
+        layer.fillColor = nil
+        layer.strokeColor = color.cgColor
+        layer.lineWidth = 5
+        let path = UIBezierPath()
+        path.move(to: points.last!)
+        points.forEach { point in
+            path.addLine(to: point)
+        }
+        layer.path = path.cgPath
+        return layer
+    }
+    
+    /**
+     Remove outlines drawn for selected rectangles.
+     */
+    fileprivate func removeRectOutlineLayers() {
+        // Remove outline for observed rectangles
+        for layer in self.highlightedRectangleOutlineLayers {
+            layer.removeFromSuperlayer()
+        }
+        self.highlightedRectangleOutlineLayers.removeAll()
+    }
+    
+    /**
+     Check if touch location is on a vertical plane.
+     */
+    fileprivate func isOnVerticalPlane(_ point: CGPoint) -> Bool {
+        let results = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
+        if let _ = results.first{
+            return true
+        }
+        return false
+    }
+}

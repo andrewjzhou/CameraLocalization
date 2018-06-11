@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Vision
 
 extension UIImage {
     /**
@@ -146,5 +147,16 @@ extension CGSize {
             return true
         }
         return false
+    }
+}
+
+extension VNRectangleObservation {
+    /**
+     Center of observation in camera coordinate system.
+     */
+    var center:CGPoint {
+        get {
+            return CGPoint(x: (topRight.x + bottomLeft.x)*0.5, y: (topRight.y + bottomLeft.y)*0.5)
+        }
     }
 }
