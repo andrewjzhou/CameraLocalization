@@ -17,7 +17,7 @@ import AWSAuthCore
 import AWSAuthUI
 
 
-class ViewController: UIViewController, ARSessionDelegate{
+class ViewController: UIViewController {
     fileprivate let disposeBag = DisposeBag()
     fileprivate let trackingConfiguration: ARWorldTrackingConfiguration = {
         let config = ARWorldTrackingConfiguration()
@@ -63,7 +63,7 @@ class ViewController: UIViewController, ARSessionDelegate{
         // Setup AR Poster Discovery and Placement Rx
 //        setupARPosetrDiscoveryAndPlacementRx()
         
-        // SignIn View Controller
+        // SignIn View Controllers
         // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
         // Get rid of email field in sign-up
         if !AWSSignInManager.sharedInstance().isLoggedIn {
@@ -88,7 +88,8 @@ class ViewController: UIViewController, ARSessionDelegate{
         sceneView.session.run(trackingConfiguration)
         
         // Reset tracking state when interruption ends
-        let _ = sceneView.session.rx.sessionInterruptionEnded
+        let _ =
+        sceneView.session.rx.sessionInterruptionEnded
             .subscribe{ (_) in
                 self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
             }
@@ -325,6 +326,11 @@ extension ViewController {
     }
 }
 
+extension ViewController {
+    
+}
+
+
 
 /**
  MARK:- Setup Poster Rx, main per-frame opertaions.
@@ -557,73 +563,6 @@ extension ViewController {
 //    }
 //    @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
 //        longPressSubject.onNext(sender)
-//    }
-//
-//    /**
-//     Detect rectangles in a frame.
-//     */
-//    private func detectRectangles(in frame: ARFrame) -> Observable<[VNRectangleObservation]?>{
-//        return Observable.create({ observer in
-//            let request = VNDetectRectanglesRequest(completionHandler: { (request, error) in
-//                // Filter observations and observe detected results
-//                guard let observations = request.results as? [VNRectangleObservation],
-//                    let _ = observations.first else {
-//                        observer.onNext(nil)
-//                        observer.onCompleted()
-//                        return
-//                }
-//
-//                let filteredObservations = self.filterContainedRects(observations)
-//                observer.onNext(filteredObservations)
-//                observer.onCompleted()
-//            })
-//
-//            // Don't limit resulting number of observations
-//            request.maximumObservations = 1
-//            request.quadratureTolerance = 5
-//            request.minimumConfidence   = 0.6
-//            //            request.minimumAspectRatio  = 0.5
-//            //            request.maximumAspectRatio  = 2.0
-//
-//            // Perform request
-//            let handler = VNImageRequestHandler(cvPixelBuffer: frame.capturedImage, options: [:])
-//            try? handler.perform([request])
-//            return Disposables.create()
-//        })
-//    }
-//
-//    /**
-//     Filter out rectangle observations that are contained by another rectangle observation.
-//     */
-//    fileprivate func filterContainedRects(_ observations: [VNRectangleObservation]) -> [VNRectangleObservation]{
-//        // Sort in increasing order
-//        var filtered = [VNRectangleObservation]()
-//        let sorted = observations.sorted(by: { (o1, o2) -> Bool in
-//            if o1.boundingBox.size.smaller(than: o2.boundingBox.size) {
-//                return true
-//            }
-//            return false
-//        })
-//
-//        // Check if observation is contained
-//        let length = sorted.count
-//        for i in 0..<length{
-//            let currObservation = sorted[i]
-//
-//            var contained = false
-//            for j in (i+1)..<length {
-//                if sorted[j].boundingBox.contains(currObservation.boundingBox) {
-//                    contained = true
-//                    break
-//                }
-//            }
-//
-//            // Appened uncontained observation
-//            if !contained {
-//                filtered.append(currObservation)
-//            }
-//        }
-//        return filtered
 //    }
 //
 //    /**

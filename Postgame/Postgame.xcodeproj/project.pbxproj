@@ -13,6 +13,7 @@
 		6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
+		6AEBAB6120CEEEAC00741EB0 /* DetectRectanglesObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB6020CEEEAC00741EB0 /* DetectRectanglesObservable.swift */; };
 		6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */; };
 		6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A702085BF06008E0FF8 /* art.scnassets */; };
 		6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A722085BF06008E0FF8 /* ViewController.swift */; };
@@ -69,6 +70,7 @@
 		6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
+		6AEBAB6020CEEEAC00741EB0 /* DetectRectanglesObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectRectanglesObservable.swift; sourceTree = "<group>"; };
 		6AEC1A6B2085BF06008E0FF8 /* Postgame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Postgame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6AEC1A702085BF06008E0FF8 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -295,6 +297,7 @@
 				6AF5277F208AC3E80039363B /* GeolocationService.swift */,
 				6AD9115820901AF900286826 /* Descriptor.swift */,
 				6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */,
+				6AEBAB6020CEEEAC00741EB0 /* DetectRectanglesObservable.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -628,6 +631,7 @@
 				6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */,
 				6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */,
 				6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */,
+				6AEBAB6120CEEEAC00741EB0 /* DetectRectanglesObservable.swift in Sources */,
 				6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */,
 				6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */,
 				6AF52788208BBFEC0039363B /* SignInViewController.swift in Sources */,
