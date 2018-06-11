@@ -329,33 +329,22 @@ extension ViewController {
 
 extension ViewController {
     func setupPostRx() {
-        let detectRectanglesObservable = DetectRectanglesObservable.create(sceneView.session.rx.didUpdateFrame)
-        detectRectanglesObservable
-            .map{ self.filterVerticalRectangles($0) } // Keep only rectangles that reside on vertical planes
+        let arFrameObservable = sceneView.session.rx.didUpdateFrame
+        let verticalRectsObservable = VerticalRectsObservable.create(arFrameObservable,
+                                                                     in: sceneView)
+        verticalRectsObservable
             .subscribe(onNext: { (observations) in
                 self.removeRectOutlineLayers()
                 // Highlight detected rectangles
-                if let _ = observations {
-                    for observation in observations! {
-                        self.highlightObservation(observation)
-                    }
+                for observation in observations {
+                    self.highlightObservation(observation)
                 }
-            })
+               
+            }).disposed(by: disposeBag)
 
     }
     
-    fileprivate func filterVerticalRectangles(_ observations: [VNRectangleObservation]?) -> [VNRectangleObservation]? {
-        var verticalObservations = [VNRectangleObservation]()
-        guard let _ = observations else {return nil}
-        for observation in observations! {
-            let center = sceneView.convertFromCamera(observation.center)
-            if isOnVerticalPlane(center) {
-                verticalObservations.append(observation)
-            }
-        }
-        return verticalObservations
-        
-    }
+    
     
   
 
@@ -641,14 +630,4 @@ extension ViewController {
         self.highlightedRectangleOutlineLayers.removeAll()
     }
     
-    /**
-     Check if touch location is on a vertical plane.
-     */
-    fileprivate func isOnVerticalPlane(_ point: CGPoint) -> Bool {
-        let results = sceneView.hitTest(point, types: .existingPlaneUsingExtent)
-        if let _ = results.first{
-            return true
-        }
-        return false
-    }
 }

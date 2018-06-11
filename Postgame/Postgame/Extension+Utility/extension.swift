@@ -8,6 +8,7 @@
 
 import UIKit
 import Vision
+import ARKit
 
 extension UIImage {
     /**
@@ -158,5 +159,18 @@ extension VNRectangleObservation {
         get {
             return CGPoint(x: (topRight.x + bottomLeft.x)*0.5, y: (topRight.y + bottomLeft.y)*0.5)
         }
+    }
+}
+
+extension CGPoint {
+    /**
+     Check if point lies on a vertical plane in given sceneView.
+    */
+    func isOnVerticalPlane(in sceneView: ARSCNView) -> Bool {
+        let results = sceneView.hitTest(self, types: .existingPlaneUsingExtent)
+        if let _ = results.first{
+            return true
+        }
+        return false
     }
 }
