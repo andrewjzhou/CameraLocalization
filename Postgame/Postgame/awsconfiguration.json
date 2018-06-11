@@ -20,6 +20,12 @@
       "Region": "us-east-2"
     }
   },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "postgame-userfiles-mobilehub-1951513639",
+      "Region": "us-east-2"
+    }
+  },
   "PinpointAnalytics": {
     "Default": {
       "AppId": "2a650fdfd1fc43288c4a90e482dd9559",
@@ -29,6 +35,12 @@
   "PinpointTargeting": {
     "Default": {
       "Region": "us-east-1"
+    }
+  },
+  "UserFileManager": {
+    "Default": {
+      "Bucket": "postgame-userfiles-mobilehub-1951513639",
+      "Region": "us-east-2"
     }
   }
 }
