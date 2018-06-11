@@ -327,7 +327,9 @@ extension ViewController {
 }
 
 extension ViewController {
-    
+    func setupPosterRx() {
+        
+    }
 }
 
 

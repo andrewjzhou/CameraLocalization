@@ -18,7 +18,9 @@ class DetectRectanglesObservable {
     public static func create(_ didUpdateFrameObservable: Observable<ARFrame>) -> Observable<[VNRectangleObservation]?> {
         let detectRectanglesObservable
             = didUpdateFrameObservable
+                // Slow down frame rate
                 .throttle(0.1, scheduler:  MainScheduler.instance)
+                // Detect rectangles in each frame
                 .flatMap{ detectRectangles(in: $0) }
         return detectRectanglesObservable
     }
