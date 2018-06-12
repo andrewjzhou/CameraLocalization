@@ -16,11 +16,7 @@ import AWSUserPoolsSignIn
 class PostNode: SCNNode {
     
     private(set) var contentNode: ContentNode
-    var key: String {
-        get {
-            return getKey()
-        }
-    }
+    let key = getKey()
     
     init(_ pair: InfoDescriptorPair){
         contentNode = ContentNode(size: pair.info.size)
