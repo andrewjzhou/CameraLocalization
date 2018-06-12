@@ -45,7 +45,7 @@ class ViewController: UIViewController {
     private let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer?>(value: nil)
     private var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -232,7 +232,6 @@ extension ViewController {
         // Get the current user coordinate
         let userLocation = geolocationService.location
         
-    
 //            .do(onNext: { (location) in
 //                // Refresh cache. Remove descriptors that are not inside user region
 //                for key in self.descriptorCache.keys {

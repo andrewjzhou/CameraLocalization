@@ -18,23 +18,17 @@ import RxCocoa
 
 class AWSS3Service {
     
+    static let sharedInstance = AWSS3Service()
+    
     private(set) var transferUtility: AWSS3TransferUtility
     private(set) var client: AWSS3
     
-    init() {
-        
-        // Initialize the Amazon Cognito credentials provider
-        // WARNING: Current permissinos on S3 console is public. Reset permissions.
-        let credentialsProvider = AWSCognitoCredentialsProvider(regionType:.USEast1,
-                                                                identityPoolId:"us-east-1:2ae3765b-253b-41f4-a797-70a8c333c526")
-        let configuration = AWSServiceConfiguration(region:.USEast1, credentialsProvider:credentialsProvider)
-        AWSServiceManager.default().defaultServiceConfiguration = configuration
+    private init() {
         
         // Create S3 Client and TransferUtility
         client = AWSS3.default()
         transferUtility = AWSS3TransferUtility.default()
-        
-    
+
     }
     
     /**
@@ -127,4 +121,26 @@ class AWSS3Service {
         })
         
     }
+    
+    func uploadDescriptor(_ descriptor: [Double], key: String) {
+        
+    }
+    
+    
 }
+
+fileprivate func encodeDescriptor(_ descriptor: [Double]) -> Data {
+    let stringRepresentation = descriptor.map{ String($0) }.joined(separator: ",")
+    let encodedString =
+        stringRepresentation
+            .data(using: String.Encoding.utf8)?
+            .base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+    let data = Data(base64Encoded: encodedString!)
+    return data!
+}
+
+fileprivate func decodeForDescriptor(_ data: Data) -> [Double] {
+    let decodedString = String(data: data, encoding: .utf8)
+    return decodedString!.split(separator: ",").map { Double($0)! }
+}
+
