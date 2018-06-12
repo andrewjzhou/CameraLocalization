@@ -10,6 +10,10 @@ import CoreLocation
 import RxSwift
 import RxCocoa
 
+// The third decimal place of coordinate is worth up to 110 m: it can identify a large agricultural field or institutional campus.
+// The fourth decimal place is worth up to 11 m: it can identify a parcel of land. It is comparable to the typical accuracy of an uncorrected GPS unit with no interference.
+// The fifth decimal place is worth up to 1.1 m: it distinguish trees from each other. Accuracy to this level with commercial GPS units can only be achieved with differential correction.
+
 class GeolocationService {
     
     static let sharedInstance = GeolocationService()
