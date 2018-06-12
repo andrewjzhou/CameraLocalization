@@ -12,11 +12,13 @@ import RxCocoa
 
 class GeolocationService {
     
-    static let instance = GeolocationService()
+    static let sharedInstance = GeolocationService()
     private (set) var authorized: Driver<Bool>
-    private (set) var location: Driver<CLLocationCoordinate2D>
+    private (set) var location: Driver<(Double, Double)>
     
     private let locationManager = CLLocationManager()
+    
+    var lastLocation: (Double, Double)?
     
     private init() {
         
@@ -42,16 +44,41 @@ class GeolocationService {
                 }
         }
         
+        // Observable. Update location and format to 4 decimals
         location = locationManager.rx.didUpdateLocations
             .asDriver(onErrorJustReturn: [])
             .flatMap {
                 return $0.last.map(Driver.just) ?? Driver.empty()
             }
             .map { $0.coordinate }
+            .map{ // Convert CLLocation coordinates to 4 decimal places
+                (roundToDecimal4($0.latitude as Double), roundToDecimal4($0.longitude as Double))
+            }
+            .distinctUntilChanged({ (location1, location2) -> Bool in
+                // Reduce fluctuation
+                let precision = 0.0002
+                if abs(location1.0 - location2.0) < precision && abs(location1.1 - location2.1) < precision {
+                    return true
+                } else {
+                    return false
+                }
+            })
         
+        
+        // Keep track of last known location
+        location.do(onNext: { currentLocation in
+            self.lastLocation = currentLocation
+        })
         
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()
     }
     
+}
+
+/**
+ Round double to 4 decimal digits
+ */
+fileprivate func roundToDecimal4(_ value: Double) -> Double{
+    return Double(round(10000*value)/10000)
 }

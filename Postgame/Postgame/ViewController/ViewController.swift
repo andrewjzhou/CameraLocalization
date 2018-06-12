@@ -87,6 +87,7 @@ class ViewController: UIViewController {
     
         // Run the view's session
         sceneView.session.run(trackingConfiguration)
+        sceneView.showsStatistics = true // For debugging
         
         // Reset tracking state when interruption ends
         let _ =
@@ -226,25 +227,12 @@ extension ViewController {
     private func setupLocationServiceAndDescriptorCache() {
         // FOR TESTING: Change prefix in urlList() and change return value in first map function
         
-        let geolocationService = GeolocationService.instance
+        let geolocationService = GeolocationService.sharedInstance
         
         // Get the current user coordinate
         let userLocation = geolocationService.location
-//            .debug("Descriptor Cache: Before map1")
-            .map{ // test -> (Double, Double) in
-                // Convert CLLocation coordinates to 4 decimal places
-                (self.roundToDecimal4($0.latitude as Double), self.roundToDecimal4($0.longitude as Double))
-            }
-//            .debug("Descriptor Cache: After map1")
-            .distinctUntilChanged({ (location1, location2) -> Bool in
-                // Only send request if output changed
-                let precision = 0.0002
-                if abs(location1.0 - location2.0) < precision && abs(location1.1 - location2.1) < precision {
-                    return true
-                } else {
-                    return false
-                }
-            })
+        
+    
 //            .do(onNext: { (location) in
 //                // Refresh cache. Remove descriptors that are not inside user region
 //                for key in self.descriptorCache.keys {
@@ -336,15 +324,30 @@ extension ViewController {
         
         let verticalRectObservable =
             arFrameObservable
-                .flatMap{ detectVerticalRects(frame: $0, in: self.sceneView) }
+                .flatMap{ detectVerticalRect(frame: $0, in: self.sceneView) }
         
-        // Testing
-        verticalRectObservable
-            .subscribe(onNext: { (observation) in
-                self.removeRectOutlineLayers()
-                // Highlight detected rectangles
-                self.highlightObservation(observation)
-            }).disposed(by: disposeBag)
+        let verticalRectInfoObservable =
+            verticalRectObservable
+                .map { VerticalRectInfo(for: $0, in: self.sceneView) }
+                .filter { $0 != nil}
+        
+        
+        let infoDescriptorPairObservable =
+            verticalRectInfoObservable
+                .flatMap { DescriptorService.sharedInstance.calculateDescriptor(for: $0!) }
+                .subscribe(onNext: { (pair) in
+                    print("Descriptor Found: ", pair?.descriptor)
+                })
+        
+        
+        
+//        // Testing
+//        verticalRectObservable
+//            .subscribe(onNext: { (observation) in
+//                self.removeRectOutlineLayers()
+//                // Highlight detected rectangles
+//                self.highlightObservation(observation)
+//            }).disposed(by: disposeBag)
 
     }
     

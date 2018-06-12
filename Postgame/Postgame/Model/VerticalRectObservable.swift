@@ -14,7 +14,7 @@ import RxCocoa
 /**
  Create observable that detects vertical rects.
  */
-func detectVerticalRects(frame: ARFrame, in sceneView: ARSCNView) -> Observable<VNRectangleObservation> {
+func detectVerticalRect(frame: ARFrame, in sceneView: ARSCNView) -> Observable<VNRectangleObservation> {
     let rectanglesObservable = detectRectangles(in: frame)
     let observable =
         rectanglesObservable
@@ -42,17 +42,19 @@ func detectVerticalRects(frame: ARFrame, in sceneView: ARSCNView) -> Observable<
 fileprivate func detectRectangles(in frame: ARFrame) -> Observable<[VNRectangleObservation]?>{
     return Observable.create({ observer in
         let request = VNDetectRectanglesRequest(completionHandler: { (request, error) in
-            // Filter observations and observe detected results
-            guard let observations = request.results as? [VNRectangleObservation],
-                let _ = observations.first else {
-                    observer.onNext(nil)
-                    observer.onCompleted()
-                    return
+            DispatchQueue.main.sync {
+                // Filter observations and observe detected results
+                guard let observations = request.results as? [VNRectangleObservation],
+                    let _ = observations.first else {
+                        observer.onNext(nil)
+                        observer.onCompleted()
+                        return
+                }
+                
+                let filteredObservations = filterContainedRects(observations)
+                observer.onNext(filteredObservations)
+                observer.onCompleted()
             }
-            
-            let filteredObservations = filterContainedRects(observations)
-            observer.onNext(filteredObservations)
-            observer.onCompleted()
         })
         
         // Don't limit resulting number of observations
@@ -64,7 +66,9 @@ fileprivate func detectRectangles(in frame: ARFrame) -> Observable<[VNRectangleO
         
         // Perform request
         let handler = VNImageRequestHandler(cvPixelBuffer: frame.capturedImage, options: [:])
-        try? handler.perform([request])
+        DispatchQueue.global(qos: .background).async {
+            try? handler.perform([request])
+        }
         return Disposables.create()
     })
 }

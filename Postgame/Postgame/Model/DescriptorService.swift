@@ -13,6 +13,11 @@ import Vision
 import RxCocoa
 import RxSwift
 
+// Is resizing correct? Does it resize image to a size that meets caffenet model input requirement?
+// Explore other descriptor services: e.g. MobileNet
+// How to get rid of Multi-Array
+// Explore other Convolutional Image retrieval methods using descriptor vector
+
 class DescriptorService: NSObject {
     static let sharedInstance = DescriptorService()
     
@@ -49,9 +54,12 @@ class DescriptorService: NSObject {
             })
             request.imageCropAndScaleOption = .centerCrop
             
+            
             // Perform request
             let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation!)
-            try? handler.perform([request])
+            DispatchQueue.global(qos: .userInteractive).async {
+                try? handler.perform([request])
+            }
             return Disposables.create()
         })
     
