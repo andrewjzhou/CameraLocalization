@@ -1,0 +1,94 @@
+//
+//  DescriptorService.swift
+//  Postgame
+//
+//  Created by Andrew Jay Zhou on 6/12/18.
+//  Copyright © 2018 postgame. All rights reserved.
+//
+
+import UIKit
+import Foundation
+import CoreML
+import Vision
+import RxCocoa
+import RxSwift
+
+class DescriptorService: NSObject {
+    static let sharedInstance = DescriptorService()
+    
+    // CaffeNet processing Request
+    lazy var model = try VNCoreMLModel(for: CaffenetExtractor().model)
+    
+    override init() {
+        super.init()
+    }
+    
+    func calculateDescriptor(for info: VerticalRectInfo) -> Observable<InfoDescriptorPair?> {
+        let orientation = CGImagePropertyOrientation(rawValue: UInt32(info.realImage.imageOrientation.rawValue))
+        guard let ciImage = CIImage(image: info.realImage) else { fatalError("Unable to create \(CIImage.self) from \(info.realImage).") }
+        
+        return Observable.create({ observer in
+            let request = VNCoreMLRequest(model: self.model, completionHandler: { [weak self] request, error in
+                guard let result = request.results?.first as? VNCoreMLFeatureValueObservation else {
+                    observer.onNext(nil)
+                    observer.onCompleted()
+                    return
+                }
+                guard let multiArray = result.featureValue.multiArrayValue else {
+                    observer.onNext(nil)
+                    observer.onCompleted()
+                    return
+                }
+                
+                let array = MultiArray<Double>(multiArray)
+                let descriptor = self!.processArray(array)
+                
+                observer.onNext(InfoDescriptorPair(info: info, descriptor: descriptor))
+                observer.onCompleted()
+                
+            })
+            request.imageCropAndScaleOption = .centerCrop
+            
+            // Perform request
+            let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation!)
+            try? handler.perform([request])
+            return Disposables.create()
+        })
+    
+    }
+    
+    
+    private func processArray(_ array: MultiArray<Double>) -> [Double] {
+        // Get basic info for feature MultiArray (1x1x256x13x13)
+        let height = array.shape[3]
+        let width = array.shape[4]
+        let length = array.shape[2]
+        let sigma = Double(length) / 6.0
+        
+        // Initialize descriptor vector
+        var descriptor = Array(repeating: 0.0, count: length)
+        
+        // Calcualte descritpor by traversing through feature MultiArray
+        for i in 0..<height { // 13
+            for j in 0..<width { // 13
+                for k in 0..<length{ // 256
+                    //                        // For Sum-pooling
+                    //                        let num1 = pow((Double(i) - Double(height)/2.0), 2)
+                    //                        let num2 = pow((Double(j) - Double(width)/2.0), 2)
+                    //                        let den  = 2 * pow(sigma, 2)
+                    //
+                    //                        // For Center-prioring
+                    //                        let alpha = exp(-(num1 + num2)/den)
+                    //
+                    //                        // Aggregate
+                    //                        descriptor[k] += alpha * array[array.offset(for: [0,0,k,i,j])]
+                    descriptor[k] += array[array.offset(for: [0,0,k,i,j])]
+                }
+            }
+        }
+        
+        return descriptor
+    }
+}
+
+

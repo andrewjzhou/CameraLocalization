@@ -329,17 +329,21 @@ extension ViewController {
 
 extension ViewController {
     func setupPostRx() {
-        let arFrameObservable = sceneView.session.rx.didUpdateFrame
-        let verticalRectsObservable = VerticalRectsObservable.create(arFrameObservable,
-                                                                     in: sceneView)
-        verticalRectsObservable
-            .subscribe(onNext: { (observations) in
+        let arFrameObservable =
+            sceneView.session.rx.didUpdateFrame
+                // slow down frame rate
+                .throttle(0.1, scheduler:  MainScheduler.instance)
+        
+        let verticalRectObservable =
+            arFrameObservable
+                .flatMap{ detectVerticalRects(frame: $0, in: self.sceneView) }
+        
+        // Testing
+        verticalRectObservable
+            .subscribe(onNext: { (observation) in
                 self.removeRectOutlineLayers()
                 // Highlight detected rectangles
-                for observation in observations {
-                    self.highlightObservation(observation)
-                }
-               
+                self.highlightObservation(observation)
             }).disposed(by: disposeBag)
 
     }

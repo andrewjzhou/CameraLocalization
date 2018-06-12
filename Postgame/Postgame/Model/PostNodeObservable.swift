@@ -16,7 +16,7 @@ class PostNodesObservable {
     public static func create(_ verticalRectsObservable: Observable<[VNRectangleObservation]>, in sceneView: ARSCNView) {
         let postNodesObservable
             = verticalRectsObservable
-                // Determine geometric information and crop real world image of each vertical rect
+                // Determine geometric information and crop real world image for each vertical rect
                 .map { (observations) -> [VerticalRectInfo] in
                     var infoSet = [VerticalRectInfo]()
                     for observation in observations {
@@ -26,6 +26,7 @@ class PostNodesObservable {
                     }
                     return infoSet
                 }
+                // Calculate descriptor 
                 
     }
     

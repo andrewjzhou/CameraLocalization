@@ -19,7 +19,7 @@ class VerticalRectInfo: NSObject {
     // Node associated with plane anchor
     private(set) var anchorNode: SCNNode
     
-    // Rectangle Observation
+    // Real Image of rectangle observation
     private(set) var realImage: UIImage
     
     init?(for observation: VNRectangleObservation, in sceneView: ARSCNView) {

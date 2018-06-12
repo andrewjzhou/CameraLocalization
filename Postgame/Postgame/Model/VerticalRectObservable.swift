@@ -11,40 +11,33 @@ import Vision
 import RxSwift
 import RxCocoa
 
-class VerticalRectsObservable {
-    
-    /**
-     Create observable that emits detected rectangles that reside on vertical plane in a given frame.
-     */
-    public static func create(_ didUpdateFrameObservable: Observable<ARFrame>, in sceneView: ARSCNView) -> Observable<[VNRectangleObservation]> {
-        let verticalRectsObservable
-            = didUpdateFrameObservable
-                // Slow down frame rate
-                .throttle(0.1, scheduler:  MainScheduler.instance)
-                // Detect rectangles in each frame
-                .flatMap{ detectRectangles(in: $0) }
-                .filter{ $0 != nil }
-                // Check if detected rectangles reside on vertical plane
-                .map { (observations) -> [VNRectangleObservation] in
-                    var verticalObservations = [VNRectangleObservation]()
-                    for observation in observations! {
-                        let center = sceneView.convertFromCamera(observation.center)
-                        if center.isOnVerticalPlane(in: sceneView) {
-                            verticalObservations.append(observation)
-                        }
+/**
+ Create observable that detects vertical rects.
+ */
+func detectVerticalRects(frame: ARFrame, in sceneView: ARSCNView) -> Observable<VNRectangleObservation> {
+    let rectanglesObservable = detectRectangles(in: frame)
+    let observable =
+        rectanglesObservable
+            .filter{ $0 != nil }
+            // Check if detected rectangles reside on vertical plane
+            .map { (observations) -> [VNRectangleObservation] in
+                var verticalObservations = [VNRectangleObservation]()
+                for observation in observations! {
+                    let center = sceneView.convertFromCamera(observation.center)
+                    if center.isOnVerticalPlane(in: sceneView) {
+                        verticalObservations.append(observation)
                     }
-                    return verticalObservations
                 }
-                .filter{ $0.count != 0}
-        
-        return verticalRectsObservable
-    }
-    
+                return verticalObservations
+            }
+            .flatMap { Observable.from($0) }
+
+   return observable
 }
 
 
 /**
- Detect rectangles in a frame.
+ Create observable that detects rectangles in a frame.
  */
 fileprivate func detectRectangles(in frame: ARFrame) -> Observable<[VNRectangleObservation]?>{
     return Observable.create({ observer in
