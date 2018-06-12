@@ -45,6 +45,7 @@ class ViewController: UIViewController {
     private let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer?>(value: nil)
     private var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,6 +80,8 @@ class ViewController: UIViewController {
                                         }
                 })
         }
+        
+//        test()
         
     }
     
@@ -636,4 +639,12 @@ extension ViewController {
         self.highlightedRectangleOutlineLayers.removeAll()
     }
     
+    func test() {
+        let descriptor:[Double] = [10.5, 11.3, 44.1, 77, 200.1, 156.5]
+//        AWSS3Service.sharedInstance.uploadDescriptor(descriptor, key: "public/test1")
+        let obs = AWSS3Service.sharedInstance.downloadDescriptor("public/test1")
+        obs.subscribe { (descriptor) in
+            print("Downloaded: ", descriptor)
+        }
+    }
 }

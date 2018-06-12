@@ -10,9 +10,9 @@ import Foundation
 
 struct Descriptor {
     let key: String
-    let value: [UInt8]
+    let value: [Double]
     
-    init(key: String, value: [UInt8]) {
+    init(key: String, value: [Double]) {
         self.key = key
         self.value = value
     }

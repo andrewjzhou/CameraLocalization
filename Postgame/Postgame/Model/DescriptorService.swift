@@ -17,6 +17,7 @@ import RxSwift
 // Explore other descriptor services: e.g. MobileNet
 // How to get rid of Multi-Array
 // Explore other Convolutional Image retrieval methods using descriptor vector
+// [UInt8] vs [Double] Representation
 
 class DescriptorService: NSObject {
     static let sharedInstance = DescriptorService()

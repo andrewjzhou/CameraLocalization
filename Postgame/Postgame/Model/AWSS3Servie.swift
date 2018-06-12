@@ -16,17 +16,21 @@ import RxCocoa
 // Add User File Storage: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-data-storage.html
 // Transfer Utility: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/how-to-transfer-files-with-transfer-utility.html
 
+// private - Each mobile app user can create, read, update, and delete their own files in this folder. No other app users can access this folder.
+// protected - Each mobile app user can create, read, update, and delete their own files in this folder. In addition, any app user can read any other app user's files in this folder.
+// public ? Any app user can create, read, update, and delete files in this folder.
+
 class AWSS3Service {
     
     static let sharedInstance = AWSS3Service()
     
     private(set) var transferUtility: AWSS3TransferUtility
-    private(set) var client: AWSS3
+//    private(set) var client: AWSS3
     
     private init() {
         
         // Create S3 Client and TransferUtility
-        client = AWSS3.default()
+//        client = AWSS3.default()
         transferUtility = AWSS3TransferUtility.default()
 
     }
@@ -34,46 +38,46 @@ class AWSS3Service {
     /**
      Produce the list of urls associated with the input locations, if exist.
      */
-    func urlList(for locations: [(Double, Double)]) -> Observable<String> {
-        return Observable.create({ observer in
-            for location in locations {
-                // Produce prefix for listRequest
-                let prefix = String(location.0) + "/" + String(location.1) + "/" + "descriptor"
-                //                let prefix = String(location.0) + "/" + String(location.1)
-                
-                // Produce listRequest for S3
-                let listRequest: AWSS3ListObjectsRequest = AWSS3ListObjectsRequest()
-                
-                
-                
-//                listRequest.bucket = S3Bucket
-//                listRequest.prefix = prefix
-                
-                
-                // Emit urls through observer
-                self.client.listObjects(listRequest).continueWith { (task) -> AnyObject? in
-                    guard let objects = task.result?.contents else {
-                        print("AWSS3Service.urlList(): No URLs found for input locations")
-                        return nil
-                    }
-                    
-                    for object in objects {
-                        observer.onNext(object.key!)
-                    }
-                    
-                    return nil
-                }
-            }
-            return Disposables.create()
-        })
-        
-        
-    }
+//    func urlList(for locations: [(Double, Double)]) -> Observable<String> {
+//        return Observable.create({ observer in
+//            for location in locations {
+//                // Produce prefix for listRequest
+//                let prefix = String(location.0) + "/" + String(location.1) + "/" + "descriptor"
+//                //                let prefix = String(location.0) + "/" + String(location.1)
+//
+//                // Produce listRequest for S3
+//                let listRequest: AWSS3ListObjectsRequest = AWSS3ListObjectsRequest()
+//
+//
+//
+////                listRequest.bucket = S3Bucket
+////                listRequest.prefix = prefix
+//
+//
+//                // Emit urls through observer
+//                self.client.listObjects(listRequest).continueWith { (task) -> AnyObject? in
+//                    guard let objects = task.result?.contents else {
+//                        print("AWSS3Service.urlList(): No URLs found for input locations")
+//                        return nil
+//                    }
+//
+//                    for object in objects {
+//                        observer.onNext(object.key!)
+//                    }
+//
+//                    return nil
+//                }
+//            }
+//            return Disposables.create()
+//        })
+//
+//
+//    }
     
     /**
      Download descriptor from S3 using key.
      */
-    func downloadDescriptor(_ key: String) -> Observable<Descriptor> {
+    func downloadDescriptor(_ key: String) -> Observable<Descriptor?> {
         return Observable.create({ (observer) in
             // Track progress
             let expression = AWSS3TransferUtilityDownloadExpression()
@@ -90,7 +94,7 @@ class AWSS3Service {
                 // On failed downloads, `error` contains the error object.
                 
                 if let _ = data {
-                    let descriptor = Descriptor(key: key, value: Array(data!))
+                    let descriptor = Descriptor(key: key, value: decodeForDescriptor(data!))
                     
                     observer.onNext(descriptor)
                     observer.onCompleted()
@@ -98,6 +102,7 @@ class AWSS3Service {
                 
                 
             }
+            
             
             // Download task
             let transferUtility = AWSS3TransferUtility.default()
@@ -123,7 +128,44 @@ class AWSS3Service {
     }
     
     func uploadDescriptor(_ descriptor: [Double], key: String) {
+        let data = encodeDescriptor(descriptor)
+        let expression = AWSS3TransferUtilityUploadExpression()
+        expression.progressBlock = {(task, progress) in
+            DispatchQueue.main.async(execute: {
+                // Do something e.g. Update a progress bar.
+            })
+        }
         
+        var completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?
+        completionHandler = { (task, error) -> Void in
+            DispatchQueue.main.async(execute: {
+                // Do something e.g. Alert a user for transfer completion.
+                // On failed uploads, `error` contains the error object.
+                
+            })
+        }
+        
+        let transferUtility = AWSS3TransferUtility.default()
+        
+        transferUtility.uploadData(data,
+                                   key: key,
+                                   contentType: "text/plain",
+                                   expression: expression,
+                                   completionHandler: completionHandler).continueWith {
+                                    (task) -> AnyObject! in
+                                    if let error = task.error {
+                                        print("Error: \(error.localizedDescription)")
+                                    }
+                                    
+                                    if let _ = task.result {
+                                        // Do something with uploadTask.
+                                       
+                                    }
+                                    return nil;
+        }
+        
+    
+      
     }
     
     

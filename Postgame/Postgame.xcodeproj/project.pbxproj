@@ -22,8 +22,8 @@
 		6A1B54A420D01A8700870DC2 /* CVPixelBuffer+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549C20D01A8700870DC2 /* CVPixelBuffer+Helpers.swift */; };
 		6A1B54A520D01A8700870DC2 /* NonMaxSuppression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549D20D01A8700870DC2 /* NonMaxSuppression.swift */; };
 		6A1B54A620D01A8700870DC2 /* MLMultiArray+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549E20D01A8700870DC2 /* MLMultiArray+Image.swift */; };
+		6A1B54A820D0629400870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54A720D0629400870DC2 /* awsconfiguration.json */; };
 		6AD9115920901AF900286826 /* Descriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD9115820901AF900286826 /* Descriptor.swift */; };
-		6AEBAB5420CDC21B00741EB0 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */; };
 		6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
@@ -93,8 +93,8 @@
 		6A1B549C20D01A8700870DC2 /* CVPixelBuffer+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Helpers.swift"; sourceTree = "<group>"; };
 		6A1B549D20D01A8700870DC2 /* NonMaxSuppression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NonMaxSuppression.swift; sourceTree = "<group>"; };
 		6A1B549E20D01A8700870DC2 /* MLMultiArray+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MLMultiArray+Image.swift"; sourceTree = "<group>"; };
+		6A1B54A720D0629400870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6AD9115820901AF900286826 /* Descriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Descriptor.swift; sourceTree = "<group>"; };
-		6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
@@ -244,8 +244,8 @@
 		6AEC1A6D2085BF06008E0FF8 /* Postgame */ = {
 			isa = PBXGroup;
 			children = (
+				6A1B54A720D0629400870DC2 /* awsconfiguration.json */,
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
-				6AEBAB5320CDC21B00741EB0 /* awsconfiguration.json */,
 				6AEC1A9E20879941008E0FF8 /* ViewController */,
 				6AF5277E208AC3C30039363B /* Model */,
 				6AEC1AA42087AD66008E0FF8 /* View */,
@@ -478,8 +478,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */,
+				6A1B54A820D0629400870DC2 /* awsconfiguration.json in Resources */,
 				6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */,
-				6AEBAB5420CDC21B00741EB0 /* awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
