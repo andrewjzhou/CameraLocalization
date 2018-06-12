@@ -16,7 +16,6 @@ import AWSMobileClient
 import AWSAuthCore
 import AWSAuthUI
 
-
 class ViewController: UIViewController {
     fileprivate let disposeBag = DisposeBag()
     fileprivate let trackingConfiguration: ARWorldTrackingConfiguration = {
@@ -49,7 +48,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         // Setup buttons design on the main screen
         setupUILayout()
         
@@ -82,6 +81,8 @@ class ViewController: UIViewController {
         }
         
 //        test()
+        print("SCNView Size: ", sceneView.frame)
+        print("Screen Size: ", UIScreen.main.bounds)
         
     }
     
