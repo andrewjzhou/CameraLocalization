@@ -10,6 +10,148 @@ import UIKit
 import Vision
 import ARKit
 
+extension ARHitTestResult {
+    var worldVector: SCNVector3 {
+        get {
+            return SCNVector3Make(worldTransform.columns.3.x,
+                                  worldTransform.columns.3.y,
+                                  worldTransform.columns.3.z)
+        }
+    }
+}
+
+extension ARSCNView {
+    
+    struct HitTestRay {
+        let origin: SCNVector3
+        let direction: SCNVector3
+    }
+    
+    func hitTestRayFromScreenPos(_ point: CGPoint) -> HitTestRay? {
+        
+        guard let frame = self.session.currentFrame else {
+            return nil
+        }
+        
+        let cameraPos = SCNVector3.positionFromTransform(frame.camera.transform)
+        
+        // Note: z: 1.0 will unproject() the screen position to the far clipping plane.
+        let positionVec = SCNVector3(x: Float(point.x), y: Float(point.y), z: 1.0)
+        let screenPosOnFarClippingPlane = self.unprojectPoint(positionVec)
+        
+        var rayDirection = screenPosOnFarClippingPlane - cameraPos
+        rayDirection.normalize()
+        
+        return HitTestRay(origin: cameraPos, direction: rayDirection)
+    }
+}
+
+extension CGPoint {
+    /**
+     Check if point lies on a vertical plane in given sceneView.
+     */
+    func isOnVerticalPlane(in sceneView: ARSCNView) -> Bool {
+        let results = sceneView.hitTest(self, types: .existingPlaneUsingExtent)
+        if let _ = results.first{
+            return true
+        }
+        return false
+    }
+}
+
+extension CGSize {
+    /**
+     Check if size1 is less than size2 in area.
+     */
+    func smaller(than size2: CGSize) -> Bool {
+        let area1 = self.width * self.height
+        let area2 = size2.width * size2.height
+        if area1 < area2 {
+            return true
+        }
+        return false
+    }
+}
+
+extension SCNVector3 {
+    func crossProduct(_ vectorB: SCNVector3) -> SCNVector3 {
+        
+        let computedX = (y * vectorB.z) - (z * vectorB.y)
+        let computedY = (z * vectorB.x) - (x * vectorB.z)
+        let computedZ = (x * vectorB.y) - (y * vectorB.x)
+        
+        return SCNVector3(computedX, computedY, computedZ)
+    }
+    
+    func midpoint(from vector: SCNVector3) -> SCNVector3 {
+        let midX = (self.x + vector.x) / 2
+        let midY = (self.y + vector.y) / 2
+        let midZ = (self.z + vector.z) / 2
+        return SCNVector3Make(midX, midY, midZ)
+    }
+    
+    func length() -> Float {
+        return sqrtf(x * x + y * y + z * z)
+    }
+    
+    static func positionFromTransform(_ transform: matrix_float4x4) -> SCNVector3 {
+        return SCNVector3Make(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
+    }
+    
+    mutating func normalize() {
+        self = self.normalized()
+    }
+    
+    func normalized() -> SCNVector3 {
+        if self.length() == 0 {
+            return self
+        }
+        
+        return self / self.length()
+    }
+    
+    func midVector(_ vectorB:SCNVector3) -> SCNVector3 {
+        return SCNVector3.init((x + vectorB.x)/2.0, (y + vectorB.y)/2.0, (z + vectorB.z)/2.0)
+    }
+    
+    func distance(from vector: SCNVector3) -> CGFloat {
+        let deltaX = self.x - vector.x
+        let deltaY = self.y - vector.y
+        let deltaZ = self.z - vector.z
+        
+        return CGFloat(sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ))
+    }
+    
+    // Calculate the magnitude of this vector
+    var magnitude:Float {
+        get {
+            return sqrt(dotProduct(self))
+        }
+    }
+    
+    func dotProduct(_ vectorB:SCNVector3) -> Float {
+        
+        return (x * vectorB.x) + (y * vectorB.y) + (z * vectorB.z)
+    }
+    
+    func angleBetweenVectors(_ vectorB:SCNVector3) -> Float {
+        
+        //cos(angle) = (A.B)/(|A||B|)
+        let cosineAngle = (dotProduct(vectorB) / (magnitude * vectorB.magnitude))
+        return Float(acos(cosineAngle))
+    }
+}
+/**
+ Binary operators for SCNVector3.
+ */
+func - (left: SCNVector3, right: SCNVector3) -> SCNVector3 {
+    return SCNVector3Make(left.x - right.x, left.y - right.y, left.z - right.z)
+}
+func / (left: SCNVector3, right: Float) -> SCNVector3 {
+    return SCNVector3Make(left.x / right, left.y / right, left.z / right)
+}
+
+
 extension UIImage {
     /**
      Create a colored image.
@@ -23,6 +165,30 @@ extension UIImage {
         let img = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return img!
+    }
+    
+    func resized(withPercentage percentage: CGFloat) -> UIImage? {
+        let canvasSize = CGSize(width: size.width * percentage, height: size.height * percentage)
+        UIGraphicsBeginImageContextWithOptions(canvasSize, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        draw(in: CGRect(origin: .zero, size: canvasSize))
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+    
+    func resized(width: CGFloat, height: CGFloat) -> UIImage? {
+        let canvasSize = CGSize(width: width, height: height)
+        UIGraphicsBeginImageContextWithOptions(canvasSize, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        draw(in: CGRect(origin: .zero, size: canvasSize))
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+    
+    func resized(toWidth width: CGFloat) -> UIImage? {
+        let canvasSize = CGSize(width: width, height: CGFloat(ceil(width/size.width * size.height)))
+        UIGraphicsBeginImageContextWithOptions(canvasSize, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        draw(in: CGRect(origin: .zero, size: canvasSize))
+        return UIGraphicsGetImageFromCurrentImageContext()
     }
 }
 
@@ -137,19 +303,7 @@ extension UIView {
     }
 }
 
-extension CGSize {
-    /**
-     Check if size1 is less than size2 in area.
-     */
-    func smaller(than size2: CGSize) -> Bool {
-        let area1 = self.width * self.height
-        let area2 = size2.width * size2.height
-        if area1 < area2 {
-            return true
-        }
-        return false
-    }
-}
+
 
 extension VNRectangleObservation {
     /**
@@ -162,15 +316,7 @@ extension VNRectangleObservation {
     }
 }
 
-extension CGPoint {
-    /**
-     Check if point lies on a vertical plane in given sceneView.
-    */
-    func isOnVerticalPlane(in sceneView: ARSCNView) -> Bool {
-        let results = sceneView.hitTest(self, types: .existingPlaneUsingExtent)
-        if let _ = results.first{
-            return true
-        }
-        return false
-    }
-}
+
+
+
+

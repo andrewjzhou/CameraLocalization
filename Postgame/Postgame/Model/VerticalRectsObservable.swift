@@ -35,10 +35,13 @@ class VerticalRectsObservable {
                     }
                     return verticalObservations
                 }
+                .filter{ $0.count != 0}
+        
         return verticalRectsObservable
     }
     
 }
+
 
 /**
  Detect rectangles in a frame.
@@ -106,3 +109,4 @@ fileprivate func filterContainedRects(_ observations: [VNRectangleObservation]) 
     }
     return filtered
 }
+
