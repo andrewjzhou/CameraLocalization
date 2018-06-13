@@ -13,13 +13,16 @@ import RxCocoa
 import RxSwift
 import AWSUserPoolsSignIn
 
+fileprivate let disposeBag = DisposeBag()
+
 class PostNode: SCNNode {
     
     private(set) var contentNode: ContentNode
     private(set) var key: String
+    private(set) var extent: PostNodeExtent
+    
     private let lifespan = Lifespan()
     
-    private let disposeBag = DisposeBag()
     private let extentPublisher = PublishSubject<PostNodeExtent>()
     
     var state: PostNodeState = .inactive
@@ -28,7 +31,9 @@ class PostNode: SCNNode {
     init(infoDesciptorPair: InfoDescriptorPair, cache: DescriptorCache){
         contentNode = ContentNode(size: infoDesciptorPair.info.size)
         key = getKey(cache.lastLocation!)
-       
+        extent = PostNodeExtent(position: infoDesciptorPair.info.position,
+                                size: infoDesciptorPair.info.size)
+        
         super.init()
         
         self.addChildNode(contentNode)
@@ -64,6 +69,7 @@ class PostNode: SCNNode {
                 self.lifespan.addLife() // Add lifespan after receiving new update
             })
             .buffer(timeSpan: 20, count: 15, scheduler: MainScheduler.instance)
+            .filter{ $0.count != 0 }
             .subscribe(onNext: { (extents) in
                 // Find best extent
                 let newExtent = self.findMostPopular(extents)
@@ -71,6 +77,8 @@ class PostNode: SCNNode {
                 // Update
                 self.position = newExtent.position
                 self.updateSize(newExtent.size)
+                self.extent = newExtent
+                print("PostNode: Updated")
             })
             .disposed(by: disposeBag)
     }
@@ -79,12 +87,12 @@ class PostNode: SCNNode {
         contentNode.setContent(image)
     }
     
-    func updateSize(_ size: CGSize) {
-        contentNode.updateSize(size)
-    }
-    
     func updateExtent(_ extent: PostNodeExtent) {
         extentPublisher.onNext(extent)
+    }
+    
+    private func updateSize(_ size: CGSize) {
+        contentNode.updateSize(size)
     }
     
     fileprivate func findMostPopular(_ extents: [PostNodeExtent]) -> PostNodeExtent {

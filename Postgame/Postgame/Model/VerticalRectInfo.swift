@@ -26,11 +26,11 @@ class VerticalRectInfo: NSObject {
         // Perform hit test to get plane information
         let center = sceneView.convertFromCamera(observation.center)
         guard let hitTestResult = sceneView.hitTest(center, types: .existingPlaneUsingExtent).first else {
-            print("PlaneRectangle Failed: no plane point")
+            print("VerticalRectInfo Failed: no plane point")
             return nil
         }
         guard let anchor = hitTestResult.anchor as? ARPlaneAnchor else {
-            print("PlaneRectangle Failed: no anchor")
+            print("VerticalRectInfo Failed: no anchor")
             return nil
         }
         
@@ -58,7 +58,7 @@ class VerticalRectInfo: NSObject {
             let tr = planeLineIntersectPoint(planeVector: normal, planePoint: planePoint, lineVector: trRay.direction, linePoint: trRay.origin),
             let bl = planeLineIntersectPoint(planeVector: normal, planePoint: planePoint, lineVector: blRay.direction, linePoint: blRay.origin)
             else {
-                print("PlaneRectangle Failed: no corners found")
+                print("VerticalRectInfo Failed: no corners found")
                 return nil
         }
         
@@ -70,6 +70,43 @@ class VerticalRectInfo: NSObject {
         // Size of the plane
         self.size = CGSize(width: tr.distance(from: tl), height: tl.distance(from: bl))
         
+        // Check if node already exists, or if node would occlude another node
+        for child in (anchorNode.childNodes as! [PostNode]) {
+            
+            let IoUThreshold:Float = 0.2
+            let selfExtent = PostNodeExtent(position: self.position, size: self.size)
+            let otherExtent = child.extent
+            
+            // occlusion
+            if selfExtent.occlusion(with: otherExtent) {
+                if child.state == .inactive {
+                    // remove if adding
+//                    child.removeFromParentNode()
+//                    continue
+//                    print("***Occlusion - Removed***")
+                } else {
+                    print("VerticalRectInfo Failed: Found Occlusion")
+                    return nil
+                }
+            }
+            
+            // update
+            if selfExtent.IoU(with: otherExtent) > IoUThreshold {
+//                if child.state == .inactive {
+                    // remove if adding
+//                    child.removeFromParentNode()
+//                    print("***IOU - Removed***")
+//                    continue
+//                } else {
+                    child.updateExtent(PostNodeExtent(position: self.position,
+                                                      size: self.size))
+                    
+                    print("VerticalRectInfo: Updated")
+                    return nil
+//                }
+            }
+        }
+        
         // Record real-world surface image associated with the plane rectangle
         guard let currFrame = sceneView.session.currentFrame else {return nil}
         let currImage = CIImage(cvPixelBuffer: currFrame.capturedImage)
@@ -78,6 +115,8 @@ class VerticalRectInfo: NSObject {
         let croppedImage = currImage.cropped(to: rect)
         self.realImage = resizeAndOrient(ciImage: croppedImage)!
     }
+    
+    
     
 }
 
