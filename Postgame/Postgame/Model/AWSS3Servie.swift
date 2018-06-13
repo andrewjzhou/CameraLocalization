@@ -19,6 +19,7 @@ import RxCocoa
 // private - Each mobile app user can create, read, update, and delete their own files in this folder. No other app users can access this folder.
 // protected - Each mobile app user can create, read, update, and delete their own files in this folder. In addition, any app user can read any other app user's files in this folder.
 // public ? Any app user can create, read, update, and delete files in this folder.
+// Need to add <retry upon failure> for downloading.
 
 class AWSS3Service {
     
@@ -144,7 +145,7 @@ class AWSS3Service {
     /**
      Download post from S3 using key.
      */
-    func downloadPost(_ key: String) -> Observable<UIImage?> {
+    func downloadPost(_ key: String) -> Observable<UIImage> {
         return Observable.create({ (observer) in
             // Track progress
             let expression = AWSS3TransferUtilityDownloadExpression()

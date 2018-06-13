@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     private var isPostingSubject = BehaviorSubject<Bool>(value: false)
     
     // Location
-    private var location: CLLocationCoordinate2D?
+    let geolocationService = GeolocationService.instance
     
     // Poster Rx
     private let frameSubject = PublishSubject<ARFrame>()
@@ -231,12 +231,19 @@ extension ViewController {
                 .map { VerticalRectInfo(for: $0, in: self.sceneView) }
                 .filter { $0 != nil}
         
-        
+        let descriptorComputer = DescriptorComputer()
         let infoDescriptorPairObservable =
             verticalRectInfoObservable
-                .flatMap { DescriptorService.sharedInstance.calculateDescriptor(for: $0!) }
-                .subscribe(onNext: { (pair) in
-                    print("Descriptor Found: ", pair?.descriptor)
+                .flatMap { descriptorComputer.compute(info: $0!) }
+                .filter { $0 != nil}
+
+        
+        let descriptorCache = DescriptorCache(geolocationService) // Check if this cache actually caches
+        let postNodeObservable =
+            infoDescriptorPairObservable
+                .map { PostNode(infoDesciptorPair: $0!, cache: descriptorCache) }
+                .subscribe(onNext: { (postNode) in
+                    print("PostNode created: ", postNode)
                 })
         
         

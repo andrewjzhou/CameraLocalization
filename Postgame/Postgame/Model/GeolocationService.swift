@@ -16,13 +16,12 @@ import RxCocoa
 
 class GeolocationService {
     
-    static let sharedInstance = GeolocationService()
+    static let instance = GeolocationService()
     private (set) var authorized: Driver<Bool>
     private (set) var location: Driver<(Double, Double)>
     
     private let locationManager = CLLocationManager()
-    
-    var lastLocation: (Double, Double)?
+
     
     private init() {
         
@@ -69,10 +68,7 @@ class GeolocationService {
             })
         
         
-        // Keep track of last known location
-        location.do(onNext: { currentLocation in
-            self.lastLocation = currentLocation
-        })
+     
         
         locationManager.requestAlwaysAuthorization()
         locationManager.startUpdatingLocation()

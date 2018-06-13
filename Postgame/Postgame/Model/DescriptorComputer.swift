@@ -19,8 +19,7 @@ import RxSwift
 // Explore other Convolutional Image retrieval methods using descriptor vector
 // [UInt8] vs [Double] Representation
 
-class DescriptorService: NSObject {
-    static let sharedInstance = DescriptorService()
+class DescriptorComputer: NSObject {
     
     // CaffeNet processing Request
     lazy var model = try VNCoreMLModel(for: CaffenetExtractor().model)
@@ -29,7 +28,7 @@ class DescriptorService: NSObject {
         super.init()
     }
     
-    func calculateDescriptor(for info: VerticalRectInfo) -> Observable<InfoDescriptorPair?> {
+    func compute(info: VerticalRectInfo) -> Observable<InfoDescriptorPair?> {
         let orientation = CGImagePropertyOrientation(rawValue: UInt32(info.realImage.imageOrientation.rawValue))
         guard let ciImage = CIImage(image: info.realImage) else { fatalError("Unable to create \(CIImage.self) from \(info.realImage).") }
         

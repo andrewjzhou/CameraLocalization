@@ -16,15 +16,36 @@ import AWSUserPoolsSignIn
 class PostNode: SCNNode {
     
     private(set) var contentNode: ContentNode
-    let key = getKey()
+    private(set) var key: String
     
-    init(_ pair: InfoDescriptorPair){
-        contentNode = ContentNode(size: pair.info.size)
+    private let disposeBag = DisposeBag()
+
+    
+    init(infoDesciptorPair: InfoDescriptorPair, cache: DescriptorCache){
+        contentNode = ContentNode(size: infoDesciptorPair.info.size)
+        key = getKey(cache.lastLocation!)
         super.init()
         
         // Add PostNode as child to its AnchorNode and set position
-        pair.info.anchorNode.addChildNode(self)
-        self.position = pair.info.anchorNode.position
+        infoDesciptorPair.info.anchorNode.addChildNode(self)
+        self.position = infoDesciptorPair.info.anchorNode.position
+        
+        // Match descriptor to cache
+//        if let matchKey = DescriptorCacheService.sharedInstance.findMatch(infoDesciptorPair.descriptor) {
+//            // Download and set content node post
+//            let postObservab = AWSS3Service.sharedInstance.downloadPost(matchKey)
+//            postObservab
+//                .subscribe(onNext: { (image) in
+//                    self.setContent(image)
+//                })
+//                .disposed(by: disposeBag)
+//        } else {
+//            // Set default contentNode content
+//        }
+    }
+    
+    func setContent(_ image: UIImage) {
+        contentNode.setContent(image)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -54,7 +75,7 @@ class ContentNode: SCNNode {
         self.eulerAngles.x = -.pi / 2 // might need to set this property as a child node in post node if it doesn't work
     }
     
-    private func setContent(_ image: UIImage) {
+    fileprivate func setContent(_ image: UIImage) {
         if let plane = self.geometry as? SCNPlane {
             plane.firstMaterial?.diffuse.contents = image.convertToSKScene()
         }
@@ -65,8 +86,7 @@ class ContentNode: SCNNode {
     }
 }
 
-fileprivate func getKey() -> String {
-    let location = GeolocationService.sharedInstance.lastLocation!
+fileprivate func getKey(_ location: (Double,Double)) -> String {
     let locationString = String(location.0) + "/" + String(location.1)
     let date = recordDate()
     let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!

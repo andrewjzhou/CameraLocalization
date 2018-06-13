@@ -8,18 +8,26 @@
 
 import Foundation
 
-class DescriptorCacheService {
-    static let sharedInstance = DescriptorCacheService()
+// Cosine similarity may be unreliable. Explore other matching methods between vectors
+
+class DescriptorCache {
+   
     private(set) var cache: [Descriptor]
+    private(set) var geolocationService: GeolocationService
     let threshold = 0.75
+    var lastLocation: (Double,Double)?
     
-    private init() {
+    init(_ geolocationService: GeolocationService) {
         cache = [Descriptor]()
+        self.geolocationService = geolocationService
         
-        let geolocationService = GeolocationService.sharedInstance
-        
+     
         // Get the current user coordinate
         let userLocation = geolocationService.location
+        userLocation.drive(onNext: { (location) in
+            self.lastLocation = location
+        })
+        
         
         //            .do(onNext: { (location) in
         //                // Refresh cache. Remove descriptors that are not inside user region
@@ -71,10 +79,10 @@ class DescriptorCacheService {
             for i in 0 ..< target.count {
                 let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
                 if similarity > threshold {
-                    if bestMatchSimilarity == nil {
+                    if bestMatchSimilarity == nil { // Found first best match
                         bestMatchKey = descriptor.key
                         bestMatchSimilarity = similarity
-                    } else if similarity > bestMatchSimilarity! {
+                    } else if similarity > bestMatchSimilarity! { // Found better match than current best match
                         bestMatchKey = descriptor.key
                         bestMatchSimilarity = similarity
                     }
@@ -84,6 +92,7 @@ class DescriptorCacheService {
         
         return bestMatchKey
     }
+    
     /**
      Find cosine similarity between two vectors.
      */
