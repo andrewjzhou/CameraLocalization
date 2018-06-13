@@ -78,7 +78,6 @@ class PostNode: SCNNode {
                 self.position = newExtent.position
                 self.updateSize(newExtent.size)
                 self.extent = newExtent
-                print("PostNode: Updated")
             })
             .disposed(by: disposeBag)
     }

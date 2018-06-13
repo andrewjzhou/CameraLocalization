@@ -13,6 +13,7 @@ target 'Postgame' do
   pod 'AWSAuthUI', '~> 2.6.13'
   pod 'AWSS3', '~> 2.6.13'   # For file transfers
   pod 'AWSCognito', '~> 2.6.13'   #For data sync
+  pod 'AWSDynamoDB', '~> 2.6.13'
 
   target 'PostgameTests' do
     inherit! :search_paths
