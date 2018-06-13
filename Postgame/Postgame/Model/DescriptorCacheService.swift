@@ -11,6 +11,7 @@ import Foundation
 class DescriptorCacheService {
     static let sharedInstance = DescriptorCacheService()
     private(set) var cache: [Descriptor]
+    let threshold = 0.75
     
     private init() {
         cache = [Descriptor]()
@@ -57,6 +58,46 @@ class DescriptorCacheService {
         //            })
         //            .disposed(by: disposeBag)
     }
+    
+    /**
+     Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
+     */
+    func findMatch(_ target: [Double]) -> String? {
+        var bestMatchKey: String? = nil
+        var bestMatchSimilarity: Double? = nil
+        
+        for descriptor in cache {
+            var sumxx = 0, sumxy = 0, sumyy = 0
+            for i in 0 ..< target.count {
+                let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
+                if similarity > threshold {
+                    if bestMatchSimilarity == nil {
+                        bestMatchKey = descriptor.key
+                        bestMatchSimilarity = similarity
+                    } else if similarity > bestMatchSimilarity! {
+                        bestMatchKey = descriptor.key
+                        bestMatchSimilarity = similarity
+                    }
+                }
+            }
+        }
+        
+        return bestMatchKey
+    }
+    /**
+     Find cosine similarity between two vectors.
+     */
+    fileprivate func cosineSimilarity(v1: [Double], v2: [Double]) -> Double {
+        var sumxx = 0.0, sumxy = 0.0, sumyy = 0.0
+        for i in 0 ..< v1.count {
+            let x = v1[i], y = v2[i]
+            sumxx += x*x
+            sumyy += y*y
+            sumxy += x*y
+        }
+        return sumxy/sqrt(sumxx*sumyy)
+    }
+    
     
     /**
      Get coordinates surrounding estimated coordinate
