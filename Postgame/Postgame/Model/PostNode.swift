@@ -17,6 +17,7 @@ class PostNode: SCNNode {
     
     private(set) var contentNode: ContentNode
     private(set) var key: String
+    private let lifespan = Lifespan()
     
     private let disposeBag = DisposeBag()
     
@@ -45,6 +46,13 @@ class PostNode: SCNNode {
         } else {
             // Set default contentNode content
         }
+        
+        // Self-destruct after lifespan is up. Clean bad postnodes
+        lifespan.completeObservable
+            .subscribe(onCompleted: {
+                self.removeFromParentNode()
+            })
+            .disposed(by: disposeBag)
     }
     
     func setContent(_ image: UIImage) {
