@@ -26,7 +26,8 @@
 		6A1B54AC20D17F2B00870DC2 /* Lifespan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */; };
 		6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */; };
 		6A1B54B020D1BD2D00870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54AF20D1BD2D00870DC2 /* awsconfiguration.json */; };
-		6A1B54B220D1BD9B00870DC2 /* DynamoDB_Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* DynamoDB_Posts.swift */; };
+		6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* Posts.swift */; };
+		6A1B54B520D1C0E600870DC2 /* AWSDynamoDBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B420D1C0E600870DC2 /* AWSDynamoDBService.swift */; };
 		6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
@@ -100,7 +101,8 @@
 		6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lifespan.swift; sourceTree = "<group>"; };
 		6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNodeExtent.swift; sourceTree = "<group>"; };
 		6A1B54AF20D1BD2D00870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
-		6A1B54B120D1BD9A00870DC2 /* DynamoDB_Posts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DynamoDB_Posts.swift; sourceTree = "<group>"; };
+		6A1B54B120D1BD9A00870DC2 /* Posts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
+		6A1B54B420D1C0E600870DC2 /* AWSDynamoDBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDynamoDBService.swift; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
@@ -207,6 +209,15 @@
 			path = MultiArray;
 			sourceTree = "<group>";
 		};
+		6A1B54B320D1BF9E00870DC2 /* AWS */ = {
+			isa = PBXGroup;
+			children = (
+				6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */,
+				6A1B54B420D1C0E600870DC2 /* AWSDynamoDBService.swift */,
+			);
+			path = AWS;
+			sourceTree = "<group>";
+		};
 		6AEBAB5920CEE20300741EB0 /* RxCLLocation */ = {
 			isa = PBXGroup;
 			children = (
@@ -285,6 +296,7 @@
 		6AEC1A9E20879941008E0FF8 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				6A1B54B120D1BD9A00870DC2 /* Posts.swift */,
 				6AEC1A722085BF06008E0FF8 /* ViewController.swift */,
 				6AEC1A9F208799B2008E0FF8 /* ViewController+UISetup.swift */,
 				6AF52793208BC2E20039363B /* UserAuthentication */,
@@ -345,18 +357,17 @@
 		6AF5277E208AC3C30039363B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				6A1B54B120D1BD9A00870DC2 /* DynamoDB_Posts.swift */,
+				6A1B54B320D1BF9E00870DC2 /* AWS */,
 				6AF5277F208AC3E80039363B /* GeolocationService.swift */,
-				6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */,
 				6AEBAB6020CEEEAC00741EB0 /* VerticalRectObservable.swift */,
 				6A1B548C20CF408900870DC2 /* PostNode.swift */,
+				6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */,
 				6A1B548E20D0036400870DC2 /* VerticalRectInfo.swift */,
 				6A1B549220D0195E00870DC2 /* InfoDescriptorPair.swift */,
 				6A1B549420D019E500870DC2 /* DescriptorComputer.swift */,
 				6A1B54A920D0764C00870DC2 /* DescriptorCache.swift */,
 				6A1B549620D01A8700870DC2 /* MultiArray */,
 				6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */,
-				6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -686,7 +697,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A1B548D20CF408900870DC2 /* PostNode.swift in Sources */,
-				6A1B54B220D1BD9B00870DC2 /* DynamoDB_Posts.swift in Sources */,
+				6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */,
 				6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */,
 				6AF52782208AC4190039363B /* CLLocation+Rx.swift in Sources */,
 				6A1B54A120D01A8700870DC2 /* Array.swift in Sources */,
@@ -719,6 +730,7 @@
 				6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */,
 				6A1B54A620D01A8700870DC2 /* MLMultiArray+Image.swift in Sources */,
 				6AF5278E208BC0990039363B /* ForgotPasswordViewController.swift in Sources */,
+				6A1B54B520D1C0E600870DC2 /* AWSDynamoDBService.swift in Sources */,
 				6AEC1AAD20882BB0008E0FF8 /* ColorSlider.swift in Sources */,
 				6A1B548B20CF354300870DC2 /* CaffenetExtractor.mlmodel in Sources */,
 				6AF52784208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift in Sources */,
@@ -884,7 +896,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = Postgame/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.Postgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -900,7 +915,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = Postgame/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.Postgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -917,7 +935,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -935,7 +957,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -952,7 +978,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -969,7 +999,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
