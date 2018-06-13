@@ -19,6 +19,7 @@ class PostNode: SCNNode {
     private(set) var key: String
     
     private let disposeBag = DisposeBag()
+    
 
     
     init(infoDesciptorPair: InfoDescriptorPair, cache: DescriptorCache){
@@ -104,3 +105,5 @@ fileprivate func recordDate() -> String {
     dateFormatter.dateFormat = "yyyy-MM-dd'@'HH:mm:ss"
     return dateFormatter.string(from: Date())
 }
+
+

@@ -92,56 +92,67 @@ class DescriptorCache {
         
         return bestMatchKey
     }
+}
+
+
+struct Descriptor {
+    let key: String
+    let value: [Double]
     
-    /**
-     Find cosine similarity between two vectors.
-     */
-    fileprivate func cosineSimilarity(v1: [Double], v2: [Double]) -> Double {
-        var sumxx = 0.0, sumxy = 0.0, sumyy = 0.0
-        for i in 0 ..< v1.count {
-            let x = v1[i], y = v2[i]
-            sumxx += x*x
-            sumyy += y*y
-            sumxy += x*y
+    init(key: String, value: [Double]) {
+        self.key = key
+        self.value = value
+    }
+}
+
+
+/**
+ Find cosine similarity between two vectors.
+ */
+fileprivate func cosineSimilarity(v1: [Double], v2: [Double]) -> Double {
+    var sumxx = 0.0, sumxy = 0.0, sumyy = 0.0
+    for i in 0 ..< v1.count {
+        let x = v1[i], y = v2[i]
+        sumxx += x*x
+        sumyy += y*y
+        sumxy += x*y
+    }
+    return sumxy/sqrt(sumxx*sumyy)
+}
+
+
+/**
+ Get coordinates surrounding estimated coordinate
+ */
+fileprivate func surroundingCoordinates(for coordinate: (Double, Double)) -> [(Double, Double)]{
+    var coordinates = [(Double, Double)]()
+    let lattitude = coordinate.0,
+    longitude = coordinate.1
+    
+    // +/- 0.0002
+    let lats = [lattitude-0.0002, lattitude-0.0001, lattitude, lattitude+0.0001, lattitude+0.0002]
+    let longs = [longitude-0.0002, longitude-0.0001, longitude, longitude+0.0001, longitude+0.0002]
+    
+    for lat in lats {
+        for long in longs {
+            coordinates.append((lat, long))
         }
-        return sumxy/sqrt(sumxx*sumyy)
     }
     
-    
-    /**
-     Get coordinates surrounding estimated coordinate
-     */
-    fileprivate func surroundingCoordinates(for coordinate: (Double, Double)) -> [(Double, Double)]{
-        var coordinates = [(Double, Double)]()
-        let lattitude = coordinate.0,
-        longitude = coordinate.1
-        
-        // +/- 0.0002
-        let lats = [lattitude-0.0002, lattitude-0.0001, lattitude, lattitude+0.0001, lattitude+0.0002]
-        let longs = [longitude-0.0002, longitude-0.0001, longitude, longitude+0.0001, longitude+0.0002]
-        
-        for lat in lats {
-            for long in longs {
-                coordinates.append((lat, long))
-            }
-        }
-        
-        return coordinates
+    return coordinates
+}
+
+/**
+ Check if descriptor is in the approximate region that the user is in by checking descriptor key.
+ */
+fileprivate func keyCloseToLocation(key: String, location: (Double, Double)) -> Bool {
+    let keyArr = key.split(separator: "/")
+    guard let lat = Double(keyArr[0]),
+        let long = Double(keyArr[1]) else {
+            print("keyCloseToLocation: Conversion Error")
+            return false
     }
     
-    /**
-     Check if descriptor is in the approximate region that the user is in by checking descriptor key.
-     */
-    fileprivate func keyCloseToLocation(key: String, location: (Double, Double)) -> Bool {
-        let keyArr = key.split(separator: "/")
-        guard let lat = Double(keyArr[0]),
-            let long = Double(keyArr[1]) else {
-                print("keyCloseToLocation: Conversion Error")
-                return false
-        }
-        
-        let precision = 0.0003
-        return (abs(lat - location.0) < precision) && (abs(long - location.1) < precision)
-    }
-    
+    let precision = 0.0003
+    return (abs(lat - location.0) < precision) && (abs(long - location.1) < precision)
 }

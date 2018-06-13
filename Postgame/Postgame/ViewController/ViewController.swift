@@ -48,7 +48,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Setup buttons design on the main screen
         setupUILayout()
         
@@ -80,7 +80,7 @@ class ViewController: UIViewController {
                 })
         }
         
-//        test()
+        test()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -232,7 +232,7 @@ extension ViewController {
         let infoDescriptorPairObservable =
             verticalRectInfoObservable
                 .flatMap { descriptorComputer.compute(info: $0!) }
-                .filter { $0 != nil}
+                .filter { $0 != nil }
 
         
         let descriptorCache = DescriptorCache(geolocationService) // Check if this cache actually caches
@@ -542,11 +542,10 @@ extension ViewController {
     }
     
     func test() {
-        let descriptor:[Double] = [10.5, 11.3, 44.1, 77, 200.1, 156.5]
-//        AWSS3Service.sharedInstance.uploadDescriptor(descriptor, key: "public/test1")
-        let obs = AWSS3Service.sharedInstance.downloadDescriptor("public/test1")
-        obs.subscribe { (descriptor) in
-            print("Downloaded: ", descriptor)
-        }
+      
+        
+        
     }
+
+    
 }
