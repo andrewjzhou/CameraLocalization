@@ -81,9 +81,6 @@ class ViewController: UIViewController {
         }
         
 //        test()
-        print("SCNView Size: ", sceneView.frame)
-        print("Screen Size: ", UIScreen.main.bounds)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {

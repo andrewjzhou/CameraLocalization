@@ -26,22 +26,24 @@ class PostNode: SCNNode {
         key = getKey(cache.lastLocation!)
         super.init()
         
+        self.addChildNode(contentNode)
+        
         // Add PostNode as child to its AnchorNode and set position
         infoDesciptorPair.info.anchorNode.addChildNode(self)
-        self.position = infoDesciptorPair.info.anchorNode.position
+        self.position = infoDesciptorPair.info.position
         
         // Match descriptor to cache
-//        if let matchKey = DescriptorCacheService.sharedInstance.findMatch(infoDesciptorPair.descriptor) {
-//            // Download and set content node post
-//            let postObservab = AWSS3Service.sharedInstance.downloadPost(matchKey)
-//            postObservab
-//                .subscribe(onNext: { (image) in
-//                    self.setContent(image)
-//                })
-//                .disposed(by: disposeBag)
-//        } else {
-//            // Set default contentNode content
-//        }
+        if let matchKey = cache.findMatch(infoDesciptorPair.descriptor) {
+            // Download and set content node post
+            let postObservab = AWSS3Service.sharedInstance.downloadPost(matchKey)
+            postObservab
+                .subscribe(onNext: { (image) in
+                    self.setContent(image)
+                })
+                .disposed(by: disposeBag)
+        } else {
+            // Set default contentNode content
+        }
     }
     
     func setContent(_ image: UIImage) {
@@ -66,6 +68,7 @@ class ContentNode: SCNNode {
         // Create the 3D plane geometry with the dimensions calculated from corners
         let planeGeometry = SCNPlane(width: size.width, height: size.height)
         planeGeometry.firstMaterial?.diffuse.contents = content
+        planeGeometry.firstMaterial?.isDoubleSided = true
         
         // Flip content horizontally for skscene in setImage()
         planeGeometry.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeScale(1,-1,1)
