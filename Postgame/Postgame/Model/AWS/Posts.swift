@@ -11,9 +11,10 @@
 // Source code generated from template: aws-my-sample-app-ios-swift v0.21
 //
 
-import Foundation
-import UIKit
+
 import AWSDynamoDB
+import RxSwift
+
 
 @objcMembers
 class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
@@ -42,7 +43,8 @@ class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
         ]
     }
     
-    class func query(_ locationString: String) {
+    class func query(_ locationString: String) -> Observable<[String]> {
+        let keyPublisher = PublishSubject<[String]>()
         let dynamoDbObjectMapper = AWSDynamoDBObjectMapper.default()
 
         // 1) Configure the query
@@ -59,18 +61,25 @@ class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
 
         // 2) Make the query
         dynamoDbObjectMapper.query(Posts.self, expression: queryExpression) { (output: AWSDynamoDBPaginatedOutput?, error: Error?) in
-            print("querying")
             if error != nil {
                 print("The request failed. Error: \(String(describing: error))")
+                keyPublisher.onCompleted()
             }
+            
             if output != nil {
-                print(output!.items.count)
+                var keySet = [String]()
                 for item in output!.items {
-                    print(item)
                     let post = item as? Posts
-                    print("\(post?._key)")
+                    if let key = post?._key {
+                        keySet.append(key)
+                    }
                 }
+                keyPublisher.onNext(keySet)
+                keyPublisher.onCompleted()
+            } else {
+                keyPublisher.onCompleted()
             }
         }
+        return keyPublisher.asObservable()
     }
 }

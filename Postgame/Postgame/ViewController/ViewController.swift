@@ -542,8 +542,13 @@ extension ViewController {
     }
     
     func test() {
+        let obs = Posts.query("testing/abc/")
+        obs.subscribe(onNext: { (strings) in
+            for string in strings {
+                print(string)
+            }
+        }).disposed(by: disposeBag)
        
-       Posts.query("testing/abc/")
         
     }
 
