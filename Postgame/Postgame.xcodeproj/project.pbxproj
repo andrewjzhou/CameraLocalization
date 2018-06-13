@@ -25,9 +25,9 @@
 		6A1B54AA20D0764C00870DC2 /* DescriptorCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54A920D0764C00870DC2 /* DescriptorCache.swift */; };
 		6A1B54AC20D17F2B00870DC2 /* Lifespan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */; };
 		6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */; };
-		6A1B54B020D1BD2D00870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54AF20D1BD2D00870DC2 /* awsconfiguration.json */; };
 		6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* Posts.swift */; };
 		6A1B54B520D1C0E600870DC2 /* AWSDynamoDBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B420D1C0E600870DC2 /* AWSDynamoDBService.swift */; };
+		6A1B54B720D1DBC800870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */; };
 		6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
@@ -100,9 +100,9 @@
 		6A1B54A920D0764C00870DC2 /* DescriptorCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptorCache.swift; sourceTree = "<group>"; };
 		6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lifespan.swift; sourceTree = "<group>"; };
 		6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNodeExtent.swift; sourceTree = "<group>"; };
-		6A1B54AF20D1BD2D00870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6A1B54B120D1BD9A00870DC2 /* Posts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
 		6A1B54B420D1C0E600870DC2 /* AWSDynamoDBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSDynamoDBService.swift; sourceTree = "<group>"; };
+		6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
@@ -262,7 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
-				6A1B54AF20D1BD2D00870DC2 /* awsconfiguration.json */,
+				6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */,
 				6AEC1A9E20879941008E0FF8 /* ViewController */,
 				6AF5277E208AC3C30039363B /* Model */,
 				6AEC1AA42087AD66008E0FF8 /* View */,
@@ -499,7 +499,7 @@
 			files = (
 				6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */,
 				6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */,
-				6A1B54B020D1BD2D00870DC2 /* awsconfiguration.json in Resources */,
+				6A1B54B720D1DBC800870DC2 /* awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

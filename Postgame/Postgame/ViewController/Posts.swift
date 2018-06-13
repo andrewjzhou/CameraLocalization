@@ -19,40 +19,42 @@ import AWSDynamoDB
 class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     
     var _key: String?
+    var _location: String?
     var _username: String?
     var _view: NSNumber?
     
     class func dynamoDBTableName() -> String {
-
+        
         return "postgame-mobilehub-1951513639-Posts"
     }
     
     class func hashKeyAttribute() -> String {
-
+        
         return "_key"
     }
     
     override class func jsonKeyPathsByPropertyKey() -> [AnyHashable: Any] {
         return [
-               "_key" : "key",
-               "_username" : "username",
-               "_view" : "view",
+            "_key" : "key",
+            "_location" : "location",
+            "_username" : "username",
+            "_view" : "view",
         ]
     }
     
-    class func query() {
-        let string = "testing/abc/1/"
+    class func query(_ locationString: String) {
         let dynamoDbObjectMapper = AWSDynamoDBObjectMapper.default()
 
         // 1) Configure the query
         let queryExpression = AWSDynamoDBQueryExpression()
-        queryExpression.keyConditionExpression = "#_key = :_key"
+        queryExpression.indexName = "location"
+        queryExpression.keyConditionExpression = "#_location = :_location"
 
         queryExpression.expressionAttributeNames = [
-            "#_key": "key",
+            "#_location": "location",
         ]
         queryExpression.expressionAttributeValues = [
-            ":_key": string,
+            ":_location": locationString,
         ]
 
         // 2) Make the query

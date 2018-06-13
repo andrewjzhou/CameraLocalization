@@ -543,7 +543,7 @@ extension ViewController {
     
     func test() {
        
-       Posts.query()
+       Posts.query("testing/abc/")
         
     }
 
