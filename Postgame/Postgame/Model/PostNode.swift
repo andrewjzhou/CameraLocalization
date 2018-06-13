@@ -60,7 +60,10 @@ class PostNode: SCNNode {
         
         // Update extent using last 10
         extentPublisher.asObservable()
-            .buffer(timeSpan: 10, count: 10, scheduler: MainScheduler.instance)
+            .do(onNext: { (_) in
+                self.lifespan.addLife() // Add lifespan after receiving new update
+            })
+            .buffer(timeSpan: 20, count: 15, scheduler: MainScheduler.instance)
             .subscribe(onNext: { (extents) in
                 // Find best extent
                 let newExtent = self.findMostPopular(extents)
