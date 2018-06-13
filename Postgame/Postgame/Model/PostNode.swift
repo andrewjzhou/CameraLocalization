@@ -20,12 +20,15 @@ class PostNode: SCNNode {
     private let lifespan = Lifespan()
     
     private let disposeBag = DisposeBag()
+    private let extentPublisher = PublishSubject<PostNodeExtent>()
     
+    var state: PostNodeState = .inactive
 
     
     init(infoDesciptorPair: InfoDescriptorPair, cache: DescriptorCache){
         contentNode = ContentNode(size: infoDesciptorPair.info.size)
         key = getKey(cache.lastLocation!)
+       
         super.init()
         
         self.addChildNode(contentNode)
@@ -41,6 +44,7 @@ class PostNode: SCNNode {
             postObservab
                 .subscribe(onNext: { (image) in
                     self.setContent(image)
+                    self.state = .active
                 })
                 .disposed(by: disposeBag)
         } else {
@@ -53,16 +57,60 @@ class PostNode: SCNNode {
                 self.removeFromParentNode()
             })
             .disposed(by: disposeBag)
+        
+        // Update extent using last 10
+        extentPublisher.asObservable()
+            .buffer(timeSpan: 10, count: 10, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { (extents) in
+                // Find best extent
+                let newExtent = self.findMostPopular(extents)
+                
+                // Update
+                self.position = newExtent.position
+                self.updateSize(newExtent.size)
+            })
+            .disposed(by: disposeBag)
     }
     
     func setContent(_ image: UIImage) {
         contentNode.setContent(image)
     }
     
+    func updateSize(_ size: CGSize) {
+        contentNode.updateSize(size)
+    }
+    
+    func updateExtent(_ extent: PostNodeExtent) {
+        extentPublisher.onNext(extent)
+    }
+    
+    fileprivate func findMostPopular(_ extents: [PostNodeExtent]) -> PostNodeExtent {
+        let IoUThreshold:Float = 0.5
+        
+        let count = extents.count
+        var score = Array(repeating: 0, count: count)
+        for i in 0 ..< count {
+            for j in (i+1) ..< count {
+                if extents[i].IoU(with: extents[j]) > IoUThreshold{
+                    score[i] += 1
+                    score[j] += 1
+                }
+            }
+        }
+        let index = score.index(of: score.max()!)!
+        let winner = extents[index]
+        return winner
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+enum PostNodeState {
+    case inactive
+    case active
 }
 
 
@@ -85,6 +133,12 @@ class ContentNode: SCNNode {
         
         self.geometry = planeGeometry
         self.eulerAngles.x = -.pi / 2 // might need to set this property as a child node in post node if it doesn't work
+    }
+    
+    fileprivate func updateSize(_ size: CGSize) {
+        let plane = self.geometry as! SCNPlane
+        plane.width = size.width
+        plane.height = size.height
     }
     
     fileprivate func setContent(_ image: UIImage) {

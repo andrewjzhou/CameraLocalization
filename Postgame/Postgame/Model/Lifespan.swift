@@ -33,6 +33,7 @@ class Lifespan: NSObject {
     func addLife() {
         currTimer!.dispose()
         lifeRemained += increment
+        
         currTimer = getTimer(lifeRemained)
     }
     
