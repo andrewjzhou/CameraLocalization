@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     // UI Elements
     let sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
     let screenshotButton = UIButton()
-    let createButton = UIButton()
+    let createButton = CreateButton()
     let resetButton = UIButton()
     let userButton = UIButton()
     let indicatorButton = IndicatorButton()
@@ -169,18 +169,14 @@ extension ViewController {
                 creationView.exitSubject
                     .asDriver(onErrorJustReturn: nil)
                     .drive(onNext: { (image) in
+                        self.createButton.post = image
                         // Set createButton image depending on
                         if image == nil { // Either cancelButton was tapped or finishButton failed
-                            self.createButton.setImage(UIImage(named: "ic_add"), for: .normal) // default image
                             creationView.removeFromSuperview()
                         } else {
-                            self.createButton.setImage(image!, for: .normal)
                             creationView.removeFromSuperview()
                             self.isPostingSubject.onNext(true)
                         }
-                        
-                        // Set currImageToPost
-                        self.currImageToPost = image
                         
                         // Remove creationView
                         UIView.animate(withDuration: 0.3, animations: {
@@ -557,7 +553,7 @@ extension ViewController {
     }
     
     func test() {
-//        AWSS3Service.sharedInstance.uploadPost(UIImage.from(color: .red), key: "lat/long/date/username2")
+//        AWSS3Service.sharedInstance.uploadPost(UIImage.from(color: .red), key: "lat/long/date/username")
 //        AWSS3Service.sharedInstance.uploadDescriptor([1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9], key: "public/post/lat/long/date/username10")
 //        let obs = Posts.query("testing/abc/")
 //        obs.subscribe(onNext: { (strings) in
