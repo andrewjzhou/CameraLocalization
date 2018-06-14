@@ -38,7 +38,7 @@ class ViewController: UIViewController {
     
     // Poster Rx
     
-    private let longPressPublisher = PublishSubject<UILongPressGestureRecognizer>()
+    private let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer>(value: UILongPressGestureRecognizer())
     private var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
     
@@ -48,7 +48,6 @@ class ViewController: UIViewController {
         
         // Setup buttons design on the main screen
         setupUILayout()
-        
         
         // Setup Button Rx functions
         setupScreenshoButtonRx()
@@ -212,19 +211,12 @@ extension ViewController {
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
                 .throttle(0.1, scheduler:  MainScheduler.instance)
-                // Move forward - if user is not posting (passively discovering)
-                // Or, if user is posting and long pressing
-//                .withLatestFrom(<#T##second: ObservableConvertibleType##ObservableConvertibleType#>)
-//                .filter { _ -> Bool in
-//                    if self.createButton.post != nil {
-//                        return true
-//                    } else if self.createButton.post == nil &&
-//        }
         
         let verticalRectObservable =
             arFrameObservable
                 .flatMap{ detectVerticalRect(frame: $0, in: self.sceneView) }
-                .withLatestFrom(longPressPublisher) { (observation, sender) -> VNRectangleObservation? in
+                .debug("Detect vertical rect")
+                .withLatestFrom(longPressSubject) { (observation, sender) -> VNRectangleObservation? in
                     // Continue PostNode creation/discovery process only if either of the two requirements are met
                     if self.createButton.post == nil { // 1. if user is not posting
                         return observation
@@ -238,7 +230,9 @@ extension ViewController {
                     
                     return nil
                 }
+                .debug("After posting check")
                 .filter{ $0 != nil }
+        
         
        
         let verticalRectInfoObservable =
@@ -572,16 +566,16 @@ extension ViewController {
 //        }).disposed(by: disposeBag)
         
         
-//       setupLongPressPublisher()
+//       setuplongPressSubject()
         
     }
 
-    private func setupLongPressPublisher() {
+    private func setuplongPressSubject() {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(observeLongPress(sender:)))
         view.addGestureRecognizer(longPress)
     }
     @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
-                longPressPublisher.onNext(sender)
+                longPressSubject.onNext(sender)
         
     }
     
