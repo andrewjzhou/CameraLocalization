@@ -50,6 +50,7 @@ class ContentScene: SKScene {
     }
     
     func prompt() {
+        print("ContentScene: Inside prompt()")
         // Darken content in background
         contentNode.run(darken)
         

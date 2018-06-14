@@ -29,11 +29,12 @@ class PostNode: SCNNode {
         didSet {
             switch state {
             case .inactive:
-                self.setContent(UIImage.from(color: .white)) // For testing
-//                contentNode.content.deactivate()
+//                self.setContent(UIImage.from(color: .white)) // For testing
+                contentNode.content.deactivate()
             case .load:
                 contentNode.content.load()
             case .prompt:
+                print("PostNode: Prompt2")
                 contentNode.content.prompt()
             case .active:
                 contentNode.content.activate()
@@ -41,6 +42,8 @@ class PostNode: SCNNode {
             }
         }
     }
+    
+//    var statePublisher: PublishSubject<PostNodeState>
     
     init(info: VerticalRectInfo, cache: DescriptorCache){
         contentNode = ContentNode(size: info.size)
@@ -72,7 +75,8 @@ class PostNode: SCNNode {
                 self.state = .inactive
             } else {
                 // prompt
-                print("Post Node: PROMPTING")
+                print("PostNode: Prompt1")
+                self.state = .prompt
             }
         }
         

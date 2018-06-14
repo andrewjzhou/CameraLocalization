@@ -219,7 +219,7 @@ extension ViewController {
                 .debug("Detect vertical rect")
                 .withLatestFrom(longPressSubject) { (observation, sender) -> VNRectangleObservation? in
                     // Continue PostNode creation/discovery process only if either of the two requirements are met
-                    print("---- Sender State: ", sender.state.rawValue)
+
                     if self.createButton.post == nil { // 1. if user is not posting
                         return observation
                     } else if sender.state.isActive { // 2. if user is posting and long pressing
