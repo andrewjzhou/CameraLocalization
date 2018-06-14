@@ -17,33 +17,15 @@ fileprivate let disposeBag = DisposeBag()
 
 class PostNode: SCNNode {
     
+    var state: PostNodeState = .inactive
+    
     private(set) var contentNode: ContentNode
     private(set) var key: String
     private(set) var extent: PostNodeExtent
     
     private let lifespan = Lifespan()
-    
     private let extentPublisher = PublishSubject<PostNodeExtent>()
-
-    var state: PostNodeState = .inactive {
-        didSet {
-            switch state {
-            case .inactive:
-//                self.setContent(UIImage.from(color: .white)) // For testing
-                contentNode.content.deactivate()
-            case .load:
-                contentNode.content.load()
-            case .prompt:
-                print("PostNode: Prompt2")
-                contentNode.content.prompt()
-            case .active:
-                contentNode.content.activate()
-                
-            }
-        }
-    }
-    
-//    var statePublisher: PublishSubject<PostNodeState>
+    private let statePublisher = PublishSubject<PostNodeState>()
     
     init(info: VerticalRectInfo, cache: DescriptorCache){
         contentNode = ContentNode(size: info.size)
@@ -54,6 +36,25 @@ class PostNode: SCNNode {
         super.init()
         
         self.addChildNode(contentNode)
+        
+        // React to state changes
+        statePublisher.asObservable().subscribe(onNext: { (state) in
+            self.state = state
+            
+            switch state {
+            case .inactive:
+                self.setContent(UIImage.from(color: .white)) // For testing
+            //                self.contentNode.content.deactivate()
+            case .load:
+                self.contentNode.content.load()
+            case .prompt:
+                print("PostNode: Prompt2")
+                self.contentNode.content.prompt()
+            case .active:
+                self.contentNode.content.activate()
+                
+            }
+        })
         
         // Add PostNode as child to its AnchorNode and set position
         info.anchorNode.addChildNode(self)
@@ -66,17 +67,17 @@ class PostNode: SCNNode {
             postDownloadObservable
                 .subscribe(onNext: { (image) in
                     self.setContent(image)
-                    self.state = .active
+                    self.statePublisher.onNext(.active)
                 })
                 .disposed(by: disposeBag)
         } else {
             if info.post == nil {
                 // Set default contentNode content
-                self.state = .inactive
+                self.statePublisher.onNext(.inactive)
             } else {
                 // prompt
                 print("PostNode: Prompt1")
-                self.state = .prompt
+                self.statePublisher.onNext(.prompt)
             }
         }
         
@@ -104,6 +105,8 @@ class PostNode: SCNNode {
                 self.extent = newExtent
             })
             .disposed(by: disposeBag)
+        
+        
     }
     
     func setContent(_ image: UIImage) {
