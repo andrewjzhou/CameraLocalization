@@ -22,6 +22,13 @@ class VerticalRectInfo: NSObject {
     // Real Image of rectangle observation
     private(set) var realImage: UIImage
     
+    // Descriptor computed for real image
+    var descriptor: [Double]? = nil
+    
+    // Post Node content
+    var post: UIImage? = nil
+    
+    
     init?(for observation: VNRectangleObservation, in sceneView: ARSCNView) {
         // Perform hit test to get plane information
         let center = sceneView.convertFromCamera(observation.center)

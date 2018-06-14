@@ -28,22 +28,22 @@ class PostNode: SCNNode {
     var state: PostNodeState = .inactive
 
     
-    init(infoDesciptorPair: InfoDescriptorPair, cache: DescriptorCache){
-        contentNode = ContentNode(size: infoDesciptorPair.info.size)
+    init(info: VerticalRectInfo, cache: DescriptorCache){
+        contentNode = ContentNode(size: info.size)
         key = getKey(cache.lastLocation!)
-        extent = PostNodeExtent(position: infoDesciptorPair.info.position,
-                                size: infoDesciptorPair.info.size)
+        extent = PostNodeExtent(position: info.position,
+                                size: info.size)
         
         super.init()
         
         self.addChildNode(contentNode)
         
         // Add PostNode as child to its AnchorNode and set position
-        infoDesciptorPair.info.anchorNode.addChildNode(self)
-        self.position = infoDesciptorPair.info.position
+        info.anchorNode.addChildNode(self)
+        self.position = info.position
         
         // Match descriptor to cache
-        if let matchKey = cache.findMatch(infoDesciptorPair.descriptor) {
+        if let matchKey = cache.findMatch(info.descriptor!) {
             // Download and set content node post
             let postObservab = AWSS3Service.sharedInstance.downloadPost(matchKey)
             postObservab

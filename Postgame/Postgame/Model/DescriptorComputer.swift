@@ -28,7 +28,7 @@ class DescriptorComputer: NSObject {
         super.init()
     }
     
-    func compute(info: VerticalRectInfo) -> Observable<InfoDescriptorPair?> {
+    func compute(info: VerticalRectInfo) -> Observable<VerticalRectInfo?> {
         let orientation = CGImagePropertyOrientation(rawValue: UInt32(info.realImage.imageOrientation.rawValue))
         guard let ciImage = CIImage(image: info.realImage) else { fatalError("Unable to create \(CIImage.self) from \(info.realImage).") }
         
@@ -48,7 +48,9 @@ class DescriptorComputer: NSObject {
                 let array = MultiArray<Double>(multiArray)
                 let descriptor = self!.processArray(array)
                 
-                observer.onNext(InfoDescriptorPair(info: info, descriptor: descriptor))
+                info.descriptor = descriptor
+                
+                observer.onNext(info)
                 observer.onCompleted()
                 
             })

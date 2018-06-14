@@ -152,6 +152,13 @@ func / (left: SCNVector3, right: Float) -> SCNVector3 {
     return SCNVector3Make(left.x / right, left.y / right, left.z / right)
 }
 
+extension UIGestureRecognizerState {
+    var isActive: Bool {
+        get {
+            return self == .began || self == .changed
+        }
+    }
+}
 
 extension UIImage {
     /**

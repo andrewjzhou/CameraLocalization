@@ -212,33 +212,44 @@ extension ViewController {
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
                 .throttle(0.1, scheduler:  MainScheduler.instance)
+                // Move forward - if user is not posting (passively discovering)
+                // Or, if user is posting and long pressing
+//                .withLatestFrom(<#T##second: ObservableConvertibleType##ObservableConvertibleType#>)
+//                .filter { _ -> Bool in
+//                    if self.createButton.post != nil {
+//                        return true
+//                    } else if self.createButton.post == nil &&
+//        }
         
         let verticalRectObservable =
             arFrameObservable
                 .flatMap{ detectVerticalRect(frame: $0, in: self.sceneView) }
-                // Long Press?
-//                .withLatestFrom(longPressPublisher) { (observation, sender) -> VNRectangleObservation? in
-//                    if sender.state == .began || sender.state == .changed {
-//                        let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
-//                        let currTouchLocation = sender.location(in: self.sceneView)
-//                        if convertedRect.contains(currTouchLocation) {
-//                            return observation
-//                        } else {
-//                            return nil
-//                        }
-//                    } else {
-//                        return observation
-//                    }
-//                }
-//                .filter { $0 != nil}
+                .withLatestFrom(longPressPublisher) { (observation, sender) -> VNRectangleObservation? in
+                    // Continue PostNode creation/discovery process only if either of the two requirements are met
+                    if self.createButton.post == nil { // 1. if user is not posting
+                        return observation
+                    } else if sender.state.isActive { // 2. if user is posting and long pressing
+                        let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
+                        let currTouchLocation = sender.location(in: self.sceneView)
+                        if convertedRect.contains(currTouchLocation) {
+                            return observation
+                        }
+                    }
+                    
+                    return nil
+                }
+                .filter{ $0 != nil }
         
        
-        
-        
         let verticalRectInfoObservable =
             verticalRectObservable
-                .map { VerticalRectInfo(for: $0, in: self.sceneView) }
-                .filter { $0 != nil}
+                .map({ (observation) -> VerticalRectInfo? in
+                    var info = VerticalRectInfo(for: observation!, in: self.sceneView)
+                    info?.post = self.createButton.post
+                    return info
+                })
+                .filter { $0 != nil }
+        
         
         
         
@@ -247,12 +258,13 @@ extension ViewController {
             verticalRectInfoObservable
                 .flatMap { descriptorComputer.compute(info: $0!) }
                 .filter { $0 != nil }
+        
 
         
         let descriptorCache = DescriptorCache(geolocationService) // Check if this cache actually caches
         let postNodeObservable =
             infoDescriptorPairObservable
-                .map { PostNode(infoDesciptorPair: $0!, cache: descriptorCache) }
+                .map { PostNode(info: $0!, cache: descriptorCache) }
                 .subscribe(onNext: { (postNode) in
                     print("PostNode created: ", postNode)
                 })
