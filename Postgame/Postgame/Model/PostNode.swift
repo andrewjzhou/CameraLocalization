@@ -76,7 +76,6 @@ class PostNode: SCNNode {
                 self.statePublisher.onNext(.inactive)
             } else {
                 // prompt
-                print("PostNode: Prompt1")
                 self.statePublisher.onNext(.prompt)
             }
         }
@@ -155,19 +154,18 @@ enum PostNodeState {
 
 
 class ContentNode: SCNNode {
-    var content: ContentScene {
+    var content: ContentScene = UIImage.from(color: .white).convertToScene() {
         didSet{
             self.geometry?.firstMaterial?.diffuse.contents = content
         }
     }
     
     init(size: CGSize) {
-        content = UIImage.from(color: .white).convertToScene()
-        
         super.init()
         
         // Create the 3D plane geometry with the dimensions calculated from corners
         let planeGeometry = SCNPlane(width: size.width, height: size.height)
+        planeGeometry.firstMaterial?.diffuse.contents = content
         
         // Flip content horizontally for skscene in setImage()
         planeGeometry.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeScale(1,-1,1)
