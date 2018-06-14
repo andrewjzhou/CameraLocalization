@@ -557,15 +557,17 @@ extension ViewController {
     }
     
     func test() {
-        let obs = Posts.query("testing/abc/")
-        obs.subscribe(onNext: { (strings) in
-            for string in strings {
-                print(string)
-            }
-        }).disposed(by: disposeBag)
+//        AWSS3Service.sharedInstance.uploadPost(UIImage.from(color: .red), key: "lat/long/date/username2")
+//        AWSS3Service.sharedInstance.uploadDescriptor([1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9], key: "public/post/lat/long/date/username10")
+//        let obs = Posts.query("testing/abc/")
+//        obs.subscribe(onNext: { (strings) in
+//            for string in strings {
+//                print(string)
+//            }
+//        }).disposed(by: disposeBag)
         
         
-       setupLongPressPublisher()
+//       setupLongPressPublisher()
         
     }
 

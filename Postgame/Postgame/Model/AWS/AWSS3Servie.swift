@@ -36,18 +36,25 @@ class AWSS3Service {
      Upload descriptor from S3 using key.
      */
     func uploadDescriptor(_ descriptor: [Double], key: String) {
+        // generate data
         let data = encodeDescriptor(descriptor)
-        upload(data: data, key: key)
-        
+        // generate key
+        let prefix = "public/descriptor/"
+        let _key = prefix + key
+        upload(data: data, key: _key)
     }
     
     /**
      Upload post to S3 using key.
      */
     func uploadPost(_ post: UIImage, key: String) {
+        // generate data
         guard let jpeg = UIImageJPEGRepresentation(post, 1.0) else {return}
         let data = jpeg.base64EncodedData(options: .lineLength64Characters)
-        upload(data: data, key: key)
+        // generate key
+        let prefix = "public/post/"
+        let _key = prefix + key
+        upload(data: data, key: _key)
     }
     
     /**
