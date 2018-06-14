@@ -31,10 +31,7 @@ class ViewController: UIViewController {
     let resetButton = UIButton()
     let userButton = UIButton()
     let indicatorButton = IndicatorButton()
-    
-    // Variables for posting
-    private var currImageToPost: UIImage?
-    private var isPostingSubject = BehaviorSubject<Bool>(value: false)
+   
     
     // Location
     let geolocationService = GeolocationService.instance
@@ -156,8 +153,9 @@ extension ViewController {
         
         // Activate CreationView and isPosting
         createButtonTapObservable
-            .withLatestFrom(isPostingSubject)
-            .filter { $0 == false }
+            .filter({ _ -> Bool in
+                return self.createButton.post == nil
+            })
             .subscribe(onNext: {_ in
                 // Create new CreationView
                 let creationView = CreationView()
@@ -175,7 +173,6 @@ extension ViewController {
                             creationView.removeFromSuperview()
                         } else {
                             creationView.removeFromSuperview()
-                            self.isPostingSubject.onNext(true)
                         }
                         
                         // Remove creationView
@@ -199,11 +196,11 @@ extension ViewController {
         
         // Deactivate CreationView and isPosing
         createButtonTapObservable
-            .withLatestFrom(isPostingSubject)
-            .filter { $0 == true }
+            .filter({ _ -> Bool in
+                return self.createButton.post != nil
+            })
             .subscribe(onNext: {_ in
-                self.createButton.setImage(UIImage(named: "ic_add"), for: .normal) // default image
-                self.isPostingSubject.onNext(false)
+                self.createButton.post = nil // default image
             })
             .disposed(by: disposeBag)
     }
