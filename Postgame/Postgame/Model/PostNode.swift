@@ -24,9 +24,23 @@ class PostNode: SCNNode {
     private let lifespan = Lifespan()
     
     private let extentPublisher = PublishSubject<PostNodeExtent>()
-    
-    var state: PostNodeState = .inactive
 
+    var state: PostNodeState = .inactive {
+        didSet {
+            switch state {
+            case .inactive:
+                self.setContent(UIImage.from(color: .white)) // For testing
+//                contentNode.content.deactivate()
+            case .load:
+                contentNode.content.load()
+            case .prompt:
+                contentNode.content.prompt()
+            case .active:
+                contentNode.content.activate()
+                
+            }
+        }
+    }
     
     init(info: VerticalRectInfo, cache: DescriptorCache){
         contentNode = ContentNode(size: info.size)
@@ -45,15 +59,21 @@ class PostNode: SCNNode {
         // Match descriptor to cache
         if let matchKey = cache.findMatch(info.descriptor!) {
             // Download and set content node post
-            let postObservab = AWSS3Service.sharedInstance.downloadPost(matchKey)
-            postObservab
+            let postDownloadObservable = AWSS3Service.sharedInstance.downloadPost(matchKey)
+            postDownloadObservable
                 .subscribe(onNext: { (image) in
                     self.setContent(image)
                     self.state = .active
                 })
                 .disposed(by: disposeBag)
         } else {
-            // Set default contentNode content
+            if info.post == nil {
+                // Set default contentNode content
+                self.state = .inactive
+            } else {
+                // prompt
+                print("Post Node: PROMPTING")
+            }
         }
         
         // Self-destruct after lifespan is up. Clean bad postnodes
@@ -83,7 +103,7 @@ class PostNode: SCNNode {
     }
     
     func setContent(_ image: UIImage) {
-        contentNode.setContent(image)
+        contentNode.content = image.convertToScene()
     }
     
     func updateExtent(_ extent: PostNodeExtent) {
@@ -93,6 +113,7 @@ class PostNode: SCNNode {
     private func updateSize(_ size: CGSize) {
         contentNode.updateSize(size)
     }
+
     
     fileprivate func findMostPopular(_ extents: [PostNodeExtent]) -> PostNodeExtent {
         let IoUThreshold:Float = 0.5
@@ -121,21 +142,25 @@ class PostNode: SCNNode {
 enum PostNodeState {
     case inactive
     case active
+    case prompt
+    case load
 }
 
 
 class ContentNode: SCNNode {
-    private(set) var content: SKScene
+    var content: ContentScene {
+        didSet{
+            self.geometry?.firstMaterial?.diffuse.contents = content
+        }
+    }
     
     init(size: CGSize) {
-        content = UIImage.from(color: .white).convertToSKScene()
+        content = UIImage.from(color: .white).convertToScene()
         
         super.init()
         
         // Create the 3D plane geometry with the dimensions calculated from corners
         let planeGeometry = SCNPlane(width: size.width, height: size.height)
-        planeGeometry.firstMaterial?.diffuse.contents = content
-        planeGeometry.firstMaterial?.isDoubleSided = true
         
         // Flip content horizontally for skscene in setImage()
         planeGeometry.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeScale(1,-1,1)
@@ -145,16 +170,12 @@ class ContentNode: SCNNode {
         self.eulerAngles.x = -.pi / 2 // might need to set this property as a child node in post node if it doesn't work
     }
     
+    
+    
     fileprivate func updateSize(_ size: CGSize) {
         let plane = self.geometry as! SCNPlane
         plane.width = size.width
         plane.height = size.height
-    }
-    
-    fileprivate func setContent(_ image: UIImage) {
-        if let plane = self.geometry as? SCNPlane {
-            plane.firstMaterial?.diffuse.contents = image.convertToSKScene()
-        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -177,5 +198,6 @@ fileprivate func recordDate() -> String {
     dateFormatter.dateFormat = "yyyy-MM-dd'@'HH:mm:ss"
     return dateFormatter.string(from: Date())
 }
+
 
 

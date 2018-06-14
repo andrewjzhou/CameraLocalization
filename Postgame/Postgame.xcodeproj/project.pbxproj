@@ -27,12 +27,12 @@
 		6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* Posts.swift */; };
 		6A1B54B720D1DBC800870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */; };
 		6A1B54B920D2D15900870DC2 /* CreateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B820D2D15900870DC2 /* CreateButton.swift */; };
+		6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54BA20D3012700870DC2 /* ContentScene.swift */; };
 		6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
 		6AEBAB6120CEEEAC00741EB0 /* VerticalRectObservable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB6020CEEEAC00741EB0 /* VerticalRectObservable.swift */; };
 		6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */; };
-		6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A702085BF06008E0FF8 /* art.scnassets */; };
 		6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A722085BF06008E0FF8 /* ViewController.swift */; };
 		6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A772085BF07008E0FF8 /* Assets.xcassets */; };
 		6AEC1A862085BF08008E0FF8 /* PostgameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A852085BF08008E0FF8 /* PostgameTests.swift */; };
@@ -101,13 +101,13 @@
 		6A1B54B120D1BD9A00870DC2 /* Posts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
 		6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6A1B54B820D2D15900870DC2 /* CreateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateButton.swift; sourceTree = "<group>"; };
+		6A1B54BA20D3012700870DC2 /* ContentScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScene.swift; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
 		6AEBAB6020CEEEAC00741EB0 /* VerticalRectObservable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalRectObservable.swift; sourceTree = "<group>"; };
 		6AEC1A6B2085BF06008E0FF8 /* Postgame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Postgame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		6AEC1A702085BF06008E0FF8 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		6AEC1A722085BF06008E0FF8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		6AEC1A772085BF07008E0FF8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6AEC1A7C2085BF07008E0FF8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -265,7 +265,6 @@
 				6AF5277E208AC3C30039363B /* Model */,
 				6AEC1AA42087AD66008E0FF8 /* View */,
 				6AEC1AA120879B06008E0FF8 /* Extension+Utility */,
-				6AEC1A702085BF06008E0FF8 /* art.scnassets */,
 				6AEC1A772085BF07008E0FF8 /* Assets.xcassets */,
 				6AEC1A7C2085BF07008E0FF8 /* Info.plist */,
 				6A1B548A20CF354300870DC2 /* CaffenetExtractor.mlmodel */,
@@ -318,6 +317,7 @@
 				6AEC1AA72087C3C9008E0FF8 /* CreationView */,
 				6AEC1AA52087ADC5008E0FF8 /* IndicatorButton.swift */,
 				6A1B54B820D2D15900870DC2 /* CreateButton.swift */,
+				6A1B54BA20D3012700870DC2 /* ContentScene.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -494,7 +494,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6AEC1A712085BF06008E0FF8 /* art.scnassets in Resources */,
 				6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */,
 				6A1B54B720D1DBC800870DC2 /* awsconfiguration.json in Resources */,
 			);
@@ -704,6 +703,7 @@
 				6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */,
 				6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */,
 				6A1B54A520D01A8700870DC2 /* NonMaxSuppression.swift in Sources */,
+				6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */,
 				6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */,
 				6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */,
 				6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */,

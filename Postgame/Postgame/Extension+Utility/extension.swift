@@ -179,19 +179,8 @@ extension UIImage {
      Convert to SKScene using screen frame size. SKScene is used to display content in PostNode's cntentNode.
      */
     
-    func convertToSKScene() -> SKScene {
-        let size = UIScreen.main.bounds.size
-        let skScene = SKScene(size: size)
-        
-        // Create Image Node
-        let imageTexture = SKTexture(image: self.fixOrientation()!)
-        let imageNode = SKSpriteNode(texture: imageTexture)
-        imageNode.position = CGPoint(x: skScene.size.width / 2.0, y: skScene.size.height / 2.0)
-        imageNode.size = size
-        imageNode.name = "content"
-        skScene.addChild(imageNode)
-        
-        return skScene
+    func convertToScene() -> ContentScene {
+        return ContentScene(self)
     }
     
     
