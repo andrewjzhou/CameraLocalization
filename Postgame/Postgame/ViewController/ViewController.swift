@@ -40,8 +40,8 @@ class ViewController: UIViewController {
     let geolocationService = GeolocationService.instance
     
     // Poster Rx
-    private let frameSubject = PublishSubject<ARFrame>()
-    private let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer?>(value: nil)
+    
+    private let longPressPublisher = PublishSubject<UILongPressGestureRecognizer>()
     private var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
     
@@ -51,6 +51,7 @@ class ViewController: UIViewController {
         
         // Setup buttons design on the main screen
         setupUILayout()
+        
         
         // Setup Button Rx functions
         setupScreenshoButtonRx()
@@ -222,11 +223,31 @@ extension ViewController {
         let verticalRectObservable =
             arFrameObservable
                 .flatMap{ detectVerticalRect(frame: $0, in: self.sceneView) }
+                // Long Press?
+//                .withLatestFrom(longPressPublisher) { (observation, sender) -> VNRectangleObservation? in
+//                    if sender.state == .began || sender.state == .changed {
+//                        let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
+//                        let currTouchLocation = sender.location(in: self.sceneView)
+//                        if convertedRect.contains(currTouchLocation) {
+//                            return observation
+//                        } else {
+//                            return nil
+//                        }
+//                    } else {
+//                        return observation
+//                    }
+//                }
+//                .filter { $0 != nil}
+        
+       
+        
         
         let verticalRectInfoObservable =
             verticalRectObservable
                 .map { VerticalRectInfo(for: $0, in: self.sceneView) }
                 .filter { $0 != nil}
+        
+        
         
         let descriptorComputer = DescriptorComputer()
         let infoDescriptorPairObservable =
@@ -488,13 +509,7 @@ extension ViewController {
 //    /**
 //     Observe long press gesture to facilitate user interaction with poster discovery and placement.
 //     */
-//    private func setupLongPressSubject() {
-//        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(observeLongPress(sender:)))
-//        view.addGestureRecognizer(longPress)
-//    }
-//    @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
-//        longPressSubject.onNext(sender)
-//    }
+
 //
 //
 //
@@ -548,9 +563,19 @@ extension ViewController {
                 print(string)
             }
         }).disposed(by: disposeBag)
-       
+        
+        
+       setupLongPressPublisher()
         
     }
 
+    private func setupLongPressPublisher() {
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(observeLongPress(sender:)))
+        view.addGestureRecognizer(longPress)
+    }
+    @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
+                longPressPublisher.onNext(sender)
+        
+    }
     
 }
