@@ -51,8 +51,7 @@ class PostNode: SCNNode {
             
             switch state {
             case .inactive:
-                self.setContent(UIImage.from(color: .white)) // For testing
-//                            self.contentNode.content.deactivate()
+                self.contentNode.content.deactivate()
             case .load:
                 self.contentNode.load()
             case .prompt:
@@ -76,6 +75,7 @@ class PostNode: SCNNode {
                     self.setContent(image)
                     self.statePublisher.onNext(.active)
                     self.key = matchKey
+                    print("PostNode: Found Match")
                 })
                 .disposed(by: disposeBag)
         } else {
@@ -187,7 +187,7 @@ enum PostNodeState {
 
 
 class ContentNode: SCNNode {
-    var content: ContentScene = UIImage.from(color: .white).convertToScene() {
+    var content: ContentScene = UIImage.from(color: .yellow).convertToScene() {
         didSet{
             self.geometry?.firstMaterial?.diffuse.contents = content
         }

@@ -51,7 +51,8 @@ class ContentScene: SKScene {
     }
     
     func deactivate() {
-        contentNode = createChildNode(image: UIImage.from(color: .clear), name: "content")
+        contentNode = createChildNode(image: UIImage.from(color: .white), name: "content") // for testing
+//        contentNode = createChildNode(image: UIImage.from(color: .clear), name: "content")
         activate()
     }
     

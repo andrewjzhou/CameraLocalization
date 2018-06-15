@@ -317,18 +317,24 @@ extension ViewController {
         }
         self.highlightedRectangleOutlineLayers.removeAll()
     }
-    
-    func test() {
-      
-        
-    }
 
     private func setuplongPressSubject() {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(observeLongPress(sender:)))
         view.addGestureRecognizer(longPress)
     }
     @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
-                longPressSubject.onNext(sender)
+        longPressSubject.onNext(sender)
+        
+        // Delete placeholders when user is trying to select
+        if sender.state.isActive {
+            let point = sender.location(in: sceneView)
+            let scnHitTestResults = sceneView.hitTest(point, options: nil)
+            guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
+       
+            if postNode.state == .inactive {
+                postNode.removeFromParentNode()
+            }
+        }
         
     }
     
@@ -352,6 +358,11 @@ extension ViewController {
         } else if postNode.state == .active && createButton.post != nil {
             postNode.prompt()
         }
+    }
+    
+    func test() {
+        
+        
     }
     
 }
