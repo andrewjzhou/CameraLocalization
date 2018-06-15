@@ -1,4 +1,6 @@
 PODS:
+  - AWSAPIGateway (2.6.21):
+    - AWSCore (= 2.6.21)
   - AWSAuthCore (2.6.21):
     - AWSCore (= 2.6.21)
   - AWSAuthUI (2.6.21):
@@ -25,6 +27,8 @@ PODS:
   - RxSwift (4.1.2)
 
 DEPENDENCIES:
+  - AWSAPIGateway (~> 2.6.13)
+  - AWSAuthCore (~> 2.6.13)
   - AWSAuthUI (~> 2.6.13)
   - AWSCognito (~> 2.6.13)
   - AWSDynamoDB (~> 2.6.13)
@@ -35,6 +39,7 @@ DEPENDENCIES:
   - RxSwift (~> 4.0)
 
 SPEC CHECKSUMS:
+  AWSAPIGateway: 11bde0b08ef108be05c043eef11ab1b9084fd731
   AWSAuthCore: f912e4f032092818ee21860a44386c485329a92b
   AWSAuthUI: 8549f06975c03b653e45623f19d4cb34f16f2e8f
   AWSCognito: ddd3d4cb90dc0adb47acd199ca9bbe48ea1d18a7
@@ -48,6 +53,6 @@ SPEC CHECKSUMS:
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
   RxSwift: e49536837d9901277638493ea537394d4b55f570
 
-PODFILE CHECKSUM: 40d2843e452261058254fe2c3d57a0068207bc31
+PODFILE CHECKSUM: 512ce29c689327870397d3490f6aa33d366e31d2
 
 COCOAPODS: 1.4.0

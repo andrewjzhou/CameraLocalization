@@ -17,10 +17,19 @@ fileprivate let disposeBag = DisposeBag()
 
 class PostNode: SCNNode {
     
-    var state: PostNodeState = .inactive
+    var state: PostNodeState = .inactive {
+        willSet {
+            if state == .prompt {
+                self.initial = false
+            }
+        }
+    }
     
-    private(set) var contentNode: ContentNode
-    private(set) var key: String
+    var initial = true
+    
+    private var contentNode: ContentNode
+    private var key: String
+    private var info: VerticalRectInfo
     private(set) var extent: PostNodeExtent
     
     private let lifespan = Lifespan()
@@ -32,6 +41,7 @@ class PostNode: SCNNode {
         key = getKey(cache.lastLocation!)
         extent = PostNodeExtent(position: info.position,
                                 size: info.size)
+        self.info = info
         
         super.init()
         
@@ -48,7 +58,6 @@ class PostNode: SCNNode {
             case .load:
                 self.contentNode.content.load()
             case .prompt:
-                print("PostNode: Prompt2")
                 self.contentNode.content.prompt()
             case .active:
                 self.contentNode.content.activate()
@@ -68,6 +77,8 @@ class PostNode: SCNNode {
                 .subscribe(onNext: { (image) in
                     self.setContent(image)
                     self.statePublisher.onNext(.active)
+                    self.initial = false
+                    self.key = matchKey
                 })
                 .disposed(by: disposeBag)
         } else {
@@ -110,10 +121,21 @@ class PostNode: SCNNode {
     
     func setContent(_ image: UIImage) {
         contentNode.content = image.convertToScene()
+        statePublisher.onNext(.active)
     }
     
     func updateExtent(_ extent: PostNodeExtent) {
         extentPublisher.onNext(extent)
+    }
+    
+    func record() {
+        let s3 = AWSS3Service.sharedInstance
+        if initial {
+            s3.uploadDescriptor(info.descriptor!, key: key)
+            s3.uploadPost(contentNode.content.image, key: key)
+        } else {
+            s3.uploadPost(contentNode.content.image, key: key)
+        }
     }
     
     private func updateSize(_ size: CGSize) {

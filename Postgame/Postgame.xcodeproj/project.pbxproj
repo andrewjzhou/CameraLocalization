@@ -25,9 +25,12 @@
 		6A1B54AC20D17F2B00870DC2 /* Lifespan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */; };
 		6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */; };
 		6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* Posts.swift */; };
-		6A1B54B720D1DBC800870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */; };
 		6A1B54B920D2D15900870DC2 /* CreateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B820D2D15900870DC2 /* CreateButton.swift */; };
 		6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54BA20D3012700870DC2 /* ContentScene.swift */; };
+		6A1B54BD20D431A700870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54BC20D431A500870DC2 /* awsconfiguration.json */; };
+		6A1B54C720D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */; };
+		6A1B54C820D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */; };
+		6A1B54C920D4327B00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */; };
 		6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
@@ -99,9 +102,16 @@
 		6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lifespan.swift; sourceTree = "<group>"; };
 		6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNodeExtent.swift; sourceTree = "<group>"; };
 		6A1B54B120D1BD9A00870DC2 /* Posts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
-		6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6A1B54B820D2D15900870DC2 /* CreateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateButton.swift; sourceTree = "<group>"; };
 		6A1B54BA20D3012700870DC2 /* ContentScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScene.swift; sourceTree = "<group>"; };
+		6A1B54BC20D431A500870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		6A1B54C020D4327900870DC2 /* Postgame-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postgame-Bridging-Header.h"; sourceTree = "<group>"; };
+		6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_ResponseSchema.m; sourceTree = "<group>"; };
+		6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_RequestSchema.m; sourceTree = "<group>"; };
+		6A1B54C320D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_ResponseSchema.h; sourceTree = "<group>"; };
+		6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m; sourceTree = "<group>"; };
+		6A1B54C520D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h; sourceTree = "<group>"; };
+		6A1B54C620D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_RequestSchema.h; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSS3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
@@ -210,10 +220,25 @@
 		6A1B54B320D1BF9E00870DC2 /* AWS */ = {
 			isa = PBXGroup;
 			children = (
+				6A1B54BF20D4326700870DC2 /* APIGateway */,
 				6A1B54B120D1BD9A00870DC2 /* Posts.swift */,
 				6AEBAB5520CDF3AE00741EB0 /* AWSS3Servie.swift */,
 			);
 			path = AWS;
+			sourceTree = "<group>";
+		};
+		6A1B54BF20D4326700870DC2 /* APIGateway */ = {
+			isa = PBXGroup;
+			children = (
+				6A1B54C520D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */,
+				6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */,
+				6A1B54C620D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */,
+				6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */,
+				6A1B54C320D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.h */,
+				6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */,
+				6A1B54C020D4327900870DC2 /* Postgame-Bridging-Header.h */,
+			);
+			path = APIGateway;
 			sourceTree = "<group>";
 		};
 		6AEBAB5920CEE20300741EB0 /* RxCLLocation */ = {
@@ -259,8 +284,8 @@
 		6AEC1A6D2085BF06008E0FF8 /* Postgame */ = {
 			isa = PBXGroup;
 			children = (
+				6A1B54BC20D431A500870DC2 /* awsconfiguration.json */,
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
-				6A1B54B620D1DBC700870DC2 /* awsconfiguration.json */,
 				6AEC1A9E20879941008E0FF8 /* ViewController */,
 				6AF5277E208AC3C30039363B /* Model */,
 				6AEC1AA42087AD66008E0FF8 /* View */,
@@ -458,6 +483,7 @@
 				TargetAttributes = {
 					6AEC1A6A2085BF06008E0FF8 = {
 						CreatedOnToolsVersion = 9.4;
+						LastSwiftMigration = 1000;
 					};
 					6AEC1A802085BF08008E0FF8 = {
 						CreatedOnToolsVersion = 9.4;
@@ -494,8 +520,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A1B54BD20D431A700870DC2 /* awsconfiguration.json in Resources */,
 				6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */,
-				6A1B54B720D1DBC800870DC2 /* awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,6 +549,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Postgame/Pods-Postgame-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AWSAPIGateway/AWSAPIGateway.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSAuthCore/AWSAuthCore.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSAuthUI/AWSAuthUI.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSCognito/AWSCognito.framework",
@@ -538,6 +565,7 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAPIGateway.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAuthCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAuthUI.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCognito.framework",
@@ -711,6 +739,7 @@
 				6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */,
 				6AEBAB6120CEEEAC00741EB0 /* VerticalRectObservable.swift in Sources */,
 				6A1B549520D019E500870DC2 /* DescriptorComputer.swift in Sources */,
+				6A1B54C720D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */,
 				6A1B54A320D01A8700870DC2 /* MultiArray.swift in Sources */,
 				6A1B548F20D0036400870DC2 /* VerticalRectInfo.swift in Sources */,
 				6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */,
@@ -721,6 +750,7 @@
 				6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */,
 				6AEC1AA0208799B2008E0FF8 /* ViewController+UISetup.swift in Sources */,
 				6AF52780208AC3E80039363B /* GeolocationService.swift in Sources */,
+				6A1B54C820D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */,
 				6AEC1AA320879B23008E0FF8 /* extension.swift in Sources */,
 				6A1B54A420D01A8700870DC2 /* CVPixelBuffer+Helpers.swift in Sources */,
 				6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */,
@@ -733,6 +763,7 @@
 				6AF52784208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift in Sources */,
 				6A1B54A220D01A8700870DC2 /* Predictions.swift in Sources */,
 				6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */,
+				6A1B54C920D4327B00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */,
 				6AEC1AA92087C514008E0FF8 /* CreationView.swift in Sources */,
 				6AEBAB5620CDF3AE00741EB0 /* AWSS3Servie.swift in Sources */,
 			);
@@ -889,15 +920,15 @@
 			baseConfigurationReference = E7777FCF3D8FDFE72C7E814E /* Pods-Postgame.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = Postgame/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.Postgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Postgame/Model/AWS/APIGateway/Postgame-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -908,15 +939,14 @@
 			baseConfigurationReference = 5FF16130E9A36DB5CAAB89F2 /* Pods-Postgame.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = Postgame/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.Postgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Postgame/Model/AWS/APIGateway/Postgame-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -931,11 +961,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -953,11 +979,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -974,11 +996,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -995,11 +1013,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = PostgameUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.PostgameUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

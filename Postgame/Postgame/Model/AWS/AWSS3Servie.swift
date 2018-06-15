@@ -77,8 +77,6 @@ class AWSS3Service {
             })
         }
         
-        let transferUtility = AWSS3TransferUtility.default()
-        
         transferUtility.uploadData(data,
                                    key: key,
                                    contentType: "text/plain",
@@ -127,8 +125,7 @@ class AWSS3Service {
             }
             
             // Download task
-            let transferUtility = AWSS3TransferUtility.default()
-            transferUtility.downloadData(
+            self.transferUtility.downloadData(
                 forKey: key,
                 expression: expression,
                 completionHandler: completionHandler
@@ -199,6 +196,7 @@ class AWSS3Service {
             
             return Disposables.create()
         })
+        
         
     }
     

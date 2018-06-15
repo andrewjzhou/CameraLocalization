@@ -62,6 +62,10 @@ class ViewController: UIViewController {
 //        setupARPosetrDiscoveryAndPlacementRx()
         setupPostRx()
         
+        // Setup gesture
+        setuplongPressSubject()
+        setupPostNodeInteractions()
+        
         // SignIn View Controllers
         // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
         // Get rid of email field in sign-up
@@ -194,7 +198,7 @@ extension ViewController {
             })
             .disposed(by: disposeBag)
         
-        // Deactivate CreationView and isPosing
+        // Deactivate CreationView
         createButtonTapObservable
             .filter({ _ -> Bool in
                 return self.createButton.post != nil
@@ -264,17 +268,8 @@ extension ViewController {
                 .subscribe(onNext: { (postNode) in
                     print("PostNode created: ", postNode)
                 })
-        
-        
-        
-//        // Testing
-//        verticalRectObservable
-//            .subscribe(onNext: { (observation) in
-//                self.removeRectOutlineLayers()
-//                // Highlight detected rectangles
-//                self.highlightObservation(observation)
-//            }).disposed(by: disposeBag)
 
+    
     }
     
     
@@ -568,8 +563,6 @@ extension ViewController {
 //        }).disposed(by: disposeBag)
         
         
-       setuplongPressSubject()
-        
     }
 
     private func setuplongPressSubject() {
@@ -579,6 +572,26 @@ extension ViewController {
     @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
                 longPressSubject.onNext(sender)
         
+    }
+    
+    private func setupPostNodeInteractions() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        sceneView.addGestureRecognizer(tap)
+    }
+    
+     @objc func handleTap (sender: UILongPressGestureRecognizer) {
+        // Perform hit-test at tapped location
+        let point = sender.location(in: sceneView)
+        let scnHitTestResults = sceneView.hitTest(point, options: nil)
+        guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
+        
+        if postNode.state == .prompt && createButton.post != nil {
+            postNode.setContent(createButton.post!)
+            createButton.sendActions(for: .touchUpInside)
+            postNode.record() // Upload to S3
+        } else if postNode.state == .prompt && createButton.post == nil {
+            postNode.removeFromParentNode()
+        }
     }
     
 }

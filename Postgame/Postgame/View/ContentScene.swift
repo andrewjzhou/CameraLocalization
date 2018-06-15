@@ -16,7 +16,11 @@ class ContentScene: SKScene {
     private var promptNode: SKSpriteNode
     private var loadNode: SKSpriteNode
     
+    var image: UIImage
+    
     init(_ image: UIImage) {
+        self.image = image
+        
         contentNode = createChildNode(image: image, name: "content")
         whiteNode = createChildNode(image: UIImage.from(color: .white), name: "white")
         promptNode = createChildNode(image: UIImage(named: "ic_add_circle_outline_white")!, name: "prompt")
@@ -50,7 +54,6 @@ class ContentScene: SKScene {
     }
     
     func prompt() {
-        print("ContentScene: Inside prompt()")
         // Darken content in background
         contentNode.run(darken)
         
