@@ -17,15 +17,13 @@ fileprivate let disposeBag = DisposeBag()
 
 class PostNode: SCNNode {
     
-    var state: PostNodeState = .inactive {
-        willSet {
-            if state == .prompt {
-                self.initial = false
-            }
+    // Use statePublisher to state state. DO NOT DIRECTLY SET STATE
+    private(set) var state: PostNodeState = .inactive {
+        willSet{
+            previousState = state
         }
     }
-    
-    var initial = true
+    private var previousState: PostNodeState = .inactive
     
     private var contentNode: ContentNode
     private var key: String
@@ -54,16 +52,16 @@ class PostNode: SCNNode {
             switch state {
             case .inactive:
                 self.setContent(UIImage.from(color: .white)) // For testing
-            //                self.contentNode.content.deactivate()
+//                            self.contentNode.content.deactivate()
             case .load:
-                self.contentNode.content.load()
+                self.contentNode.load()
             case .prompt:
-                self.contentNode.content.prompt()
+                self.contentNode.prompt()
             case .active:
-                self.contentNode.content.activate()
+                self.contentNode.activate()
                 
             }
-        })
+        }).disposed(by: disposeBag)
         
         // Add PostNode as child to its AnchorNode and set position
         info.anchorNode.addChildNode(self)
@@ -77,7 +75,6 @@ class PostNode: SCNNode {
                 .subscribe(onNext: { (image) in
                     self.setContent(image)
                     self.statePublisher.onNext(.active)
-                    self.initial = false
                     self.key = matchKey
                 })
                 .disposed(by: disposeBag)
@@ -136,6 +133,20 @@ class PostNode: SCNNode {
         let db = DynamoDBService.sharedInstance
         let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
         db.create(key: key, username: username)
+        
+        print("Recorded")
+    }
+    
+    func prompt() {
+        statePublisher.onNext(.prompt)
+    }
+    
+    func optOutPrompt() {
+        if previousState == .active{
+            statePublisher.onNext(.active)
+        } else {
+            statePublisher.onNext(.inactive)
+        }
     }
     
     private func updateSize(_ size: CGSize) {
@@ -195,6 +206,24 @@ class ContentNode: SCNNode {
         
         self.geometry = planeGeometry
         self.eulerAngles.x = -.pi / 2 // might need to set this property as a child node in post node if it doesn't work
+    }
+    
+    func load() {
+        content.load()
+    }
+    
+    func prompt() {
+        print("Content2: ", content)
+        print("Prompt2")
+        content.prompt()
+    }
+    
+    func activate() {
+        content.activate()
+    }
+    
+    func deactivate() {
+        content.deactivate()
     }
     
     

@@ -346,10 +346,12 @@ extension ViewController {
         if postNode.state == .prompt && createButton.post != nil {
             postNode.setContent(createButton.post!)
             createButton.sendActions(for: .touchUpInside)
-            postNode.record() // Upload to S3
+            postNode.record()
         } else if postNode.state == .prompt && createButton.post == nil {
-            postNode.removeFromParentNode()
-        } 
+            postNode.optOutPrompt()
+        } else if postNode.state == .active && createButton.post != nil {
+            postNode.prompt()
+        }
     }
     
 }

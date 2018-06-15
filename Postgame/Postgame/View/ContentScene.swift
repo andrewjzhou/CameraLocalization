@@ -47,10 +47,12 @@ class ContentScene: SKScene {
         // Hide all other elements
         promptNode.isHidden = true
         whiteNode.isHidden = true
+        loadNode.isHidden = true
     }
     
     func deactivate() {
         contentNode = createChildNode(image: UIImage.from(color: .clear), name: "content")
+        activate()
     }
     
     func prompt() {
