@@ -31,6 +31,7 @@ class ViewController: UIViewController {
     let resetButton = UIButton()
     let userButton = UIButton()
     let indicatorButton = IndicatorButton()
+    let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
    
     
     // Location
@@ -38,9 +39,9 @@ class ViewController: UIViewController {
     
     // Poster Rx
     
-    private let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer>(value: UILongPressGestureRecognizer())
+    let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer>(value: UILongPressGestureRecognizer())
 
-    private var highlightedRectangleOutlineLayers = [CAShapeLayer]()
+    var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
     
 
@@ -83,6 +84,9 @@ class ViewController: UIViewController {
         }
         
         test()
+        
+        view.addSubview(longPressIndicator)
+        longPressIndicator.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -318,47 +322,6 @@ extension ViewController {
         self.highlightedRectangleOutlineLayers.removeAll()
     }
 
-    private func setuplongPressSubject() {
-        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(observeLongPress(sender:)))
-        view.addGestureRecognizer(longPress)
-    }
-    @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
-        longPressSubject.onNext(sender)
-        
-        // Delete placeholders when user is trying to select
-        if sender.state.isActive {
-            let point = sender.location(in: sceneView)
-            let scnHitTestResults = sceneView.hitTest(point, options: nil)
-            guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
-       
-            if postNode.state == .inactive {
-                postNode.removeFromParentNode()
-            }
-        }
-        
-    }
-    
-    private func setupPostNodeInteractions() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
-        sceneView.addGestureRecognizer(tap)
-    }
-    
-     @objc func handleTap (sender: UILongPressGestureRecognizer) {
-        // Perform hit-test at tapped location
-        let point = sender.location(in: sceneView)
-        let scnHitTestResults = sceneView.hitTest(point, options: nil)
-        guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
-        
-        if postNode.state == .prompt && createButton.post != nil {
-            postNode.setContent(createButton.post!)
-            createButton.sendActions(for: .touchUpInside)
-            postNode.record()
-        } else if postNode.state == .prompt && createButton.post == nil {
-            postNode.optOutPrompt()
-        } else if postNode.state == .active && createButton.post != nil {
-            postNode.prompt()
-        }
-    }
     
     func test() {
         
