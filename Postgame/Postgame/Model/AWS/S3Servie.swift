@@ -21,9 +21,9 @@ import RxCocoa
 // public ? Any app user can create, read, update, and delete files in this folder.
 // Need to add <retry upon failure> for downloading.
 
-class AWSS3Service {
+class S3Service {
     
-    static let sharedInstance = AWSS3Service()
+    static let sharedInstance = S3Service()
     
     private(set) var transferUtility: AWSS3TransferUtility
     
@@ -93,6 +93,7 @@ class AWSS3Service {
                                     }
                                     return nil;
         }
+        
     }
     
     /**

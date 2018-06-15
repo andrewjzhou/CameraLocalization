@@ -271,245 +271,11 @@ extension ViewController {
 
     
     }
-    
-    
-    
-  
 
 }
 
 
 
-/**
- MARK:- Setup Poster Rx, main per-frame opertaions.
- */
-
-//extension ViewController {
-//    /**
-//     Setup Poster Rx, main per-frame opertaions.
-//     */
-//    private func setupARPosetrDiscoveryAndPlacementRx() {
-//        // Start observing long press gesture on view
-//        setupLongPressSubject()
-//
-//
-//        // Observe Detected Rectangles per ARFrame. Slow down frame rate. Remove drawn outlines for selected rectangles, if any exist
-//        let rectObservable =
-//            frameSubject.asObservable()
-////                .debug("Poster: Before Throttle")
-//                .throttle(0.1, scheduler:  MainScheduler.instance) // slow down requests
-////                .debug("Poster: After Throttle")
-//                .do(onNext: { (_) in
-//                    self.removeRectOutlineLayers() // clean up drawings, if there is any
-//                })
-//                .flatMap { self.detectRectangles(in: $0) }
-//                .share()
-//
-//
-//        // Stream 1: Not Posting + Long Press began/changed + rects
-//        let stream1 = rectObservable
-//            .withLatestFrom(isPostingSubject.asObservable()) { (observations, bool) -> [VNRectangleObservation]? in
-//                if bool == false { return observations }
-//                else { return nil }
-//            }
-////            .debug("After Post")
-//            .filter{ $0 != nil }
-//            .withLatestFrom(longPressSubject.asObservable()) { (observations, sender) -> VNRectangleObservation? in
-//                if sender == nil { return nil }
-//                else if sender!.state == .began || sender!.state == .ended {
-//                    return self.selectRectangle(observations: observations, sender: sender)
-//                }
-//                else { return nil }
-//            }
-////            .debug("After selction")
-//            .filter{ $0 != nil }
-//
-//        stream1.asDriver(onErrorJustReturn: nil)
-//            .drive(onNext: { (observation) in
-//                self.highlightObservation(observation!)
-//            })
-//            .disposed(by: disposeBag)
-//
-////        let stream1 = isPostingSubject.asObservable()
-////            .debug("Is Posting")
-////            .filter { $0 == false }
-////            .withLatestFrom(longPressSubject.asObservable())
-////            .debug("Long Press")
-////            .filter { (sender) -> Bool in
-////                // Sender state is began or changed
-////                if sender == nil {
-////                    return false
-////                } else if sender!.state == .began || sender!.state == .changed {
-////                    return true
-////                } else {
-////                    return false
-////                }
-////            }
-////            .debug("Debug: Before")
-////            .withLatestFrom(rectObservable) { (sender, observations) -> VNRectangleObservation? in
-////                if (observations == nil) { return nil }
-////                // Select rectangle observation that contains current touch location, return nil if no selected rectangle available
-////                let currTouchLocation = sender!.location(in: self.sceneView)
-////                for observation in observations! {
-////                    let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
-////                    if convertedRect.contains(currTouchLocation) {
-////                        return observation
-////                    }
-////                }
-////                return nil
-////            }
-////            .debug("Debug: After")
-////            .filter{ $0 != nil }
-////
-////        stream1
-////            .subscribe(onNext: { (observation) in
-////                // Outline selected observation
-////                if let _ = observation {
-////                    self.highlightObservation(observation!)
-////                }
-////            })
-//
-//
-//
-//
-//
-//
-////        // 2) Pre-conditions (isPositing/LongPressGesture)
-////        // Observe dectected rectangle observations for each frame, when isPosting == false
-////        let notPostingRectObservable = frameObservable
-////            .filter { _ -> Bool in
-////                if !self.isPosting {
-////                    return true
-////                } else {
-////                    return false
-////                }
-////            }
-////            .debug("Poster: After Not Posting Filter")
-////            .flatMap{ self.detectRectangles(in: $0) }
-////            .debug("Poster: After Rectangle Detection (Not Posting)")
-////            .share()
-////
-////        // Observe dectected rectangle observations for each frame, when isPosting == true
-////        let isPostingRectObservable =
-////            isPostingSubject.asObservable().filter( $ == true)
-//////            frameObservable
-//////                .withLatestFrom(isPostingSubject, resultSelector: { (frame, bool) -> ARFrame in
-//////                    if bool == true {
-//////                        return frame
-//////                    } else {
-//////                        return
-//////                    }
-//////                })
-////                .filter { _ -> Bool in
-////                    if self.isPosting {
-////                        return true
-////                    } else {
-////                        return false
-////                    }
-////                }
-////                .flatMap{ self.detectRectangles(in: $0) }
-////                .share()
-////
-////        // Observe long press gestures. Filter gestures that are not on a vertical plane.
-////        let longPressObservable =
-////            longPressSubject.asObserver()
-////                .debug("Poster-Press: Before OnPlane Filter")
-////                .filter { (sender) -> Bool in
-////                    // sender location must be on a plane
-////                    let currTouchLocation = sender.location(in: self.sceneView)
-////                    return self.isOnVerticalPlane(currTouchLocation)
-////                }
-////                .debug("Poster-Press: After OnPlane Filter")
-////                .share()
-////
-////        // Observe long press that have state began or changed
-////        let longPressActiveObservable =
-////            longPressObservable
-////                .filter { (sender) -> Bool in
-////                    if sender.state == .began || sender.state == .changed{
-////                        return true
-////                    } else {
-////                        return false
-////                    }
-////                }
-////                .debug("Poster-Press: after Active Filter")
-////                .share()
-////
-////        // Observe long press that have state ended
-////        let longPressEndedObservable =
-////            longPressObservable
-////                .filter { (sender) -> Bool in
-////                    if sender.state == .ended {
-////                        return true
-////                    } else {
-////                        return false
-////                    }
-////                }
-////                .debug("Poster-Press: after Ended Filter")
-////                .share()
-////
-////
-////        // 3) Choose rectangles to feed through descriptor / Highlight if necessary
-////        // longPressActive + Not Posting --> user select rectangle. Highlight
-////        let userSelectNotPostingObservable = longPressActiveObservable
-////            .withLatestFrom(notPostingRectObservable) { (sender, observations) -> VNRectangleObservation? in
-////                if (observations == nil) { return nil }
-////                // Select rectangle observation that contains current touch location
-////                let currTouchLocation = sender.location(in: self.sceneView)
-////                for observation in observations! {
-////                    let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
-////                    if convertedRect.contains(currTouchLocation) {
-////                        return observation
-////                    }
-////                }
-////                return nil
-////            }
-////            .debug("Poster: after (longPressActive + Not Posting) withLatestFrom")
-////            .filter{ $0 != nil }
-////            .do(onNext: { (observation) in
-////                // Outline selected observation
-////                if let _ = observation {
-////                    self.highlightObservation(observation!)
-////                }
-////            })
-////
-////
-//
-//    }
-//
-//    /**
-//     Return rectangle that contains user touch.
-//     */
-//    fileprivate func selectRectangle(observations: [VNRectangleObservation]?, sender: UILongPressGestureRecognizer?) -> VNRectangleObservation? {
-//        if sender == nil || observations == nil {
-//            return nil
-//        }
-//        let currTouchLocation = sender!.location(in: self.sceneView)
-//
-//        // Check if currTouchLocation is on a vertical plane
-//        if !isOnVerticalPlane(currTouchLocation) {
-//            return nil
-//        }
-//
-//        // Select rectangle
-//        for observation in observations! {
-//            let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
-//            if convertedRect.contains(currTouchLocation) {
-//                return observation
-//            }
-//        }
-//
-//        return nil
-//    }
-//
-//    /**
-//     Observe long press gesture to facilitate user interaction with poster discovery and placement.
-//     */
-
-//
-//
-//
-//}
 
 // Highlighting Rectangle Observations
 extension ViewController {
@@ -553,15 +319,7 @@ extension ViewController {
     }
     
     func test() {
-//        AWSS3Service.sharedInstance.uploadPost(UIImage.from(color: .red), key: "lat/long/date/username")
-//        AWSS3Service.sharedInstance.uploadDescriptor([1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9], key: "public/post/lat/long/date/username10")
-//        let obs = Posts.query("testing/abc/")
-//        obs.subscribe(onNext: { (strings) in
-//            for string in strings {
-//                print(string)
-//            }
-//        }).disposed(by: disposeBag)
-        
+      
         
     }
 
@@ -591,7 +349,7 @@ extension ViewController {
             postNode.record() // Upload to S3
         } else if postNode.state == .prompt && createButton.post == nil {
             postNode.removeFromParentNode()
-        }
+        } 
     }
     
 }

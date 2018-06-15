@@ -72,7 +72,7 @@ class PostNode: SCNNode {
         // Match descriptor to cache
         if let matchKey = cache.findMatch(info.descriptor!) {
             // Download and set content node post
-            let postDownloadObservable = AWSS3Service.sharedInstance.downloadPost(matchKey)
+            let postDownloadObservable = S3Service.sharedInstance.downloadPost(matchKey)
             postDownloadObservable
                 .subscribe(onNext: { (image) in
                     self.setContent(image)
@@ -129,13 +129,13 @@ class PostNode: SCNNode {
     }
     
     func record() {
-        let s3 = AWSS3Service.sharedInstance
-        if initial {
-            s3.uploadDescriptor(info.descriptor!, key: key)
-            s3.uploadPost(contentNode.content.image, key: key)
-        } else {
-            s3.uploadPost(contentNode.content.image, key: key)
-        }
+        let s3 = S3Service.sharedInstance
+        s3.uploadDescriptor(info.descriptor!, key: key)
+        s3.uploadPost(contentNode.content.image, key: key)
+        
+        let db = DynamoDBService.sharedInstance
+        let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
+        db.create(key: key, username: username)
     }
     
     private func updateSize(_ size: CGSize) {
