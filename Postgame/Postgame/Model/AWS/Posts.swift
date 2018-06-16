@@ -22,7 +22,7 @@ class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     var _key: String?
     var _location: String?
     var _username: String?
-    var _view: NSNumber?
+    var _view_count: NSNumber?
     
     class func dynamoDBTableName() -> String {
         
@@ -39,47 +39,7 @@ class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
             "_key" : "key",
             "_location" : "location",
             "_username" : "username",
-            "_view" : "view",
+            "_view_count" : "view_count",
         ]
-    }
-    
-    class func query(_ locationString: String) -> Observable<[String]> {
-        let keyPublisher = PublishSubject<[String]>()
-        let dynamoDbObjectMapper = AWSDynamoDBObjectMapper.default()
-
-        // 1) Configure the query
-        let queryExpression = AWSDynamoDBQueryExpression()
-        queryExpression.indexName = "location"
-        queryExpression.keyConditionExpression = "#_location = :_location"
-
-        queryExpression.expressionAttributeNames = [
-            "#_location": "location",
-        ]
-        queryExpression.expressionAttributeValues = [
-            ":_location": locationString,
-        ]
-
-        // 2) Make the query
-        dynamoDbObjectMapper.query(Posts.self, expression: queryExpression) { (output: AWSDynamoDBPaginatedOutput?, error: Error?) in
-            if error != nil {
-                print("The request failed. Error: \(String(describing: error))")
-                keyPublisher.onCompleted()
-            }
-            
-            if output != nil {
-                var keySet = [String]()
-                for item in output!.items {
-                    let post = item as? Posts
-                    if let key = post?._key {
-                        keySet.append(key)
-                    }
-                }
-                keyPublisher.onNext(keySet)
-                keyPublisher.onCompleted()
-            } else {
-                keyPublisher.onCompleted()
-            }
-        }
-        return keyPublisher.asObservable()
     }
 }

@@ -58,7 +58,7 @@ class DescriptorCache {
             .filter {$0!.newTo(self.cache)}
             .subscribe(onNext: { (descriptor) in
                 self.cache.append(descriptor!)
-                print("CACHE: ", self.cache)
+                print("CACHE: ", self.cache.count)
             })
             .disposed(by: disposeBag)
     }

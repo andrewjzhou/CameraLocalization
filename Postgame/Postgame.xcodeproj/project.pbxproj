@@ -31,7 +31,7 @@
 		6A1B54C720D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */; };
 		6A1B54C820D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */; };
 		6A1B54C920D4327B00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */; };
-		6A1B54CB20D4350400870DC2 /* AWSAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54CA20D4350400870DC2 /* AWSAPIService.swift */; };
+		6A1B54CB20D4350400870DC2 /* APIGatewayService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54CA20D4350400870DC2 /* APIGatewayService.swift */; };
 		6A1B54CE20D4616F00870DC2 /* DynamoDBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54CD20D4616F00870DC2 /* DynamoDBService.swift */; };
 		6A1B54D020D47BEC00870DC2 /* ViewController+Gesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54CF20D47BEC00870DC2 /* ViewController+Gesture.swift */; };
 		6A1B54D220D47D2E00870DC2 /* LongPressIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54D120D47D2E00870DC2 /* LongPressIndicator.swift */; };
@@ -116,7 +116,7 @@
 		6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m; sourceTree = "<group>"; };
 		6A1B54C520D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h; sourceTree = "<group>"; };
 		6A1B54C620D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_RequestSchema.h; sourceTree = "<group>"; };
-		6A1B54CA20D4350400870DC2 /* AWSAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSAPIService.swift; sourceTree = "<group>"; };
+		6A1B54CA20D4350400870DC2 /* APIGatewayService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGatewayService.swift; sourceTree = "<group>"; };
 		6A1B54CD20D4616F00870DC2 /* DynamoDBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamoDBService.swift; sourceTree = "<group>"; };
 		6A1B54CF20D47BEC00870DC2 /* ViewController+Gesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Gesture.swift"; sourceTree = "<group>"; };
 		6A1B54D120D47D2E00870DC2 /* LongPressIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressIndicator.swift; sourceTree = "<group>"; };
@@ -239,7 +239,7 @@
 		6A1B54BF20D4326700870DC2 /* APIGateway */ = {
 			isa = PBXGroup;
 			children = (
-				6A1B54CA20D4350400870DC2 /* AWSAPIService.swift */,
+				6A1B54CA20D4350400870DC2 /* APIGatewayService.swift */,
 				6A1B54C520D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */,
 				6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */,
 				6A1B54C620D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */,
@@ -741,7 +741,7 @@
 				6A1B549120D00D1F00870DC2 /* utility.swift in Sources */,
 				6A1B54A020D01A8700870DC2 /* UIImage+CVPixelBuffer.swift in Sources */,
 				6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */,
-				6A1B54CB20D4350400870DC2 /* AWSAPIService.swift in Sources */,
+				6A1B54CB20D4350400870DC2 /* APIGatewayService.swift in Sources */,
 				6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */,
 				6A1B54A520D01A8700870DC2 /* NonMaxSuppression.swift in Sources */,
 				6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */,

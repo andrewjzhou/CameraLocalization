@@ -12,11 +12,11 @@ import AWSCore
 import AWSAPIGateway
 import AWSMobileClient
 
-class AWSAPIService {
-    static let sharedInstance = AWSAPIService()
+class APIGatewayService {
+    static let sharedInstance = APIGatewayService()
     private init() {}
     
-    func DynamoDB_deletePost(_ key: String) {
+    func DynamoDB_incrementViews(_ key: String) {
         // change the method name, or path or the query string parameters here as desired
         let httpMethodName = "POST"
         // change to any valid path you configured in the API
@@ -27,7 +27,7 @@ class AWSAPIService {
         ]
         
         // Request
-        let queryStringParameters = ["action":"delete"]
+        let queryStringParameters = ["action":"increment"]
         let httpBody = ["key" : key]
 
         // Construct the request object

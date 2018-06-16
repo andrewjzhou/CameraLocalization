@@ -25,7 +25,7 @@ class DynamoDBService {
         postItem._key = key
         postItem._location = location
         postItem._username = username
-        postItem._view = 0
+        postItem._view_count = 0
         
         dynamoDbObjectMapper.save(postItem) { (error) in
             if let error = error {
@@ -73,5 +73,9 @@ class DynamoDBService {
             }
         }
         return keyPublisher.asObservable()
+    }
+    
+    func incrementViews(_ key: String) {
+        APIGatewayService.sharedInstance.DynamoDB_incrementViews(key)
     }
 }

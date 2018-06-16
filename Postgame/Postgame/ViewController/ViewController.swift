@@ -62,6 +62,7 @@ class ViewController: UIViewController {
         // Setup AR Poster Discovery and Placement Rx
 //        setupARPosetrDiscoveryAndPlacementRx()
         setupPostRx()
+
         
         // Setup gesture
         setuplongPressSubject()
