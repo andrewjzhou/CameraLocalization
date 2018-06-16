@@ -83,7 +83,6 @@ class ViewController: UIViewController {
                 })
         }
         
-        test()
         
         view.addSubview(longPressIndicator)
         longPressIndicator.isHidden = true
@@ -323,9 +322,6 @@ extension ViewController {
     }
 
     
-    func test() {
-        
-        
-    }
+    
     
 }

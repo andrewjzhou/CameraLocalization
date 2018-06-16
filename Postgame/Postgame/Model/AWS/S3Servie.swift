@@ -100,6 +100,8 @@ class S3Service {
      Download descriptor from S3 using key.
      */
     func downloadDescriptor(_ key: String) -> Observable<Descriptor?> {
+        let prefix = "public/descriptor/"
+        let downloadKey = prefix + key
         return Observable.create({ (observer) in
             // Track progress
             let expression = AWSS3TransferUtilityDownloadExpression()
@@ -114,8 +116,12 @@ class S3Service {
                 
                 // Do something e.g. Alert a user for transfer completion.
                 // On failed downloads, `error` contains the error object.
+                if let error = error {
+                    print("Error: \(error)")
+                }
                 
                 if let _ = data {
+                    print("downloadDescriptor() using key: \(key) getting data: \(data)")
                     let descriptor = Descriptor(key: key, value: decodeForDescriptor(data!))
                     
                     observer.onNext(descriptor)
@@ -127,7 +133,7 @@ class S3Service {
             
             // Download task
             self.transferUtility.downloadData(
-                forKey: key,
+                forKey: downloadKey,
                 expression: expression,
                 completionHandler: completionHandler
                 ).continueWith {
@@ -151,6 +157,8 @@ class S3Service {
      Download post from S3 using key.
      */
     func downloadPost(_ key: String) -> Observable<UIImage> {
+        let prefix = "public/post/"
+        let downloadKey = prefix + key
         return Observable.create({ (observer) in
             // Track progress
             let expression = AWSS3TransferUtilityDownloadExpression()
@@ -165,6 +173,9 @@ class S3Service {
                 
                 // Do something e.g. Alert a user for transfer completion.
                 // On failed downloads, `error` contains the error object.
+                if let error = error {
+                    print("Error: \(error)")
+                }
                 
                 if let _ = data {
                     let decoded: Data = Data(base64Encoded: data!, options: .ignoreUnknownCharacters)!
@@ -180,7 +191,7 @@ class S3Service {
             // Download task
             let transferUtility = AWSS3TransferUtility.default()
             transferUtility.downloadData(
-                forKey: key,
+                forKey: downloadKey,
                 expression: expression,
                 completionHandler: completionHandler
                 ).continueWith {
@@ -218,6 +229,7 @@ fileprivate func encodeDescriptor(_ descriptor: [Double]) -> Data {
 
 fileprivate func decodeForDescriptor(_ data: Data) -> [Double] {
     let decodedString = String(data: data, encoding: .utf8)
+    print("Decoded String: ", decodedString)
     return decodedString!.split(separator: ",").map { Double($0)! }
 }
 

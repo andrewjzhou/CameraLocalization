@@ -6,65 +6,61 @@
 //  Copyright © 2018 postgame. All rights reserved.
 //
 
-import Foundation
-
+import RxSwift
+import RxCocoa
 // Cosine similarity may be unreliable. Explore other matching methods between vectors
 
 class DescriptorCache {
-   
+    fileprivate let disposeBag = DisposeBag()
     private(set) var cache: [Descriptor]
     private(set) var geolocationService: GeolocationService
     let threshold = 0.75
     var lastLocation: (Double,Double)?
     
+    private(set) var counter: Driver<Int>
+    
     init(_ geolocationService: GeolocationService) {
         cache = [Descriptor]()
+        let countSubject = BehaviorSubject<Int>(value: 0)
+        counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0)
+        
         self.geolocationService = geolocationService
         
-     
         // Get the current user coordinate
-        let userLocation = geolocationService.location
-        userLocation.drive(onNext: { (location) in
-            self.lastLocation = location
-        })
-        
-        
-        //            .do(onNext: { (location) in
-        //                // Refresh cache. Remove descriptors that are not inside user region
-        //                for key in self.descriptorCache.keys {
-        //                    if !self.keyCloseToLocation(key: key, location: location) {
-        //                        self.descriptorCache.removeValue(forKey: key)
-        //                    }
-        //                }
-        //            })
-        //            .debug("After distinct until changed")
-        //            .asObservable()
-        
-        
-        // Cache descritpors based on user location
-        // Switch out S3 function with mobilehub version
-        //        userLocation
-        //            .map { coordinate in
-        //                // Get surrounding coordinates
-        //                return self.surroundingCoordinates(for: coordinate)
-        //            }
-        //            .debug("Descriptor Cache: After map2")
-        //            .flatMap { locations in
-        //                // Get list or URLs asscossiated with coordinates
-        //                return self.s3.urlList(for: locations)
-        //            }
-        //            .debug("Descriptor Cache: After flat-map")
-        //            .flatMap({ (url) in
-        //                // Download descriptors
-        //                return self.s3.downloadDescriptor(url)
-        //            })
-        //            .subscribe(onNext: { (descriptor) in
-        //                // Cache descriptors
-        //                self.descriptorCache.updateValue(descriptor.value, forKey: descriptor.key)
-        //            }, onError: { (error) in
-        //                print("Descriptor Cache Error: ", error)
-        //            })
-        //            .disposed(by: disposeBag)
+        let userLocation = geolocationService.location.asObservable()
+        userLocation
+            .filter({ (location) -> Bool in
+                if self.lastLocation == nil {
+                    return true
+                } else if self.lastLocation! != location {
+                    return true
+                }
+                return false
+            })
+            .debug("Cache: New location coming in")
+            .do(onNext: { (location) in
+                self.lastLocation = location
+                // Refresh cache. Remove descriptors that are not inside user region
+                self.cache = self.cache.filter { $0.neighbors(self.lastLocation!) }
+            })
+            .map({ location -> [(Double,Double)] in
+                generateNeighborCoordinates(location)
+            })
+            .debug("Cache: generated neighbor coordinates")
+            .flatMap { Observable.from($0) }
+            .map { converToString($0) } // String representation of location coordinates
+            .flatMap { DynamoDBService.sharedInstance.query($0)} // Download keys from dynamoDB
+            .flatMap { Observable.from($0) }
+            .debug("Cache: queried dynamoDB and got keys")
+            .flatMap { S3Service.sharedInstance.downloadDescriptor($0) } // Download descriptors from S3
+            .debug("Cache: downloaded descriptors from S3")
+            .filter {$0 != nil}
+            .filter {$0!.newTo(self.cache)}
+            .subscribe(onNext: { (descriptor) in
+                self.cache.append(descriptor!)
+                print("CACHE: ", self.cache)
+            })
+            .disposed(by: disposeBag)
     }
     
     /**
@@ -92,16 +88,61 @@ class DescriptorCache {
         
         return bestMatchKey
     }
+    
+    private func downloadKeys(_ locations: [(Double,Double)]) -> Observable<String> {
+        let keyPublisher = PublishSubject<String>()
+        let db = DynamoDBService.sharedInstance
+        for location in locations {
+            let locationString = String(location.0) + "/" + String(location.1)
+            let observable = db.query(locationString)
+            observable
+                .subscribe(onNext: { (keys) in
+                    for key in keys {
+                        keyPublisher.onNext(key)
+                    }
+                })
+                .disposed(by: disposeBag)
+        }
+        
+        return keyPublisher.asObservable()
+    }
+    
+    
+    
+    
 }
 
 
 struct Descriptor {
     let key: String
     let value: [Double]
+    let location: (Double, Double)
     
     init(key: String, value: [Double]) {
         self.key = key
         self.value = value
+        let keyArr = key.split(separator: "/")
+        let lat = Double(keyArr[0])!
+        let long = Double(keyArr[1])!
+        self.location = (lat, long)
+    }
+}
+
+extension Descriptor {
+    func neighbors(_ location: (Double, Double)) -> Bool {
+        let precision = 0.0003
+        let lat = self.location.0
+        let long = self.location.1
+        return (abs(lat - location.0) < precision) && (abs(long - location.1) < precision)
+    }
+    
+    func newTo(_ cache: [Descriptor]) -> Bool {
+        for cached in cache {
+            if cached.key == self.key {
+                return false
+            }
+        }
+        return true
     }
 }
 
@@ -120,39 +161,24 @@ fileprivate func cosineSimilarity(v1: [Double], v2: [Double]) -> Double {
     return sumxy/sqrt(sumxx*sumyy)
 }
 
-
-/**
- Get coordinates surrounding estimated coordinate
- */
-fileprivate func surroundingCoordinates(for coordinate: (Double, Double)) -> [(Double, Double)]{
-    var coordinates = [(Double, Double)]()
-    let lattitude = coordinate.0,
-    longitude = coordinate.1
+fileprivate func generateNeighborCoordinates(_ location: (Double, Double)) -> [(Double, Double)] {
+    let lat = location.0
+    let long = location.1
+   
+    let latRange = [lat-0.0002, lat-0.0001, lat, lat+0.0001, lat+0.0002]
+    let longRange = [long-0.0002, long-0.0001, long, long+0.0001, long+0.0002]
     
-    // +/- 0.0002
-    let lats = [lattitude-0.0002, lattitude-0.0001, lattitude, lattitude+0.0001, lattitude+0.0002]
-    let longs = [longitude-0.0002, longitude-0.0001, longitude, longitude+0.0001, longitude+0.0002]
-    
-    for lat in lats {
-        for long in longs {
-            coordinates.append((lat, long))
+    var output = [(Double, Double)]()
+    for i in latRange {
+        for j in longRange {
+            output.append((i,j))
         }
     }
     
-    return coordinates
+    return output
 }
 
-/**
- Check if descriptor is in the approximate region that the user is in by checking descriptor key.
- */
-fileprivate func keyCloseToLocation(key: String, location: (Double, Double)) -> Bool {
-    let keyArr = key.split(separator: "/")
-    guard let lat = Double(keyArr[0]),
-        let long = Double(keyArr[1]) else {
-            print("keyCloseToLocation: Conversion Error")
-            return false
-    }
-    
-    let precision = 0.0003
-    return (abs(lat - location.0) < precision) && (abs(long - location.1) < precision)
+fileprivate func converToString(_ location: (Double,Double)) -> String {
+    return String(location.0) + "/" + String(location.1)
 }
+
