@@ -35,8 +35,8 @@ class IndicatorButton: UIButton {
     /**
      Change display of IndicatorButton
      */
-    func setLabel(_ string: String) {
-        indicator.text = string
+    func setLabel(_ count: Int) {
+        indicator.text = String(count)
     }
     
     required init?(coder aDecoder: NSCoder) {

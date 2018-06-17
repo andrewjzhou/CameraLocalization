@@ -183,6 +183,7 @@ class S3Service {
                     
                     observer.onNext(post)
                     observer.onCompleted()
+                    DynamoDBService.sharedInstance.incrementViews(key)
                 }
                 
                 

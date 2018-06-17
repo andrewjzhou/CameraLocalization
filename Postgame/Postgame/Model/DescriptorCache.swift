@@ -12,16 +12,24 @@ import RxCocoa
 
 class DescriptorCache {
     fileprivate let disposeBag = DisposeBag()
-    private(set) var cache: [Descriptor]
+    private(set) var cache: [Descriptor] {
+        didSet{
+            countSubject.onNext(cache.count)
+        }
+    }
+    
     private(set) var geolocationService: GeolocationService
-    let threshold = 0.75
+    
+    let threshold = 0.6
     var lastLocation: (Double,Double)?
     
+    private let countSubject = BehaviorSubject<Int>(value: 0)
     private(set) var counter: Driver<Int>
+    private let cacheRequestSubject = PublishSubject<(Double, Double)>()
     
     init(_ geolocationService: GeolocationService) {
         cache = [Descriptor]()
-        let countSubject = BehaviorSubject<Int>(value: 0)
+        
         counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0)
         
         self.geolocationService = geolocationService
@@ -38,11 +46,17 @@ class DescriptorCache {
                 return false
             })
             .debug("Cache: New location coming in")
-            .do(onNext: { (location) in
+            .subscribe(onNext: { (location) in
                 self.lastLocation = location
                 // Refresh cache. Remove descriptors that are not inside user region
                 self.cache = self.cache.filter { $0.neighbors(self.lastLocation!) }
+                //
+                self.cacheRequestSubject.onNext(location)
             })
+            .disposed(by: disposeBag)
+        
+        
+        cacheRequestSubject.asObservable()
             .map({ location -> [(Double,Double)] in
                 generateNeighborCoordinates(location)
             })
@@ -55,12 +69,22 @@ class DescriptorCache {
             .flatMap { S3Service.sharedInstance.downloadDescriptor($0) } // Download descriptors from S3
             .debug("Cache: downloaded descriptors from S3")
             .filter {$0 != nil}
-            .filter {$0!.newTo(self.cache)}
             .subscribe(onNext: { (descriptor) in
-                self.cache.append(descriptor!)
-                print("CACHE: ", self.cache.count)
+                self.update(descriptor!)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func update(_ descriptor: Descriptor) {
+        if descriptor.newTo(cache) {
+            cache.append(descriptor)
+        }
+    }
+    
+    func refresh() {
+        if let location = self.lastLocation {
+             cacheRequestSubject.onNext(location)
+        }
     }
     
     /**

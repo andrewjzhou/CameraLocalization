@@ -29,6 +29,7 @@ class PostNode: SCNNode {
     private var key: String
     private var info: VerticalRectInfo
     private(set) var extent: PostNodeExtent
+    private var cache: DescriptorCache
     
     private let lifespan = Lifespan()
     private let extentPublisher = PublishSubject<PostNodeExtent>()
@@ -40,7 +41,7 @@ class PostNode: SCNNode {
         extent = PostNodeExtent(position: info.position,
                                 size: info.size)
         self.info = info
-        
+        self.cache = cache
         super.init()
         
         self.addChildNode(contentNode)
@@ -134,6 +135,7 @@ class PostNode: SCNNode {
         let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
         db.create(key: key, username: username)
         
+        cache.update(Descriptor(key: key, value: info.descriptor!))
         print("Recorded")
     }
     

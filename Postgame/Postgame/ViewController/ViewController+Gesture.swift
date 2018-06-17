@@ -18,6 +18,10 @@ extension ViewController {
     @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
         longPressSubject.onNext(sender)
         
+        // Refresh Cache (Consider if this is overdone/expensive
+        // TODO: let cache finish refreshing before continuing to create Post Node. Attempting to create Post Node before reresh completes risks duplicate error
+        descriptorCache!.refresh()
+        
         // Delete placeholders when user is trying to select
         if sender.state.isActive{
             let point = sender.location(in: sceneView)

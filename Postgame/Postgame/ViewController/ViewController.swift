@@ -36,6 +36,7 @@ class ViewController: UIViewController {
     
     // Location
     let geolocationService = GeolocationService.instance
+    var descriptorCache: DescriptorCache?
     
     // Poster Rx
     
@@ -56,14 +57,9 @@ class ViewController: UIViewController {
         setupResetButtonRx()
         setupCreateButtonRx()
         
-        // Setup Location
-//        setupLocationServiceAndDescriptorCache()
-        
         // Setup AR Poster Discovery and Placement Rx
-//        setupARPosetrDiscoveryAndPlacementRx()
         setupPostRx()
 
-        
         // Setup gesture
         setuplongPressSubject()
         setupPostNodeInteractions()
@@ -87,6 +83,8 @@ class ViewController: UIViewController {
         
         view.addSubview(longPressIndicator)
         longPressIndicator.isHidden = true
+        
+        descriptorCache = DescriptorCache(geolocationService)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -265,10 +263,18 @@ extension ViewController {
         
 
         
-        let descriptorCache = DescriptorCache(geolocationService) // Check if this cache actually caches
+        descriptorCache!.counter
+            .drive(onNext: { (count) in
+                self.indicatorButton.setLabel(count)
+            })
+            .disposed(by: disposeBag)
+        indicatorButton.rx.tap.subscribe(onNext: { _ in
+            self.descriptorCache!.refresh()
+        }).disposed(by: disposeBag)
+        
         let postNodeObservable =
             infoDescriptorPairObservable
-                .map { PostNode(info: $0!, cache: descriptorCache) }
+                .map { PostNode(info: $0!, cache: self.descriptorCache!) }
                 .subscribe(onNext: { (postNode) in
                     print("PostNode created: ", postNode)
                 })
