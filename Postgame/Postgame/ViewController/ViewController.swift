@@ -18,11 +18,18 @@ import AWSAuthUI
 
 class ViewController: UIViewController {
     fileprivate let disposeBag = DisposeBag()
+    
     fileprivate let trackingConfiguration: ARWorldTrackingConfiguration = {
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.vertical]
         return config
     }()
+    
+    let geolocationService = GeolocationService.instance
+    
+    lazy var descriptorCache = DescriptorCache(geolocationService)
+    
+    let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer>(value: UILongPressGestureRecognizer())
 
     // UI Elements
     let sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
@@ -32,56 +39,26 @@ class ViewController: UIViewController {
     let userButton = UIButton()
     let indicatorButton = IndicatorButton()
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-   
-    
-    // Location
-    let geolocationService = GeolocationService.instance
-    var descriptorCache: DescriptorCache?
-    
-    // Poster Rx
-    
-    let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer>(value: UILongPressGestureRecognizer())
 
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Run the view's session
-        sceneView.session.run(trackingConfiguration)
-        sceneView.showsStatistics = true // For debugging
-        
-        // Reset tracking state when interruption ends
-        let _ =
-        sceneView.session.rx.sessionInterruptionEnded
-            .subscribe{ (_) in
-                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
-        }
-        
-       
-    }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Initialize descriptor cache
-        descriptorCache = DescriptorCache(geolocationService)
 
-
-        // Setup buttons design on the main screen
         setupUILayout()
-
-        // Setup Button Rx functions
+        
         setupScreenshoButtonRx()
+
         setupResetButtonRx()
+        
         setupCreateButtonRx()
 
-        // Setup AR Poster Discovery and Placement Rx
-        setupPostRx()
-
-        // Setup gesture
+        setupIndicatorButtonRx()
+        
+        setupPostRx() // Setup AR Post Discovery / Placement
+        
         setuplongPressSubject()
+        
         setupPostNodeInteractions()
 
         // SignIn View Controllers
@@ -99,10 +76,22 @@ class ViewController: UIViewController {
                                         }
                 })
         }
-
-
-        view.addSubview(longPressIndicator)
-        longPressIndicator.isHidden = true
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Run the view's session
+        sceneView.session.run(trackingConfiguration)
+        sceneView.showsStatistics = true // For debugging
+        
+        // Reset tracking state when interruption ends
+        let _ =
+        sceneView.session.rx.sessionInterruptionEnded
+            .subscribe{ (_) in
+                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+            }
+            .disposed(by: disposeBag)
     }
     
     
@@ -113,54 +102,36 @@ class ViewController: UIViewController {
         sceneView.session.pause()
     }
 
-    
-    /**
-        Hide ViewDidLoad UIButtons
-     */
-    private func hideUIButtons() {
-        screenshotButton.alpha = 0
-        createButton.alpha = 0
-        resetButton.alpha = 0
-        userButton.alpha = 0
-        indicatorButton.alpha = 0
-    }
 }
 
-/**
- MARK:- Rx for ViewDidLoad Buttons
- */
+
+/// MARK: ViewDidLoad Buttons Interaction Setup
 extension ViewController {
-    /**
-     React to screenshotButton tap gesture - Take a screenshot
-     */
+
     private func setupScreenshoButtonRx() {
         screenshotButton.rx.tap
             .bind {
+                // Take screenshot and save to photo album
                 let screenshot = self.sceneView.snapshot()
                 UIImageWriteToSavedPhotosAlbum(screenshot, self, nil, nil)
             }
             .disposed(by: disposeBag)
     }
     
-    /**
-     React to resetButton tap gesture - Reset ARScnView
-     */
     private func setupResetButtonRx() {
         resetButton.rx.tap
             .bind {
+                // Remove exising plane anchors (and their children nodes) and reset session coordinate system
                 self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
             }
             .disposed(by: disposeBag)
         
     }
     
-    /**
-     React to createButton tap gesture
-     */
     private func setupCreateButtonRx() {
         let createButtonTapObservable = createButton.rx.tap.share()
         
-        // Activate CreationView and isPosting
+        // Activate CreationView and setup reaction to creationView exit
         createButtonTapObservable
             .filter({ _ -> Bool in
                 return self.createButton.post == nil
@@ -170,21 +141,15 @@ extension ViewController {
                 let creationView = CreationView()
                 self.view.addSubview(creationView) // sets layout inside didMoveToSuperview()
                 
-                /**
-                 Handle exit of creationView - React to createView exitSubject
-                 */
+                
+                // Handle exit of creationView - React to createView exitSubject, which returns nil (cancelled) or uiimage (finnished)
                 creationView.exitSubject
                     .asDriver(onErrorJustReturn: nil)
                     .drive(onNext: { (image) in
                         self.createButton.post = image
-                        // Set createButton image depending on
-                        if image == nil { // Either cancelButton was tapped or finishButton failed
-                            creationView.removeFromSuperview()
-                        } else {
-                            creationView.removeFromSuperview()
-                        }
-                        
+                    
                         // Remove creationView
+                        creationView.removeFromSuperview()
                         UIView.animate(withDuration: 0.3, animations: {
                             self.screenshotButton.alpha = 1
                             self.createButton.alpha = 1
@@ -196,14 +161,19 @@ extension ViewController {
                     .disposed(by: self.disposeBag)
                 
                 
-                // Hide ViewDidLoad UIButtons
+                // Hide main UIButtons
                 UIView.animate(withDuration: 0.3, animations: {
-                    self.hideUIButtons()
+                    // Hide UI Buttons
+                    self.screenshotButton.alpha = 0
+                    self.createButton.alpha = 0
+                    self.resetButton.alpha = 0
+                    self.userButton.alpha = 0
+                    self.indicatorButton.alpha = 0
                 })
             })
             .disposed(by: disposeBag)
         
-        // Deactivate CreationView
+        // Deactivate posting interactions by setting createButton.post to nil
         createButtonTapObservable
             .filter({ _ -> Bool in
                 return self.createButton.post != nil
@@ -213,69 +183,69 @@ extension ViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+    private func setupIndicatorButtonRx() {
+        // Count number of descriptors cached
+        descriptorCache.counter
+            .drive(onNext: { (count) in
+                self.indicatorButton.setLabel(count)
+            })
+            .disposed(by: disposeBag)
+        
+        // Refresh descriptor cache
+        indicatorButton.rx.tap.subscribe(onNext: { _ in
+            self.descriptorCache.refresh()
+        }).disposed(by: disposeBag)
+        
+    }
 }
 
 extension ViewController {
     func setupPostRx() {
+        
+        // 1. Slow down number of frames read
         let arFrameObservable =
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
                 .throttle(0.1, scheduler:  MainScheduler.instance)
         
+        // 2. Detect rectangles attached to vertical surfaces in the real world
         let verticalRectObservable =
             arFrameObservable
                 .flatMap{ detectVerticalRect(frame: $0, in: self.sceneView) }
-                .debug("Detect vertical rect")
                 .withLatestFrom(longPressSubject) { (observation, sender) -> VNRectangleObservation? in
                     // Continue PostNode creation/discovery process only if either of the two requirements are met
-
-                    if self.createButton.post == nil { // 1. if user is not posting
+                    if self.createButton.post == nil { // a. if user is not posting
                         return observation
-                    } else if sender.state.isActive { // 2. if user is posting and long pressing
+                    } else if sender.state.isActive { // b. if user is posting and long pressing
                         let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
                         let currTouchLocation = sender.location(in: self.sceneView)
-                        if convertedRect.contains(currTouchLocation) {
+                        if convertedRect.contains(currTouchLocation) { // user select observation through long press
                             return observation
                         }
                     }
                     
                     return nil
                 }
-                .debug("After posting check")
                 .filter{ $0 != nil }
         
-        
-       
-        let verticalRectInfoObservable =
+        // 3. Compute geometric information and descriptor for each vertical rectangle observered previously
+        let descriptorComputer = DescriptorComputer()
+        let infoObservable =
             verticalRectObservable
                 .map({ (observation) -> VerticalRectInfo? in
-                    var info = VerticalRectInfo(for: observation!, in: self.sceneView)
+                    let info = VerticalRectInfo(for: observation!, in: self.sceneView) // Compute geometric information
                     info?.post = self.createButton.post
                     return info
                 })
                 .filter { $0 != nil }
-        
-        
-        
-        
-        let descriptorComputer = DescriptorComputer()
-        let infoDescriptorPairObservable =
-            verticalRectInfoObservable
-                .flatMap { descriptorComputer.compute(info: $0!) }
+                .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
                 .filter { $0 != nil }
 
-        descriptorCache!.counter
-            .drive(onNext: { (count) in
-                self.indicatorButton.setLabel(count)
-            })
-            .disposed(by: disposeBag)
-        indicatorButton.rx.tap.subscribe(onNext: { _ in
-            self.descriptorCache!.refresh()
-        }).disposed(by: disposeBag)
-        
-        let postNodeObservable =
-            infoDescriptorPairObservable
-                .map { PostNode(info: $0!, cache: self.descriptorCache!) }
+        // 4. Generate PostNode
+        let _ =
+            infoObservable
+                .map { PostNode(info: $0!, cache: self.descriptorCache) }
                 .subscribe(onNext: { (postNode) in
                     print("PostNode created: ", postNode)
                 })
