@@ -37,6 +37,7 @@ class DynamoDBService {
     }
     
     func query(_ locationString: String) -> Observable<[String]> {
+        print("Querying using \(locationString)")
         let keyPublisher = PublishSubject<[String]>()
         
         // 1) Configure the query
@@ -51,6 +52,7 @@ class DynamoDBService {
             ":_location": locationString,
         ]
         
+
         // 2) Make the query
         dynamoDbObjectMapper.query(Posts.self, expression: queryExpression) { (output: AWSDynamoDBPaginatedOutput?, error: Error?) in
             if error != nil {

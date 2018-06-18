@@ -11,8 +11,7 @@ import RxCocoa
 // Cosine similarity may be unreliable. Explore other matching methods between vectors
 
 class DescriptorCache {
-    fileprivate let disposeBag = DisposeBag()
-    private(set) var cache: [Descriptor] {
+    private(set) var cache: [String : Descriptor] {
         didSet{
             countSubject.onNext(cache.count)
         }
@@ -28,8 +27,8 @@ class DescriptorCache {
     private let cacheRequestSubject = PublishSubject<(Double, Double)>()
     
     init(_ geolocationService: GeolocationService) {
-        cache = [Descriptor]()
-        
+        cache = [String : Descriptor]()
+    
         counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0)
         
         self.geolocationService = geolocationService
@@ -49,7 +48,7 @@ class DescriptorCache {
             .subscribe(onNext: { (location) in
                 self.lastLocation = location
                 // Refresh cache. Remove descriptors that are not inside user region
-                self.cache = self.cache.filter { $0.neighbors(self.lastLocation!) }
+                self.cache = self.cache.filter { $0.value.neighbors(self.lastLocation!) }
                 //
                 self.cacheRequestSubject.onNext(location)
             })
@@ -76,12 +75,11 @@ class DescriptorCache {
     }
     
     func update(_ descriptor: Descriptor) {
-        if descriptor.newTo(cache) {
-            cache.append(descriptor)
-        }
+            cache.updateValue(descriptor, forKey: descriptor.key)
     }
     
     func refresh() {
+        print("Refreshing")
         if let location = self.lastLocation {
              cacheRequestSubject.onNext(location)
         }
@@ -94,7 +92,7 @@ class DescriptorCache {
         var bestMatchKey: String? = nil
         var bestMatchSimilarity: Double? = nil
         
-        for descriptor in cache {
+        for (_, descriptor) in cache {
             var sumxx = 0, sumxy = 0, sumyy = 0
             for i in 0 ..< target.count {
                 let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
@@ -137,7 +135,7 @@ class DescriptorCache {
 }
 
 
-struct Descriptor {
+class Descriptor: NSObject {
     let key: String
     let value: [Double]
     let location: (Double, Double)
@@ -150,6 +148,14 @@ struct Descriptor {
         let long = Double(keyArr[1])!
         self.location = (lat, long)
     }
+    
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let other = object as? Descriptor else {
+            return false
+        }
+        return self.key == other.key
+    }
+   
 }
 
 extension Descriptor {
@@ -188,9 +194,16 @@ fileprivate func cosineSimilarity(v1: [Double], v2: [Double]) -> Double {
 fileprivate func generateNeighborCoordinates(_ location: (Double, Double)) -> [(Double, Double)] {
     let lat = location.0
     let long = location.1
+    
+    var latRange = [Double]()
+    var longRange = [Double]()
+    for alpha in -2 ... 2 {
+        latRange.append(lat + Double(alpha) * Double(0.0001))
+        longRange.append(long + Double(alpha) * Double(0.0001))
+    }
    
-    let latRange = [lat-0.0002, lat-0.0001, lat, lat+0.0001, lat+0.0002]
-    let longRange = [long-0.0002, long-0.0001, long, long+0.0001, long+0.0002]
+//    let latRange = [lat-0.0002, lat-0.0001, lat, lat+0.0001, lat+0.0002]
+//    let longRange = [long-0.0002, long-0.0001, long, long+0.0001, long+0.0002]
     
     var output = [(Double, Double)]()
     for i in latRange {
@@ -203,6 +216,8 @@ fileprivate func generateNeighborCoordinates(_ location: (Double, Double)) -> [(
 }
 
 fileprivate func converToString(_ location: (Double,Double)) -> String {
-    return String(location.0) + "/" + String(location.1)
+    return location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
 }
+
+fileprivate let disposeBag = DisposeBag()
 

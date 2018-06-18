@@ -74,6 +74,12 @@ extension CGSize {
     }
 }
 
+extension Double {
+    func format(f: String) -> String {
+        return String(format: "%\(f)f", self)
+    }
+}
+
 extension SCNVector3 {
     func crossProduct(_ vectorB: SCNVector3) -> SCNVector3 {
         

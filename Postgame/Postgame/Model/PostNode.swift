@@ -242,7 +242,7 @@ class ContentNode: SCNNode {
 }
 
 fileprivate func getKey(_ location: (Double,Double)) -> String {
-    let locationString = String(location.0) + "/" + String(location.1)
+    let locationString = location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
     let date = recordDate()
     let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
     let key = locationString + "/" + date + "/" + username

@@ -20,7 +20,9 @@ extension ViewController {
         
         // Refresh Cache (Consider if this is overdone/expensive
         // TODO: let cache finish refreshing before continuing to create Post Node. Attempting to create Post Node before reresh completes risks duplicate error
-        descriptorCache!.refresh()
+        if sender.state == .began && createButton.post != nil {
+            descriptorCache!.refresh()
+        }
         
         // Delete placeholders when user is trying to select
         if sender.state.isActive{

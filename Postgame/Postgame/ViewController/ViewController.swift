@@ -44,26 +44,46 @@ class ViewController: UIViewController {
 
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Run the view's session
+        sceneView.session.run(trackingConfiguration)
+        sceneView.showsStatistics = true // For debugging
+        
+        // Reset tracking state when interruption ends
+        let _ =
+        sceneView.session.rx.sessionInterruptionEnded
+            .subscribe{ (_) in
+                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+        }
+        
+       
+    }
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Initialize descriptor cache
+        descriptorCache = DescriptorCache(geolocationService)
+
+
         // Setup buttons design on the main screen
         setupUILayout()
-        
+
         // Setup Button Rx functions
         setupScreenshoButtonRx()
         setupResetButtonRx()
         setupCreateButtonRx()
-        
+
         // Setup AR Poster Discovery and Placement Rx
         setupPostRx()
 
         // Setup gesture
         setuplongPressSubject()
         setupPostNodeInteractions()
-        
+
         // SignIn View Controllers
         // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
         // Get rid of email field in sign-up
@@ -79,29 +99,12 @@ class ViewController: UIViewController {
                                         }
                 })
         }
-        
-        
+
+
         view.addSubview(longPressIndicator)
         longPressIndicator.isHidden = true
-        
-        descriptorCache = DescriptorCache(geolocationService)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-    
-        // Run the view's session
-        sceneView.session.run(trackingConfiguration)
-        sceneView.showsStatistics = true // For debugging
-        
-        // Reset tracking state when interruption ends
-        let _ =
-        sceneView.session.rx.sessionInterruptionEnded
-            .subscribe{ (_) in
-                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
-            }
-      
-    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -260,9 +263,7 @@ extension ViewController {
             verticalRectInfoObservable
                 .flatMap { descriptorComputer.compute(info: $0!) }
                 .filter { $0 != nil }
-        
 
-        
         descriptorCache!.counter
             .drive(onNext: { (count) in
                 self.indicatorButton.setLabel(count)

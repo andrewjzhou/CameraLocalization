@@ -103,6 +103,8 @@ class S3Service {
         let prefix = "public/descriptor/"
         let downloadKey = prefix + key
         return Observable.create({ (observer) in
+            print("downloadDescriptor() using key: \(key) ")
+            
             // Track progress
             let expression = AWSS3TransferUtilityDownloadExpression()
             expression.progressBlock = {(task, progress) in DispatchQueue.main.async(execute: {
@@ -121,7 +123,7 @@ class S3Service {
                 }
                 
                 if let _ = data {
-                    print("downloadDescriptor() using key: \(key) getting data: \(data)")
+                    
                     let descriptor = Descriptor(key: key, value: decodeForDescriptor(data!))
                     
                     observer.onNext(descriptor)
