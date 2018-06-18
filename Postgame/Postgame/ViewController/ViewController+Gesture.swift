@@ -46,7 +46,6 @@ extension ViewController {
             
             
         } else {
-            print("Test4")
             longPressIndicator.isHidden = true
         }
         

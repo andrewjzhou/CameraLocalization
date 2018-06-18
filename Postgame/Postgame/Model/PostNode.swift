@@ -54,11 +54,11 @@ class PostNode: SCNNode {
             case .inactive:
                 self.contentNode.content.deactivate()
             case .load:
-                self.contentNode.load()
+                self.contentNode.content.load()
             case .prompt:
-                self.contentNode.prompt()
+                self.contentNode.content.prompt()
             case .active:
-                self.contentNode.activate()
+                self.contentNode.content.activate()
                 
             }
         }).disposed(by: disposeBag)
@@ -210,25 +210,6 @@ class ContentNode: SCNNode {
         self.geometry = planeGeometry
         self.eulerAngles.x = -.pi / 2 // might need to set this property as a child node in post node if it doesn't work
     }
-    
-    func load() {
-        content.load()
-    }
-    
-    func prompt() {
-        print("Content2: ", content)
-        print("Prompt2")
-        content.prompt()
-    }
-    
-    func activate() {
-        content.activate()
-    }
-    
-    func deactivate() {
-        content.deactivate()
-    }
-    
     
     
     fileprivate func updateSize(_ size: CGSize) {
