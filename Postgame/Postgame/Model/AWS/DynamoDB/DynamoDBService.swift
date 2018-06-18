@@ -36,7 +36,7 @@ class DynamoDBService {
         }
     }
     
-    func query(_ locationString: String) -> Observable<[String]> {
+    func locationQuery(_ locationString: String) -> Observable<[String]> {
         print("Querying using \(locationString)")
         let keyPublisher = PublishSubject<[String]>()
         
@@ -75,6 +75,45 @@ class DynamoDBService {
             }
         }
         return keyPublisher.asObservable()
+    }
+    
+    func usernameQuery(_ username: String) -> Observable<[Posts]> {
+       
+        let publisher = PublishSubject<[Posts]>()
+        
+        // 1) Configure the query
+        let queryExpression = AWSDynamoDBQueryExpression()
+        queryExpression.indexName = "username"
+        queryExpression.keyConditionExpression = "#_username = :_username"
+        
+        queryExpression.expressionAttributeNames = [
+            "#_username": "username",
+        ]
+        queryExpression.expressionAttributeValues = [
+            ":_username": username,
+        ]
+        
+        
+        // 2) Make the query
+        dynamoDbObjectMapper.query(Posts.self, expression: queryExpression) { (output: AWSDynamoDBPaginatedOutput?, error: Error?) in
+            if error != nil {
+                print("The request failed. Error: \(String(describing: error))")
+                publisher.onCompleted()
+            }
+            
+            if output != nil {
+                if let posts = output!.items as? [Posts] {
+                    for post in posts {
+                        print("DOWNLOADED", post._key!)
+                    }
+                    publisher.onNext(posts)
+                }
+                publisher.onCompleted()
+            } else {
+                publisher.onCompleted()
+            }
+        }
+        return publisher.asObservable()
     }
     
     func incrementViews(_ key: String) {

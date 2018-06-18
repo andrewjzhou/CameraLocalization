@@ -38,6 +38,8 @@ class ViewController: UIViewController {
     let userButton = UIButton()
     let indicatorButton = IndicatorButton()
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+    
+    let userView = UserView()
 
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
@@ -55,6 +57,8 @@ class ViewController: UIViewController {
 
         setupIndicatorButtonRx()
         
+        setupUserButtonRx()
+        
         setupPostRx() // Setup AR Post Discovery / Placement
         
         setuplongPressSubject()
@@ -67,8 +71,8 @@ class ViewController: UIViewController {
         if !AWSSignInManager.sharedInstance().isLoggedIn {
             showSignIn()
         }
+      
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -190,6 +194,26 @@ extension ViewController {
         }).disposed(by: disposeBag)
         
     }
+    
+    private func setupUserButtonRx() {
+        // Show userview
+        userButton.rx.tap
+            .subscribe(onNext: { (_) in
+                self.userView.alpha = 1
+                UIView.animate(withDuration: 0.5) {
+                    self.userView.transform = .identity
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        // Sign-Out
+        userView.signOutObservable
+            .subscribe(onCompleted: {
+                self.signOut()
+            })
+            .disposed(by: disposeBag)
+
+    }
 }
 
 extension ViewController {
@@ -290,7 +314,7 @@ extension ViewController {
     // Show sign-in view controller
     func showSignIn() {
         // Customize Sign-In UI
-        let config = AWSAuthUIConfiguration()
+//        let config = AWSAuthUIConfiguration()
 //        config.enableUserPoolsUI = true
 //        config.backgroundColor = UIColor.blue
 //        config.font = UIFont (name: "Helvetica Neue", size: 20)
@@ -300,7 +324,7 @@ extension ViewController {
         
         AWSAuthUIViewController
             .presentViewController(with: self.navigationController!,
-                                   configuration: config,
+                                   configuration: nil,
                                    completionHandler: { (provider: AWSSignInProvider, error: Error?) in
                                     if error != nil {
                                         print("Error occurred: \(String(describing: error))")

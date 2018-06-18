@@ -94,4 +94,13 @@ extension ViewController {
             
         }
     }
+    
+    // Dismiss UserView when swipped up
+    @objc func handleUserViewSwipe (sender: UISwipeGestureRecognizer) {
+        UIView.animate(withDuration: 0.5, animations: {
+            self.userView.transform = CGAffineTransform(translationX: 0, y: -UIScreen.main.bounds.height)
+        }) { (_) in
+            self.userView.countView.alpha = 0
+        }
+    }
 }

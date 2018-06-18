@@ -21,7 +21,8 @@
 //    override func viewDidLoad() {
 //        super.viewDidLoad()
 //        view.backgroundColor = .white
-//        self.pool = AppDelegate.defaultUserPool()
+//        
+//        self.pool = AWSCognitoIdentityUserPool(forKey: "us-east-2_a0pr7d57s")
 //        
 //        // Configure Username
 //        let usernameLabel = UILabel()

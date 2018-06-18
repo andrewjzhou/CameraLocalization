@@ -8,6 +8,8 @@
 //
 //import UIKit
 //import AWSCognitoIdentityProvider
+//import AWSMobileClient
+//import AWSAuthCore
 //
 //class SignUpViewController: UIViewController {
 //    
@@ -17,11 +19,11 @@
 //    var email: UITextField?
 //    var signUpButton: UIButton?
 //    
-//    let pool = AppDelegate.defaultUserPool()
+//    let pool = AWSCognitoIdentityUserPool(forKey: "us-east-2_a0pr7d57s")
 //    var sentTo: String?
 //    
 //    override func viewWillAppear(_ animated: Bool) {
-//        //        self.navigationController?.setNavigationBarHidden(false, animated: false)
+//       //        self.navigationController?.setNavigationBarHidden(false, animated: false)
 //    }
 //    
 //    override func viewDidLoad() {

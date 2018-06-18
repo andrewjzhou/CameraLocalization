@@ -30,6 +30,8 @@ extension ViewController {
         setupResetButton()
         
         setupUserButton()
+        
+        setupUserView()
     }
     
     
@@ -86,6 +88,14 @@ extension ViewController {
         userButton.setImage(UIImage(named: "ic_perm_identity"), for: .normal)
         userButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
         userButton.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+    }
+    
+    private func setupUserView() {
+        view.addSubview(userView)
+        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(handleUserViewSwipe(sender:)))
+        swipe.direction = .up
+        userView.addGestureRecognizer(swipe)
+    
     }
 }
 
