@@ -17,7 +17,6 @@ import AWSAuthCore
 import AWSAuthUI
 
 class ViewController: UIViewController {
-    fileprivate let disposeBag = DisposeBag()
     
     fileprivate let trackingConfiguration: ARWorldTrackingConfiguration = {
         let config = ARWorldTrackingConfiguration()
@@ -66,18 +65,10 @@ class ViewController: UIViewController {
         // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
         // Get rid of email field in sign-up
         if !AWSSignInManager.sharedInstance().isLoggedIn {
-            AWSAuthUIViewController
-                .presentViewController(with: self.navigationController!,
-                                       configuration: nil,
-                                       completionHandler: { (provider: AWSSignInProvider, error: Error?) in
-                                        if error != nil {
-                                            print("Error occurred: \(String(describing: error))")
-                                        } else {
-                                            // Sign in successful.
-                                        }
-                })
+            showSignIn()
         }
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -159,7 +150,7 @@ extension ViewController {
                             self.indicatorButton.alpha = 1
                         })
                     })
-                    .disposed(by: self.disposeBag)
+                    .disposed(by: disposeBag)
                 
                 
                 // Hide main UIButtons
@@ -292,7 +283,39 @@ extension ViewController {
         self.highlightedRectangleOutlineLayers.removeAll()
     }
 
-    
-    
-    
 }
+
+
+extension ViewController {
+    // Show sign-in view controller
+    func showSignIn() {
+        // Customize Sign-In UI
+        let config = AWSAuthUIConfiguration()
+//        config.enableUserPoolsUI = true
+//        config.backgroundColor = UIColor.blue
+//        config.font = UIFont (name: "Helvetica Neue", size: 20)
+//        config.isBackgroundColorFullScreen = true
+//        config.canCancel = true
+
+        
+        AWSAuthUIViewController
+            .presentViewController(with: self.navigationController!,
+                                   configuration: config,
+                                   completionHandler: { (provider: AWSSignInProvider, error: Error?) in
+                                    if error != nil {
+                                        print("Error occurred: \(String(describing: error))")
+                                    } else {
+                                        // Sign in successful.
+                                    }
+            })
+    }
+    
+    // Sign out current user
+    func signOut() {
+        AWSSignInManager.sharedInstance().logout(completionHandler: {(result: Any?, error: Error?) in
+            self.showSignIn()
+        })
+    }
+}
+
+fileprivate let disposeBag = DisposeBag()

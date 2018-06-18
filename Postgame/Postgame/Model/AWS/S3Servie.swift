@@ -50,7 +50,8 @@ class S3Service {
      */
     func uploadPost(_ post: UIImage, key: String) {
         // generate data
-        guard let jpeg = UIImageJPEGRepresentation(post, 1.0) else {return}
+        // compress image to 0.1x to increase upload/download speed
+        guard let jpeg = UIImageJPEGRepresentation(post, 0.1) else {return}
         let data = jpeg.base64EncodedData(options: .lineLength64Characters)
         // generate key
         let prefix = "public/post/"
