@@ -1,6 +1,5 @@
 //
 //  Posts.swift
-//  MySampleApp
 //
 //
 // Copyright 2018 Amazon.com, Inc. or its affiliates (Amazon). All Rights Reserved.

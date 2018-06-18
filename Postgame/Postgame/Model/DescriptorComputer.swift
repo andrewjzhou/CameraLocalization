@@ -6,18 +6,18 @@
 //  Copyright © 2018 postgame. All rights reserved.
 //
 
+// Is resizing correct? Does it resize image to a size that meets caffenet model input requirement?
+// Explore other descriptor services: e.g. MobileNet
+// How to get rid of Multi-Array
+// Explore other Convolutional Image retrieval methods using descriptor vector
+// [UInt8] vs [Double] Representation
+
 import UIKit
 import Foundation
 import CoreML
 import Vision
 import RxCocoa
 import RxSwift
-
-// Is resizing correct? Does it resize image to a size that meets caffenet model input requirement?
-// Explore other descriptor services: e.g. MobileNet
-// How to get rid of Multi-Array
-// Explore other Convolutional Image retrieval methods using descriptor vector
-// [UInt8] vs [Double] Representation
 
 class DescriptorComputer: NSObject {
     

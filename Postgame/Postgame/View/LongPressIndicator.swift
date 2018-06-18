@@ -15,13 +15,9 @@ class LongPressIndicator: UIView {
     private var shapeLayer = CAShapeLayer()
     
     
-    var pulsate: Bool = true {
+    var pulsate: Bool = false {
         didSet{
             if pulsate {
-                pulsatingLayer.isHidden = true
-                coreLayer.strokeColor = UIColor.red.cgColor
-                coreLayer.opacity = 0.8
-            } else {
                 let coreStrokeColor = UIColor.rgb(r: 201, g: 13, b: 0)
                 coreLayer.strokeColor = coreStrokeColor.cgColor
                 coreLayer.opacity = 0.6
@@ -30,6 +26,10 @@ class LongPressIndicator: UIView {
                 UIView.animate(withDuration: 0.2) {
                     self.isHidden = false
                 }
+            } else {
+                pulsatingLayer.isHidden = true
+                coreLayer.strokeColor = UIColor.red.cgColor
+                coreLayer.opacity = 0.8
             }
         }
     }

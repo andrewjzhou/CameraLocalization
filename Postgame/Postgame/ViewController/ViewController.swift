@@ -40,6 +40,7 @@ class ViewController: UIViewController {
     let indicatorButton = IndicatorButton()
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
 
+    // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
 
     override func viewDidLoad() {
@@ -249,20 +250,15 @@ extension ViewController {
                 .subscribe(onNext: { (postNode) in
                     print("PostNode created: ", postNode)
                 })
-
-    
+        
     }
-
 }
 
 
-
-
-// Highlighting Rectangle Observations
+// Highlighting Rectangle Observations for debugging
 extension ViewController {
-    /**
-     Outline selected rectangle observation.
-     */
+    
+    // Outline selected rectangle observation.
     fileprivate func highlightObservation(_ observation: VNRectangleObservation) {
         let points = [observation.topLeft, observation.topRight, observation.bottomRight, observation.bottomLeft]
         let convertedPoints = points.map { self.sceneView.convertFromCamera($0) }
@@ -271,9 +267,8 @@ extension ViewController {
         self.sceneView.layer.addSublayer(layer)
     }
     
-    /**
-     Draw outline given set of points and color.
-     */
+
+    // Draw outline given set of points and color.
     fileprivate func drawPolygon(_ points: [CGPoint], color: UIColor) -> CAShapeLayer {
         let layer = CAShapeLayer()
         layer.fillColor = nil
@@ -288,9 +283,7 @@ extension ViewController {
         return layer
     }
     
-    /**
-     Remove outlines drawn for selected rectangles.
-     */
+    // Remove outlines drawn for selected rectangles.
     fileprivate func removeRectOutlineLayers() {
         // Remove outline for observed rectangles
         for layer in self.highlightedRectangleOutlineLayers {

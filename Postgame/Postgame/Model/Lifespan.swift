@@ -11,17 +11,21 @@ import RxSwift
 class Lifespan: NSObject {
     
     private var currTimer: Disposable?
+    
     private(set) var lifeRemained: Int
+    
     private let completePublisher = PublishSubject<Int>()
+    
+    // Sends completion signal when lifespan expires
     var completeObservable: Observable<Int> {
         return completePublisher.asObservable()
     }
     
-    let increment = 5
-    let disposeBag = DisposeBag()
     
     override init() {
+        // Every node gets an initial (short) amount of lifespan
         lifeRemained = increment
+        
         currTimer = nil
       
         super.init()
@@ -32,12 +36,18 @@ class Lifespan: NSObject {
     
     func addLife() {
         currTimer!.dispose()
+        
         lifeRemained += increment
+        
+        // After receiving more than 2 updates, set lifespan to very large number
+        if lifeRemained > 15 {
+            lifeRemained = 1000
+        }
         
         currTimer = getTimer(lifeRemained)
     }
     
-    fileprivate func getTimer(_ count: Int) -> Disposable {
+    private func getTimer(_ count: Int) -> Disposable {
         return timer(count).subscribe(onNext: { (number) in
             self.lifeRemained = number
             if self.lifeRemained == 0 {
@@ -55,5 +65,6 @@ fileprivate func timer(_ count: Int) -> Observable<Int> {
         .share()
 }
 
+fileprivate let increment = 5
 
-
+fileprivate let disposeBag = DisposeBag()

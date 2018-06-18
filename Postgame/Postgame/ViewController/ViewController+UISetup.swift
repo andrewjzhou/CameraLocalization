@@ -15,32 +15,33 @@ fileprivate let screenHeight = UIScreen.main.bounds.height
 fileprivate let screenWidth = UIScreen.main.bounds.width
 
 extension ViewController {
-    /**
-     Setup UI layout for main screen.
-     */
+    
+    // Setup UI layout for main screen.
     func setupUILayout() {
+        
         setupSceneView()
+        
         setupScreenshotButton()
+        
         setupCreateButton()
+        
         setupIndicatorButton()
+        
         setupResetButton()
+        
         setupUserButton()
     }
     
-    /**
-     Setup ARScnView for ViewController.
-     */
+    
+    //Setup ARScnView for ViewController.
     private func setupSceneView() {
         view.addSubview(sceneView)
-//        sceneView.delegate = self
         let scene = SCNScene()
         sceneView.scene = scene
-//        sceneView.showsStatistics = true
     }
     
-    /**
-     Setup screenshotButton located on bottom right of main screen.
-     */
+
+    // Setup screenshotButton located on bottom right of main screen.
     private func setupScreenshotButton() {
         view.addSubview(screenshotButton)
         setButtonBasics(screenshotButton)
@@ -49,9 +50,7 @@ extension ViewController {
         screenshotButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: screenWidth * -0.05)
     }
     
-    /**
-     Setup createButton located on top right of main screen.
-     */
+    // Setup createButton located on top right of main screen.
     private func setupCreateButton() {
         view.addSubview(createButton)
         setButtonBasics(createButton)
@@ -60,9 +59,8 @@ extension ViewController {
         createButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: screenWidth * -0.05)
     }
     
-    /**
-     Setup createButton located on top right of main screen.
-     */
+
+    // Setup createButton located on top right of main screen.
     private func setupIndicatorButton() {
         view.addSubview(indicatorButton)
         setButtonBasics(indicatorButton)
@@ -70,9 +68,8 @@ extension ViewController {
         indicatorButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: screenWidth * 0.05)
     }
     
-    /**
-     Setup resetButton located on top right of main screen.
-     */
+   
+    // Setup resetButton located on top right of main screen.
     private func setupResetButton() {
         view.addSubview(resetButton)
         setButtonBasics(resetButton)
@@ -81,9 +78,8 @@ extension ViewController {
         resetButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: screenWidth * 0.05)
     }
     
-    /**
-     Setup userButton located on top right of main screen.
-     */
+
+    // Setup userButton located on top right of main screen.
     private func setupUserButton() {
         view.addSubview(userButton)
         setButtonBasics(userButton)
@@ -93,9 +89,8 @@ extension ViewController {
     }
 }
 
-/**
- Tune button basics for buttons on main screen.
- */
+
+// Tune button basics for buttons on main screen.
 fileprivate func setButtonBasics(_ button: UIButton) {
     button.translatesAutoresizingMaskIntoConstraints = false
     button.clipsToBounds = true

@@ -6,24 +6,35 @@
 //  Copyright © 2018 postgame. All rights reserved.
 //
 
-import RxSwift
-import RxCocoa
 // Cosine similarity may be unreliable. Explore other matching methods between vectors
 
+import RxSwift
+import RxCocoa
+
 class DescriptorCache {
+    // Matching threshold.
+    // Beware of tradeoff between false postivie and false negative
+    // Currently set low to limit duplicate errors (less false negative, more false positive)
+    let threshold = 0.6
+    
     private(set) var cache: [String : Descriptor] {
         didSet{
+            // Update count
             countSubject.onNext(cache.count)
         }
     }
     
     private(set) var geolocationService: GeolocationService
     
-    let threshold = 0.6
     var lastLocation: (Double,Double)?
     
+    // Use countSubject to drive counter
     private let countSubject = BehaviorSubject<Int>(value: 0)
+    
+    // IndicatorButton in main View Controller uses counter to disploy number of posts nearby
     private(set) var counter: Driver<Int>
+    
+    // Every observered event downloads descriptor to cache
     private let cacheRequestSubject = PublishSubject<(Double, Double)>()
     
     init(_ geolocationService: GeolocationService) {
@@ -33,7 +44,7 @@ class DescriptorCache {
         
         self.geolocationService = geolocationService
         
-        // Get the current user coordinate
+        // Get the current user coordinate and filter
         let userLocation = geolocationService.location.asObservable()
         userLocation
             .filter({ (location) -> Bool in
@@ -44,29 +55,24 @@ class DescriptorCache {
                 }
                 return false
             })
-            .debug("Cache: New location coming in")
             .subscribe(onNext: { (location) in
                 self.lastLocation = location
-                // Refresh cache. Remove descriptors that are not inside user region
-                self.cache = self.cache.filter { $0.value.neighbors(self.lastLocation!) }
-                //
-                self.cacheRequestSubject.onNext(location)
+                
+                // Reload cache
+                self.refresh()
             })
             .disposed(by: disposeBag)
         
-        
+        // Download descriptors
         cacheRequestSubject.asObservable()
             .map({ location -> [(Double,Double)] in
                 generateNeighborCoordinates(location)
             })
-            .debug("Cache: generated neighbor coordinates")
             .flatMap { Observable.from($0) }
             .map { converToString($0) } // String representation of location coordinates
             .flatMap { DynamoDBService.sharedInstance.query($0)} // Download keys from dynamoDB
             .flatMap { Observable.from($0) }
-            .debug("Cache: queried dynamoDB and got keys")
             .flatMap { S3Service.sharedInstance.downloadDescriptor($0) } // Download descriptors from S3
-            .debug("Cache: downloaded descriptors from S3")
             .filter {$0 != nil}
             .subscribe(onNext: { (descriptor) in
                 self.update(descriptor!)
@@ -74,20 +80,25 @@ class DescriptorCache {
             .disposed(by: disposeBag)
     }
     
+    // Append or update descriptor
     func update(_ descriptor: Descriptor) {
             cache.updateValue(descriptor, forKey: descriptor.key)
     }
     
+    // Reload cache
     func refresh() {
-        print("Refreshing")
         if let location = self.lastLocation {
+            
+            // Refresh cache. Remove descriptors that are not inside user region
+             cache = cache.filter { $0.value.neighbors(location) }
+            
+            // Download nearby descriptors
              cacheRequestSubject.onNext(location)
         }
     }
     
-    /**
-     Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
-     */
+    
+    // Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
     func findMatch(_ target: [Double]) -> String? {
         var bestMatchKey: String? = nil
         var bestMatchSimilarity: Double? = nil
@@ -104,72 +115,9 @@ class DescriptorCache {
                 }
             }
         }
+        
         print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)")
         return bestMatchKey
-    }
-    
-    private func downloadKeys(_ locations: [(Double,Double)]) -> Observable<String> {
-        let keyPublisher = PublishSubject<String>()
-        let db = DynamoDBService.sharedInstance
-        for location in locations {
-            let locationString = String(location.0) + "/" + String(location.1)
-            let observable = db.query(locationString)
-            observable
-                .subscribe(onNext: { (keys) in
-                    for key in keys {
-                        keyPublisher.onNext(key)
-                    }
-                })
-                .disposed(by: disposeBag)
-        }
-        
-        return keyPublisher.asObservable()
-    }
-    
-    
-    
-    
-}
-
-
-class Descriptor: NSObject {
-    let key: String
-    let value: [Double]
-    let location: (Double, Double)
-    
-    init(key: String, value: [Double]) {
-        self.key = key
-        self.value = value
-        let keyArr = key.split(separator: "/")
-        let lat = Double(keyArr[0])!
-        let long = Double(keyArr[1])!
-        self.location = (lat, long)
-    }
-    
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let other = object as? Descriptor else {
-            return false
-        }
-        return self.key == other.key
-    }
-   
-}
-
-extension Descriptor {
-    func neighbors(_ location: (Double, Double)) -> Bool {
-        let precision = 0.0003
-        let lat = self.location.0
-        let long = self.location.1
-        return (abs(lat - location.0) < precision) && (abs(long - location.1) < precision)
-    }
-    
-    func newTo(_ cache: [Descriptor]) -> Bool {
-        for cached in cache {
-            if cached.key == self.key {
-                return false
-            }
-        }
-        return true
     }
 }
 
@@ -188,6 +136,7 @@ fileprivate func cosineSimilarity(v1: [Double], v2: [Double]) -> Double {
     return sumxy/sqrt(sumxx*sumyy)
 }
 
+// Generate list of coordinates that are neighbors of last location
 fileprivate func generateNeighborCoordinates(_ location: (Double, Double)) -> [(Double, Double)] {
     let lat = location.0
     let long = location.1
@@ -198,9 +147,6 @@ fileprivate func generateNeighborCoordinates(_ location: (Double, Double)) -> [(
         latRange.append(lat + Double(alpha) * Double(0.0001))
         longRange.append(long + Double(alpha) * Double(0.0001))
     }
-   
-//    let latRange = [lat-0.0002, lat-0.0001, lat, lat+0.0001, lat+0.0002]
-//    let longRange = [long-0.0002, long-0.0001, long, long+0.0001, long+0.0002]
     
     var output = [(Double, Double)]()
     for i in latRange {
@@ -212,6 +158,7 @@ fileprivate func generateNeighborCoordinates(_ location: (Double, Double)) -> [(
     return output
 }
 
+// Get string representation of location
 fileprivate func converToString(_ location: (Double,Double)) -> String {
     return location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
 }

@@ -22,13 +22,14 @@ import RxCocoa
 // Need to add <retry upon failure> for downloading.
 
 class S3Service {
+    // S3 descriptor Key Format: public/descriptor/lattitude/longitude/creation-date/first-username
+    // S3 post Key Format: public/post/lattitude/longitude/creation-date/first-username
     
     static let sharedInstance = S3Service()
     
     private(set) var transferUtility: AWSS3TransferUtility
     
     private init() {
-        // Create S3 Client and TransferUtility
         transferUtility = AWSS3TransferUtility.default()
     }
     
@@ -214,12 +215,9 @@ class S3Service {
         
         
     }
-    
-    
-    
-    
 }
 
+// Convert descriptor array to encoded data
 fileprivate func encodeDescriptor(_ descriptor: [Double]) -> Data {
     let stringRepresentation = descriptor.map{ String($0) }.joined(separator: ",")
     let encodedString =
@@ -230,48 +228,10 @@ fileprivate func encodeDescriptor(_ descriptor: [Double]) -> Data {
     return data!
 }
 
+// Decode data and convert to descriptory array
 fileprivate func decodeForDescriptor(_ data: Data) -> [Double] {
     let decodedString = String(data: data, encoding: .utf8)
-    print("Decoded String: ", decodedString)
     return decodedString!.split(separator: ",").map { Double($0)! }
 }
 
 
-/**
- Produce the list of urls associated with the input locations, if exist.
- */
-//    func urlList(for locations: [(Double, Double)]) -> Observable<String> {
-//        return Observable.create({ observer in
-//            for location in locations {
-//                // Produce prefix for listRequest
-//                let prefix = String(location.0) + "/" + String(location.1) + "/" + "descriptor"
-//                //                let prefix = String(location.0) + "/" + String(location.1)
-//
-//                // Produce listRequest for S3
-//                let listRequest: AWSS3ListObjectsRequest = AWSS3ListObjectsRequest()
-//
-//
-//
-////                listRequest.bucket = S3Bucket
-////                listRequest.prefix = prefix
-//
-//
-//                // Emit urls through observer
-//                self.client.listObjects(listRequest).continueWith { (task) -> AnyObject? in
-//                    guard let objects = task.result?.contents else {
-//                        print("AWSS3Service.urlList(): No URLs found for input locations")
-//                        return nil
-//                    }
-//
-//                    for object in objects {
-//                        observer.onNext(object.key!)
-//                    }
-//
-//                    return nil
-//                }
-//            }
-//            return Disposables.create()
-//        })
-//
-//
-//    }

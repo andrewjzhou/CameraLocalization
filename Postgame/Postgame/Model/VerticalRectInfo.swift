@@ -123,8 +123,6 @@ class VerticalRectInfo: NSObject {
         self.realImage = resizeAndOrient(ciImage: croppedImage)!
     }
     
-    
-    
 }
 
 
