@@ -66,17 +66,18 @@ class PostNode: SCNNode {
         // Add PostNode as child to its AnchorNode and set position
         info.anchorNode.addChildNode(self)
         self.position = info.position
-        
+
         // Match descriptor to cache
         if let matchKey = cache.findMatch(info.descriptor!) {
+            self.statePublisher.onNext(.load)
             // Download and set content node post
             let postDownloadObservable = S3Service.sharedInstance.downloadPost(matchKey)
             postDownloadObservable
                 .subscribe(onNext: { (image) in
+                    print("PostNode: Downloaded Post using key: \(matchKey)")
                     self.setContent(image)
                     self.statePublisher.onNext(.active)
                     self.key = matchKey
-                    print("PostNode: Found Match")
                 })
                 .disposed(by: disposeBag)
         } else {

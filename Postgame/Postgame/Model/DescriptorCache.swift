@@ -93,21 +93,18 @@ class DescriptorCache {
         var bestMatchSimilarity: Double? = nil
         
         for (_, descriptor) in cache {
-            var sumxx = 0, sumxy = 0, sumyy = 0
-            for i in 0 ..< target.count {
-                let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
-                if similarity > threshold {
-                    if bestMatchSimilarity == nil { // Found first best match
-                        bestMatchKey = descriptor.key
-                        bestMatchSimilarity = similarity
-                    } else if similarity > bestMatchSimilarity! { // Found better match than current best match
-                        bestMatchKey = descriptor.key
-                        bestMatchSimilarity = similarity
-                    }
+            let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
+            if similarity > threshold {
+                if bestMatchSimilarity == nil { // Found first best match
+                    bestMatchKey = descriptor.key
+                    bestMatchSimilarity = similarity
+                } else if similarity > bestMatchSimilarity! { // Found better match than current best match
+                    bestMatchKey = descriptor.key
+                    bestMatchSimilarity = similarity
                 }
             }
         }
-        
+        print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)")
         return bestMatchKey
     }
     
