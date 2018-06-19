@@ -16,6 +16,12 @@ class Lifespan: NSObject {
     
     private let completePublisher = PublishSubject<Int>()
     
+    var isLong: Bool {
+        get {
+            return lifeRemained > 15
+        }
+    }
+    
     // Sends completion signal when lifespan expires
     var completeObservable: Observable<Int> {
         return completePublisher.asObservable()
@@ -39,12 +45,13 @@ class Lifespan: NSObject {
         
         lifeRemained += increment
         
-        // After receiving more than 2 updates, set lifespan to very large number
         if lifeRemained > 15 {
             lifeRemained = 1000
         }
         
         currTimer = getTimer(lifeRemained)
+        
+        print("LifeSpan: life remainig = \(lifeRemained)")
     }
     
     private func getTimer(_ count: Int) -> Disposable {

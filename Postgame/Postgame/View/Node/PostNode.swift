@@ -46,8 +46,15 @@ class PostNode: SCNNode {
     // Publish new extent updates
     private let extentPublisher = PublishSubject<PostNodeExtent>()
     
+    private var initializing: Bool = true {
+        didSet {
+            self.isHidden = initializing
+        }
+    }
+    
     
     init(info: VerticalRectInfo, cache: DescriptorCache){
+    
         contentNode = ContentNode(size: info.size)
         key = getKey(cache.lastLocation!)
         extent = PostNodeExtent(position: info.position,
@@ -56,7 +63,8 @@ class PostNode: SCNNode {
         self.cache = cache
         super.init()
         
-      
+        self.isHidden = true // Hide during initialization
+        
         self.addChildNode(contentNode)
       
         
@@ -74,14 +82,14 @@ class PostNode: SCNNode {
                     self.contentNode.content.prompt()
                 case .active:
                     self.contentNode.content.activate()
+
                 }
                 
             })
             .disposed(by: disposeBag)
         
         // Add PostNode as child to its AnchorNode and set position
-       info.anchorNode.addChildNode(self)
-      
+        info.anchorNode.addChildNode(self)
         self.position = info.position
 
         // Match descriptor to cache
@@ -95,7 +103,9 @@ class PostNode: SCNNode {
                 .subscribe(onNext: { (image) in
                     print("PostNode: Downloaded Post using key: \(matchKey)")
                     self.setContent(image)
+                   
                     self.statePublisher.onNext(.active)
+                    
                     self.key = matchKey // Change current key associated with node
                 })
                 .disposed(by: disposeBag)
@@ -144,6 +154,11 @@ class PostNode: SCNNode {
     }
     
     func updateExtent(_ extent: PostNodeExtent) {
+        if initializing && lifespan.isLong {
+            print("Initialize: turned off")
+            initializing = false
+        }
+        
         extentPublisher.onNext(extent)
     }
     

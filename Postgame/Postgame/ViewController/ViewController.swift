@@ -46,17 +46,6 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Run the view's session
-        sceneView.session.run(trackingConfiguration)
-        sceneView.showsStatistics = true // For debugging
-        
-        // Reset tracking state when interruption ends
-        let _ =
-        sceneView.session.rx.sessionInterruptionEnded
-            .subscribe{ (_) in
-                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
-            }
-            .disposed(by: disposeBag)
 
         setupUILayout()
         
@@ -89,6 +78,19 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // Run the view's session
+        sceneView.session.run(trackingConfiguration)
+//        sceneView.showsStatistics = true // For debugging
+        
+        // Reset tracking state when interruption ends
+        let _ =
+        sceneView.session.rx.sessionInterruptionEnded
+            .subscribe{ (_) in
+                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+            }
+            .disposed(by: disposeBag)
+        
     }
     
     

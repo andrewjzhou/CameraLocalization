@@ -9,7 +9,7 @@
 import ARKit
 
 class ContentNode: SCNNode {
-    var content: ContentScene = UIImage.from(color: .yellow).convertToScene() {
+    var content: ContentScene = UIImage.from(color: .white).convertToScene() {
         didSet{
             self.geometry?.firstMaterial?.diffuse.contents = content
         }
