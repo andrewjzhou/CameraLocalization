@@ -29,11 +29,15 @@ class DescriptorComputer: NSObject {
     }
     
     func compute(info: VerticalRectInfo) -> Observable<VerticalRectInfo?> {
+        print("DescriptorComputer: 1")
         let orientation = CGImagePropertyOrientation(rawValue: UInt32(info.realImage.imageOrientation.rawValue))
         guard let ciImage = CIImage(image: info.realImage) else { fatalError("Unable to create \(CIImage.self) from \(info.realImage).") }
+        print("DescriptorComputer: 2")
         
         return Observable.create({ observer in
+            print("DescriptorComputer: 3")
             let request = VNCoreMLRequest(model: self.model, completionHandler: { [weak self] request, error in
+                print("DescriptorComputer: 6")
                 guard let result = request.results?.first as? VNCoreMLFeatureValueObservation else {
                     observer.onNext(nil)
                     observer.onCompleted()
@@ -54,12 +58,14 @@ class DescriptorComputer: NSObject {
                 observer.onCompleted()
                 
             })
+            
             request.imageCropAndScaleOption = .centerCrop
             
-            
+            print("DescriptorComputer: 4")
             // Perform request
             let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation!)
             DispatchQueue.global(qos: .userInteractive).async {
+                print("DescriptorComputer: 5")
                 try? handler.perform([request])
             }
             return Disposables.create()
@@ -82,16 +88,16 @@ class DescriptorComputer: NSObject {
         for i in 0..<height { // 13
             for j in 0..<width { // 13
                 for k in 0..<length{ // 256
-                    //                        // For Sum-pooling
-                    //                        let num1 = pow((Double(i) - Double(height)/2.0), 2)
-                    //                        let num2 = pow((Double(j) - Double(width)/2.0), 2)
-                    //                        let den  = 2 * pow(sigma, 2)
-                    //
-                    //                        // For Center-prioring
-                    //                        let alpha = exp(-(num1 + num2)/den)
-                    //
-                    //                        // Aggregate
-                    //                        descriptor[k] += alpha * array[array.offset(for: [0,0,k,i,j])]
+                                            // For Sum-pooling
+                                            let num1 = pow((Double(i) - Double(height)/2.0), 2)
+                                            let num2 = pow((Double(j) - Double(width)/2.0), 2)
+                                            let den  = 2 * pow(sigma, 2)
+                    
+                                            // For Center-prioring
+                                            let alpha = exp(-(num1 + num2)/den)
+                    
+                                            // Aggregate
+                                            descriptor[k] += alpha * array[array.offset(for: [0,0,k,i,j])]
                     descriptor[k] += array[array.offset(for: [0,0,k,i,j])]
                 }
             }

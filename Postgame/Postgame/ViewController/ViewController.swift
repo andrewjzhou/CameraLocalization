@@ -40,14 +40,23 @@ class ViewController: UIViewController {
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     
     let userView = UserView()
-    
-    let debugImageView = UIImageView()
 
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Run the view's session
+        sceneView.session.run(trackingConfiguration)
+        sceneView.showsStatistics = true // For debugging
+        
+        // Reset tracking state when interruption ends
+        let _ =
+        sceneView.session.rx.sessionInterruptionEnded
+            .subscribe{ (_) in
+                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+            }
+            .disposed(by: disposeBag)
 
         setupUILayout()
         
@@ -74,24 +83,12 @@ class ViewController: UIViewController {
             showSignIn()
         }
         
-        debug()
+      
       
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        // Run the view's session
-        sceneView.session.run(trackingConfiguration)
-        sceneView.showsStatistics = true // For debugging
-        
-        // Reset tracking state when interruption ends
-        let _ =
-        sceneView.session.rx.sessionInterruptionEnded
-            .subscribe{ (_) in
-                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
-            }
-            .disposed(by: disposeBag)
     }
     
     
@@ -232,7 +229,9 @@ extension ViewController {
         // 2. Detect rectangles attached to vertical surfaces in the real world
         let verticalRectObservable =
             arFrameObservable
+                .debug("Detect vertical rectangle")
                 .flatMap{ detectVerticalRect(frame: $0, in: self.sceneView) }
+                .debug("Check long press")
                 .withLatestFrom(longPressSubject) { (observation, sender) -> VNRectangleObservation? in
                     // Continue PostNode creation/discovery process only if either of the two requirements are met
                     if self.createButton.post == nil { // a. if user is not posting
@@ -253,25 +252,26 @@ extension ViewController {
         let descriptorComputer = DescriptorComputer()
         let infoObservable =
             verticalRectObservable
+                .debug("Get vertical rect info")
                 .map({ (observation) -> VerticalRectInfo? in
                     let info = VerticalRectInfo(for: observation!, in: self.sceneView) // Compute geometric information
                     info?.post = self.createButton.post
                     return info
                 })
                 .filter { $0 != nil }
+                .debug("Compute descriptor")
                 .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
                 .filter { $0 != nil }
 
         // 4. Generate PostNode
         let _ =
             infoObservable
+                .debug("Generate post node")
                 .map { PostNode(info: $0!, cache: self.descriptorCache) }
                 .subscribe(onNext: { (postNode) in
                     print("PostNode created: ", postNode)
-                    DispatchQueue.main.sync {
-                        self.debugImageView.image = postNode.info.realImage
-                    }
                 })
+                .disposed(by: disposeBag)
         
     }
 }
@@ -348,15 +348,7 @@ extension ViewController {
         })
     }
     
-    func debug(){
-        view.addSubview(debugImageView)
-        debugImageView.translatesAutoresizingMaskIntoConstraints = false
-        debugImageView.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
-        debugImageView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        debugImageView.setWidthConstraint(80)
-        debugImageView.setHeightConstraint(120)
-        debugImageView.image = UIImage.from(color: .green)
-    }
+   
 }
 
 fileprivate let disposeBag = DisposeBag()

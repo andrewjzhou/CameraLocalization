@@ -56,7 +56,9 @@ class PostNode: SCNNode {
         self.cache = cache
         super.init()
         
+      
         self.addChildNode(contentNode)
+      
         
         // React to state changes
         statePublisher.asObservable()
@@ -78,7 +80,8 @@ class PostNode: SCNNode {
             .disposed(by: disposeBag)
         
         // Add PostNode as child to its AnchorNode and set position
-        info.anchorNode.addChildNode(self)
+       info.anchorNode.addChildNode(self)
+      
         self.position = info.position
 
         // Match descriptor to cache

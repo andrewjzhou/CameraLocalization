@@ -15,7 +15,7 @@ class DescriptorCache {
     // Matching threshold.
     // Beware of tradeoff between false postivie and false negative
     // Currently set low to limit duplicate errors (less false negative, more false positive)
-    let threshold = 0.7
+    let threshold = 0.75
     
     private(set) var cache: [String : Descriptor] {
         didSet{
