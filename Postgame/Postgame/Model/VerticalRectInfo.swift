@@ -142,8 +142,8 @@ fileprivate func planeLineIntersectPoint(planeVector: SCNVector3 , planePoint: S
 // expand rectangle region for cropped image for more room for CoreML vision request
 fileprivate func expandRect(_ rect: CGRect, extent container: CGRect) -> CGRect {
     // TODO: play with increment ratio to see how it affect vision request results
-    let widthIncrement = rect.size.width
-    let heighIncrement = rect.size.height
+    let widthIncrement = rect.size.width * 0.1
+    let heighIncrement = rect.size.height * 0.1
     
     var x = rect.origin.x - widthIncrement / 2.0
     if x < container.origin.x {

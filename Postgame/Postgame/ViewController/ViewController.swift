@@ -40,6 +40,8 @@ class ViewController: UIViewController {
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     
     let userView = UserView()
+    
+    let debugImageView = UIImageView()
 
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
@@ -71,6 +73,8 @@ class ViewController: UIViewController {
         if !AWSSignInManager.sharedInstance().isLoggedIn {
             showSignIn()
         }
+        
+        debug()
       
     }
     
@@ -264,6 +268,9 @@ extension ViewController {
                 .map { PostNode(info: $0!, cache: self.descriptorCache) }
                 .subscribe(onNext: { (postNode) in
                     print("PostNode created: ", postNode)
+                    DispatchQueue.main.sync {
+                        self.debugImageView.image = postNode.info.realImage
+                    }
                 })
         
     }
@@ -339,6 +346,16 @@ extension ViewController {
         AWSSignInManager.sharedInstance().logout(completionHandler: {(result: Any?, error: Error?) in
             self.showSignIn()
         })
+    }
+    
+    func debug(){
+        view.addSubview(debugImageView)
+        debugImageView.translatesAutoresizingMaskIntoConstraints = false
+        debugImageView.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        debugImageView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        debugImageView.setWidthConstraint(80)
+        debugImageView.setHeightConstraint(120)
+        debugImageView.image = UIImage.from(color: .green)
     }
 }
 

@@ -15,7 +15,7 @@ class DescriptorCache {
     // Matching threshold.
     // Beware of tradeoff between false postivie and false negative
     // Currently set low to limit duplicate errors (less false negative, more false positive)
-    let threshold = 0.6
+    let threshold = 0.7
     
     private(set) var cache: [String : Descriptor] {
         didSet{
@@ -105,6 +105,9 @@ class DescriptorCache {
         
         for (_, descriptor) in cache {
             let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
+            
+            print("similarity: \(similarity)")
+            
             if similarity > threshold {
                 if bestMatchSimilarity == nil { // Found first best match
                     bestMatchKey = descriptor.key
@@ -116,7 +119,10 @@ class DescriptorCache {
             }
         }
         
-        print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)")
+        if bestMatchKey != nil {
+            print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)")
+        }
+        
         return bestMatchKey
     }
 }

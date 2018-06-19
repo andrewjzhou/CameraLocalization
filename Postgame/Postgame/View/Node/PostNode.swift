@@ -34,7 +34,7 @@ class PostNode: SCNNode {
     
     private var key: String
     
-    private var info: VerticalRectInfo
+    var info: VerticalRectInfo
 
     private(set) var extent: PostNodeExtent
     
