@@ -487,6 +487,7 @@
 				6AEC1A7F2085BF08008E0FF8 /* Resources */,
 				D84B4BB62C815D1C4F500B37 /* [CP] Embed Pods Frameworks */,
 				896AD468ED60607B1C2AAE80 /* [CP] Copy Pods Resources */,
+				6ADCA18020D9CDFB00C6E6A8 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -679,6 +680,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostgameUITests/Pods-PostgameUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		6ADCA18020D9CDFB00C6E6A8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 0eb79a4760f1ca34ced1847564d75567379e9d19 638c3470b0852e449d2966ae83dfd376625f782b93c01b7051883ffb650dcd40\n";
 		};
 		896AD468ED60607B1C2AAE80 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -22,6 +22,9 @@ PODS:
   - AWSUserPoolsSignIn (2.6.21):
     - AWSAuthCore (= 2.6.21)
     - AWSCognitoIdentityProvider (= 2.6.21)
+  - Crashlytics (3.10.2):
+    - Fabric (~> 1.7.7)
+  - Fabric (1.7.7)
   - RxCocoa (4.1.2):
     - RxSwift (~> 4.0)
   - RxSwift (4.1.2)
@@ -35,6 +38,8 @@ DEPENDENCIES:
   - AWSMobileClient (~> 2.6.13)
   - AWSS3 (~> 2.6.13)
   - AWSUserPoolsSignIn (~> 2.6.13)
+  - Crashlytics
+  - Fabric
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
 
@@ -50,9 +55,11 @@ SPEC CHECKSUMS:
   AWSMobileClient: f61ef1ca52cf561a3831f4c29b8bfc43234db8f3
   AWSS3: e6b042fdbf092ffd49bf7998b3fd5be729949ee7
   AWSUserPoolsSignIn: 5c2a162e62cdcb47fb0f3f5ede4dec492fc00307
+  Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
+  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
   RxSwift: e49536837d9901277638493ea537394d4b55f570
 
-PODFILE CHECKSUM: 512ce29c689327870397d3490f6aa33d366e31d2
+PODFILE CHECKSUM: 861d4f8d6447ab18667a187202cd173c2b22ae45
 
 COCOAPODS: 1.4.0

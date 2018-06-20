@@ -16,6 +16,8 @@ target 'Postgame' do
   pod 'AWSDynamoDB', '~> 2.6.13'
   pod 'AWSAuthCore', '~> 2.6.13'
   pod 'AWSAPIGateway', '~> 2.6.13'
+  pod 'Fabric'
+  pod 'Crashlytics'
 
   target 'PostgameTests' do
     inherit! :search_paths
