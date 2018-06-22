@@ -121,6 +121,7 @@ class VerticalRectInfo: NSObject {
         let rect = expandRect(convertedRect, extent: currImage.extent)
         let croppedImage = currImage.cropped(to: rect)
         self.realImage = resizeAndOrient(ciImage: croppedImage)!
+       
     }
     
 }
@@ -169,24 +170,41 @@ fileprivate func expandRect(_ rect: CGRect, extent container: CGRect) -> CGRect 
 }
 
 // Resize and Orient CIImage, then Return UIImage
-fileprivate func resizeAndOrient(ciImage: CIImage, withPercentage percentage: CGFloat) -> UIImage? {
+//fileprivate func resizeAndOrient(ciImage: CIImage, withPercentage percentage: CGFloat) -> UIImage? {
+//    let orientation = UIApplication.shared.statusBarOrientation
+//
+//    switch orientation {
+//    case .portrait, .unknown:
+//        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right).resized(withPercentage: percentage)
+//    case .landscapeLeft:
+//        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .down).resized(withPercentage: percentage)
+//    case .landscapeRight:
+//        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .up).resized(withPercentage: percentage)
+//    case .portraitUpsideDown:
+//        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .left).resized(withPercentage: percentage)
+//    }
+//}
+
+fileprivate func orient(ciImage: CIImage) -> UIImage {
     let orientation = UIApplication.shared.statusBarOrientation
     
     switch orientation {
     case .portrait, .unknown:
-        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right).resized(withPercentage: percentage)
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right)
     case .landscapeLeft:
-        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .down).resized(withPercentage: percentage)
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .down)
     case .landscapeRight:
-        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .up).resized(withPercentage: percentage)
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .up)
     case .portraitUpsideDown:
-        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .left).resized(withPercentage: percentage)
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .left)
     }
 }
 
+
 fileprivate func resizeAndOrient(ciImage: CIImage) -> UIImage? {
     let orientation = UIApplication.shared.statusBarOrientation
-    
+
+
     switch orientation {
     case .portrait, .unknown:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right).resized(width: 227, height: 227)
@@ -198,4 +216,5 @@ fileprivate func resizeAndOrient(ciImage: CIImage) -> UIImage? {
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .left).resized(width: 227, height: 227)
     }
 }
+
 

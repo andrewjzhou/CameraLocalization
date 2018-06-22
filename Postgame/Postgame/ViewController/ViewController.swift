@@ -15,6 +15,7 @@ import CoreLocation
 import AWSMobileClient
 import AWSAuthCore
 import AWSAuthUI
+import Crashlytics
 
 class ViewController: UIViewController {
     
@@ -87,7 +88,7 @@ class ViewController: UIViewController {
         let _ =
         sceneView.session.rx.sessionInterruptionEnded
             .subscribe{ (_) in
-                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+                self.resetSession()
             }
             .disposed(by: disposeBag)
         
@@ -99,6 +100,13 @@ class ViewController: UIViewController {
         
         // Pause the view's session
         sceneView.session.pause()
+    }
+    
+    func resetSession() {
+        // Remove exising plane anchors (and their children nodes) and reset session coordinate system
+        self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+        // Refresh long press indicator animation
+        self.longPressIndicator.refresh()
     }
 
 }
@@ -120,8 +128,7 @@ extension ViewController {
     private func setupResetButtonRx() {
         resetButton.rx.tap
             .bind {
-                // Remove exising plane anchors (and their children nodes) and reset session coordinate system
-                self.sceneView.session.run(self.trackingConfiguration, options: .removeExistingAnchors)
+                self.resetSession()
             }
             .disposed(by: disposeBag)
         

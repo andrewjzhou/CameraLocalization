@@ -54,7 +54,7 @@ extension ViewController {
         } else {
             longPressIndicator.isHidden = true
         }
-        
+        print("indicator state: ", longPressIndicator.pulsate)
     }
     
     // Use tap to interact with post nodes

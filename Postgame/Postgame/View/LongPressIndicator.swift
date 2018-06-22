@@ -17,6 +17,7 @@ class LongPressIndicator: UIView {
     
     var pulsate: Bool = false {
         didSet{
+            print("indicator setting pulsate value to: ", pulsate)
             if pulsate {
                 let coreStrokeColor = UIColor.rgb(r: 201, g: 13, b: 0)
                 coreLayer.strokeColor = coreStrokeColor.cgColor
@@ -33,7 +34,9 @@ class LongPressIndicator: UIView {
             }
         }
     }
+    
     override init(frame: CGRect) {
+        
         super.init(frame: frame)
         
         backgroundColor = UIColor.clear
@@ -54,6 +57,10 @@ class LongPressIndicator: UIView {
         shapeLayer.transform = CATransform3DMakeRotation(-CGFloat.pi / 2, 0, 0, 1)
         shapeLayer.strokeEnd = 0
         layer.addSublayer(shapeLayer)
+    }
+    
+    func refresh() {
+        animatePulsatingLayer(pulsatingLayer)
     }
     
     private func animatePulsatingLayer(_ pulsatingLayer: CALayer) {
@@ -81,9 +88,9 @@ class LongPressIndicator: UIView {
         return layer
     }
     
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
 }
+

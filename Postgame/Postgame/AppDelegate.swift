@@ -10,6 +10,7 @@ import UIKit
 import AWSMobileClient
 import Fabric
 import Crashlytics
+import AWSUserPoolsSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -27,7 +28,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
     }
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        
+        // Crashlytics
+        Fabric.with([Crashlytics.self])
+        self.logUser()
+        // Use below method to crash
+//        Crashlytics.sharedInstance().crash()
+
+        
         let navigationController =  UINavigationController()
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.pushViewController(ViewController(), animated: false)
@@ -36,12 +46,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window!.rootViewController = navigationController
         window!.makeKeyAndVisible()
         
-        // Crashlytics
-        Fabric.with([Crashlytics.self])
         
         // Create AWSMobileClient to connect with AWS
         return AWSMobileClient.sharedInstance().interceptApplication(application, didFinishLaunchingWithOptions: launchOptions)
     }
+    
+    func logUser() {
+        // TODO: Use the current user's information
+        // You can call any combination of these three methods
+//        Crashlytics.sharedInstance().setUserEmail("user@fabric.io")
+//        Crashlytics.sharedInstance().setUserIdentifier("12345")
+        if let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.username {
+            Crashlytics.sharedInstance().setUserName(username)
+        }
+    }
+
     
     
     func applicationWillResignActive(_ application: UIApplication) {

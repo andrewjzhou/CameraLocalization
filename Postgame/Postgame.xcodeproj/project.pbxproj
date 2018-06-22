@@ -467,6 +467,7 @@
 				6AEC1A692085BF06008E0FF8 /* Resources */,
 				14757F4F3DD1A63B98ABE9B3 /* [CP] Embed Pods Frameworks */,
 				5F21F5C4ED4FF25951959AB0 /* [CP] Copy Pods Resources */,
+				6A1D003E20D9DD4F000A1E10 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -487,7 +488,6 @@
 				6AEC1A7F2085BF08008E0FF8 /* Resources */,
 				D84B4BB62C815D1C4F500B37 /* [CP] Embed Pods Frameworks */,
 				896AD468ED60607B1C2AAE80 /* [CP] Copy Pods Resources */,
-				6ADCA18020D9CDFB00C6E6A8 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -681,22 +681,18 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PostgameUITests/Pods-PostgameUITests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		6ADCA18020D9CDFB00C6E6A8 /* ShellScript */ = {
+		6A1D003E20D9DD4F000A1E10 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
-			);
-			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\" 0eb79a4760f1ca34ced1847564d75567379e9d19 638c3470b0852e449d2966ae83dfd376625f782b93c01b7051883ffb650dcd40\n";
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" 0eb79a4760f1ca34ced1847564d75567379e9d19 638c3470b0852e449d2966ae83dfd376625f782b93c01b7051883ffb650dcd40";
 		};
 		896AD468ED60607B1C2AAE80 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -996,6 +992,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = Postgame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

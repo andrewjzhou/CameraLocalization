@@ -176,6 +176,8 @@ class PostNode: SCNNode {
         print("Recorded")
     }
     
+
+    
     // Set prompt screen to inform user to add / update
     func prompt() {
         statePublisher.onNext(.prompt)

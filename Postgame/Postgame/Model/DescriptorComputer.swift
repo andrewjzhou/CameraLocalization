@@ -29,15 +29,12 @@ class DescriptorComputer: NSObject {
     }
     
     func compute(info: VerticalRectInfo) -> Observable<VerticalRectInfo?> {
-        print("DescriptorComputer: 1")
         let orientation = CGImagePropertyOrientation(rawValue: UInt32(info.realImage.imageOrientation.rawValue))
         guard let ciImage = CIImage(image: info.realImage) else { fatalError("Unable to create \(CIImage.self) from \(info.realImage).") }
-        print("DescriptorComputer: 2")
-        
+    
         return Observable.create({ observer in
-            print("DescriptorComputer: 3")
+     
             let request = VNCoreMLRequest(model: self.model, completionHandler: { [weak self] request, error in
-                print("DescriptorComputer: 6")
                 guard let result = request.results?.first as? VNCoreMLFeatureValueObservation else {
                     observer.onNext(nil)
                     observer.onCompleted()
@@ -59,9 +56,8 @@ class DescriptorComputer: NSObject {
                 
             })
             
-            request.imageCropAndScaleOption = .centerCrop
+            request.imageCropAndScaleOption = .scaleFit
             
-            print("DescriptorComputer: 4")
             // Perform request
             let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation!)
             DispatchQueue.global(qos: .userInteractive).async {
