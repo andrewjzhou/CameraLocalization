@@ -69,6 +69,9 @@ extension ViewController {
         let scnHitTestResults = sceneView.hitTest(point, options: nil)
         guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
         
+        // testing
+        print("PostNode touched. State: \(postNode.state)")
+        
         
         if postNode.state == .prompt && createButton.post != nil { // Adding / Updating
             

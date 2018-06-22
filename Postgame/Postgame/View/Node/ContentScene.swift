@@ -33,7 +33,6 @@ class ContentScene: SKScene {
         self.addChild(promptNode)
         self.addChild(loadNode)
         activate()
-       
     }
     
     fileprivate let darken = SKAction.colorize(with: .black, colorBlendFactor: 0.5, duration: 0)
@@ -49,13 +48,7 @@ class ContentScene: SKScene {
         whiteNode.isHidden = true
         loadNode.isHidden = true
     }
-    
-    func deactivate() {
-//        contentNode = createChildNode(image: UIImage.from(color: .white), name: "content") // for testing
-        contentNode = createChildNode(image: UIImage.from(color: .clear), name: "content")
-        activate()
-    }
-    
+
     func prompt() {
         // Darken content in background
         contentNode.run(darken)

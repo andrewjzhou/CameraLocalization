@@ -75,13 +75,13 @@ class PostNode: SCNNode {
                 
                 switch state {
                 case .inactive:
-                    self.contentNode.content.deactivate()
+                    self.contentNode.deactivate()
                 case .load:
-                    self.contentNode.content.load()
+                    self.contentNode.load()
                 case .prompt:
-                    self.contentNode.content.prompt()
+                    self.contentNode.prompt()
                 case .active:
-                    self.contentNode.content.activate()
+                    self.contentNode.activate()
 
                 }
                 
@@ -144,7 +144,6 @@ class PostNode: SCNNode {
                 self.extent = newExtent
             })
             .disposed(by: disposeBag)
-        
         
     }
     

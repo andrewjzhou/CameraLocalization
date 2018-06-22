@@ -28,6 +28,7 @@ class ContentNode: SCNNode {
         
         self.geometry = planeGeometry
         self.eulerAngles.x = -.pi / 2 // might need to set this property as a child node in post node if it doesn't work
+        
     }
     
     func updateSize(_ size: CGSize) {
@@ -36,7 +37,28 @@ class ContentNode: SCNNode {
         plane.height = size.height
     }
     
+    func activate() {
+        geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
+        content.activate()
+    }
+    
+    func deactivate() {
+        geometry?.firstMaterial?.colorBufferWriteMask = []
+    }
+    
+    func prompt() {
+        geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
+        content.prompt()
+    }
+    
+    func load() {
+        geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
+        content.load()
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+fileprivate let defaultMask = SCNColorMask(rawValue: 15)
