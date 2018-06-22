@@ -16,6 +16,7 @@ import AWSMobileClient
 import AWSAuthCore
 import AWSAuthUI
 import Crashlytics
+import AWSUserPoolsSignIn
 
 class ViewController: UIViewController {
     
@@ -65,16 +66,36 @@ class ViewController: UIViewController {
         setuplongPressSubject()
         
         setupPostNodeInteractions()
-
-        // SignIn View Controllers
-        // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
-        // Get rid of email field in sign-up
-        if !AWSSignInManager.sharedInstance().isLoggedIn {
-            showSignIn()
-        }
+//
+//        // SignIn View Controllers
+//        // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
+//        // Get rid of email field in sign-up
+//        if !AWSSignInManager.sharedInstance().isLoggedIn {
+//            showSignIn()
+//        }
+//
+      fetchUserAttributes()
+      
+    }
+    
+    var user:AWSCognitoIdentityUser?
+    var userAttributes:[AWSCognitoIdentityProviderAttributeType]?
+    func fetchUserAttributes() {
         
-      
-      
+        user = AppDelegate.defaultUserPool().currentUser()
+        print("User: \(user)")
+        user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
+            guard task.result != nil else {
+                
+                return nil
+            }
+            
+            self.userAttributes = task.result?.userAttributes
+            self.userAttributes?.forEach({ (attribute) in
+                
+            })
+            return nil
+        })
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -338,23 +359,30 @@ extension ViewController {
 //        config.canCancel = true
 
         
-        AWSAuthUIViewController
-            .presentViewController(with: self.navigationController!,
-                                   configuration: nil,
-                                   completionHandler: { (provider: AWSSignInProvider, error: Error?) in
-                                    if error != nil {
-                                        print("Error occurred: \(String(describing: error))")
-                                    } else {
-                                        // Sign in successful.
-                                    }
-            })
+//        AWSAuthUIViewController
+//            .presentViewController(with: self.navigationController!,
+//                                   configuration: nil,
+//                                   completionHandler: { (provider: AWSSignInProvider, error: Error?) in
+//                                    if error != nil {
+//                                        print("Error occurred: \(String(describing: error))")
+//                                    } else {
+//                                        // Sign in successful.
+//                                    }
+//            })
     }
     
     // Sign out current user
     func signOut() {
-        AWSSignInManager.sharedInstance().logout(completionHandler: {(result: Any?, error: Error?) in
-            self.showSignIn()
-        })
+//        AWSSignInManager.sharedInstance().logout(completionHandler: {(result: Any?, error: Error?) in
+//            self.showSignIn()
+//        })
+        AppDelegate.defaultUserPool().currentUser()?.signOut()
+        AppDelegate.defaultUserPool().currentUser()?.getDetails().continueOnSuccessWith { (task) -> AnyObject? in
+            DispatchQueue.main.async(execute: {
+                var response = task.result
+            })
+            return nil
+        }
     }
     
    

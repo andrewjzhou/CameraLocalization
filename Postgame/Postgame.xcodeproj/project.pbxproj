@@ -27,7 +27,6 @@
 		6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* Posts.swift */; };
 		6A1B54B920D2D15900870DC2 /* CreateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B820D2D15900870DC2 /* CreateButton.swift */; };
 		6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54BA20D3012700870DC2 /* ContentScene.swift */; };
-		6A1B54BD20D431A700870DC2 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A1B54BC20D431A500870DC2 /* awsconfiguration.json */; };
 		6A1B54C720D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */; };
 		6A1B54C820D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */; };
 		6A1B54C920D4327B00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */; };
@@ -66,6 +65,7 @@
 		6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */; };
 		6AF5278E208BC0990039363B /* ForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */; };
 		6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278F208BC0B00039363B /* UpdatePasswordViewController.swift */; };
+		6AF67BFA20DD80370096CEA0 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AF67BF920DD80370096CEA0 /* awsconfiguration.json */; };
 		D453523150F84F268FA5C265 /* Pods_PostgameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */; };
 		FD6547AD0525C6433731BAF5 /* Pods_PostgameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */; };
 /* End PBXBuildFile section */
@@ -112,7 +112,6 @@
 		6A1B54B120D1BD9A00870DC2 /* Posts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
 		6A1B54B820D2D15900870DC2 /* CreateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateButton.swift; sourceTree = "<group>"; };
 		6A1B54BA20D3012700870DC2 /* ContentScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScene.swift; sourceTree = "<group>"; };
-		6A1B54BC20D431A500870DC2 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		6A1B54C020D4327900870DC2 /* Postgame-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postgame-Bridging-Header.h"; sourceTree = "<group>"; };
 		6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_ResponseSchema.m; sourceTree = "<group>"; };
 		6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_RequestSchema.m; sourceTree = "<group>"; };
@@ -161,6 +160,7 @@
 		6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSignUpViewController.swift; sourceTree = "<group>"; };
 		6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewController.swift; sourceTree = "<group>"; };
 		6AF5278F208BC0B00039363B /* UpdatePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordViewController.swift; sourceTree = "<group>"; };
+		6AF67BF920DD80370096CEA0 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 		A1424D84FBAFFF7B1B5B2869 /* Pods-PostgameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostgameUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostgameUITests/Pods-PostgameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostgameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7777FCF3D8FDFE72C7E814E /* Pods-Postgame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postgame.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Postgame/Pods-Postgame.debug.xcconfig"; sourceTree = "<group>"; };
@@ -329,7 +329,7 @@
 		6AEC1A6D2085BF06008E0FF8 /* Postgame */ = {
 			isa = PBXGroup;
 			children = (
-				6A1B54BC20D431A500870DC2 /* awsconfiguration.json */,
+				6AF67BF920DD80370096CEA0 /* awsconfiguration.json */,
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
 				6AEC1A9E20879941008E0FF8 /* ViewController */,
 				6AF5277E208AC3C30039363B /* Model */,
@@ -569,7 +569,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A1B54BD20D431A700870DC2 /* awsconfiguration.json in Resources */,
+				6AF67BFA20DD80370096CEA0 /* awsconfiguration.json in Resources */,
 				6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
