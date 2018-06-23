@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import Spring
 
-class CreateButton: UIButton {
+class CreateButton: SpringButton {
     
     var post: UIImage? = nil {
         didSet {

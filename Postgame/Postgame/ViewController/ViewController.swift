@@ -158,6 +158,12 @@ extension ViewController {
                             self.userButton.alpha = 1
                             self.indicatorButton.alpha = 1
                         })
+                        
+                        if image != nil {
+                            self.createButton.animation = "zoomIn"
+                            self.createButton.duration = 0.3
+                            self.createButton.animate()
+                        }
                     })
                     .disposed(by: disposeBag)
                 
@@ -180,7 +186,15 @@ extension ViewController {
                 return self.createButton.post != nil
             })
             .subscribe(onNext: {_ in
-                self.createButton.post = nil // default image
+                self.createButton.animation = "zoomOut"
+                self.createButton.animateToNext {
+                    self.createButton.post = nil // default image
+                    self.createButton.animation = "flipY"
+                    self.createButton.curve = "easeInSine"
+                    self.createButton.duration = 0.2
+                    self.createButton.animate()
+                }
+            
             })
             .disposed(by: disposeBag)
     }
