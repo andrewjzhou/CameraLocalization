@@ -103,7 +103,7 @@ class SignInViewController: UIViewController {
         if (self.username!.text != nil && self.password!.text != nil) {
             let authDetails = AWSCognitoIdentityPasswordAuthenticationDetails(username: self.username!.text!, password: self.password!.text! )
             self.passwordAuthenticationCompletion?.set(result: authDetails)
-            print("Sign-In Action")
+            print("SignIn: button clicked")
             
         } else {
             let alertController = UIAlertController(title: "Missing information",
@@ -129,14 +129,12 @@ class SignInViewController: UIViewController {
 extension SignInViewController: AWSCognitoIdentityPasswordAuthentication {
     
     public func getDetails(_ authenticationInput: AWSCognitoIdentityPasswordAuthenticationInput, passwordAuthenticationCompletionSource: AWSTaskCompletionSource<AWSCognitoIdentityPasswordAuthenticationDetails>) {
-        print("Inside getDetails")
+        print("SignIn: getDetails()")
         self.passwordAuthenticationCompletion = passwordAuthenticationCompletionSource
         
-        print(self.usernameText)
         DispatchQueue.main.async {
             if (self.usernameText == nil) {
                 self.usernameText = authenticationInput.lastKnownUsername
-                print(self.usernameText)
             }
         }
     }

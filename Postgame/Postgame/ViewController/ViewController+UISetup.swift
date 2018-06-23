@@ -32,6 +32,8 @@ extension ViewController {
         setupUserButton()
         
         setupUserView()
+        
+        print("SignIn: setup UI")
     }
     
     

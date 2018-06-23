@@ -18,7 +18,7 @@ class Lifespan: NSObject {
     
     var isLong: Bool {
         get {
-            return lifeRemained > 15
+            return lifeRemained > 10
         }
     }
     

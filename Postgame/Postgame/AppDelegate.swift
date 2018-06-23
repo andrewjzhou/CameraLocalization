@@ -71,9 +71,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // create pool configuration
         let defaultConfig = AWSCognitoIdentityUserPool.default().userPoolConfiguration
-        let poolConfiguration = AWSCognitoIdentityUserPoolConfiguration(clientId: "4nqp3rhguigq5n5sm5eeelf3hk",
-                                                                        clientSecret: "1qgt9n0ijabuqvllppr2d3jg6t3ef0evhhnut2jbhsp63r8ek81s",
-                                                                        poolId: "us-east-2_a0pr7d57s")
+        let poolConfiguration = AWSCognitoIdentityUserPoolConfiguration(clientId: defaultConfig.clientId,
+                                                                        clientSecret: defaultConfig.clientSecret,
+                                                                        poolId: defaultConfig.poolId)
         
         // initialize user pool client
         AWSCognitoIdentityUserPool.register(with: serviceConfiguration, userPoolConfiguration: poolConfiguration, forKey: AWSCognitoUserPoolsSignInProviderKey)
@@ -138,6 +138,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: AWSCognitoIdentityInteractiveAuthenticationDelegate {
     func startPasswordAuthentication() -> AWSCognitoIdentityPasswordAuthentication {
         DispatchQueue.main.async {
+            print("SignIn: startPasswordAuthentication() in AppDelegate")
             self.navigationController!.popToRootViewController(animated: true)
             if (!self.navigationController!.isViewLoaded || self.navigationController!.view.window == nil) {
                 self.window?.rootViewController?.present(self.navigationController!,
@@ -174,6 +175,7 @@ extension AppDelegate: AWSCognitoIdentityInteractiveAuthenticationDelegate {
     //    }
     //
     func startRememberDevice() -> AWSCognitoIdentityRememberDevice {
+        print("SignIn: startRememberDevice() in AppDelegate")
         return self
     }
 }
@@ -185,6 +187,7 @@ extension AppDelegate: AWSCognitoIdentityRememberDevice {
     func getRememberDevice(_ rememberDeviceCompletionSource: AWSTaskCompletionSource<NSNumber>) {
         self.rememberDeviceCompletionSource = rememberDeviceCompletionSource
         DispatchQueue.main.async {
+            print("SignIn: getRememberDevice() in AppDelegate")
             // dismiss the view controller being present before asking to remember device
             self.window?.rootViewController!.presentedViewController?.dismiss(animated: true, completion: nil)
             let alertController = UIAlertController(title: "Remember Device",

@@ -27,9 +27,6 @@
 		6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* Posts.swift */; };
 		6A1B54B920D2D15900870DC2 /* CreateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B820D2D15900870DC2 /* CreateButton.swift */; };
 		6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54BA20D3012700870DC2 /* ContentScene.swift */; };
-		6A1B54C720D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */; };
-		6A1B54C820D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */; };
-		6A1B54C920D4327B00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */; };
 		6A1B54CB20D4350400870DC2 /* APIGatewayService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54CA20D4350400870DC2 /* APIGatewayService.swift */; };
 		6A1B54CE20D4616F00870DC2 /* DynamoDBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54CD20D4616F00870DC2 /* DynamoDBService.swift */; };
 		6A1B54D020D47BEC00870DC2 /* ViewController+Gesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54CF20D47BEC00870DC2 /* ViewController+Gesture.swift */; };
@@ -66,6 +63,9 @@
 		6AF5278E208BC0990039363B /* ForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */; };
 		6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278F208BC0B00039363B /* UpdatePasswordViewController.swift */; };
 		6AF67BFA20DD80370096CEA0 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AF67BF920DD80370096CEA0 /* awsconfiguration.json */; };
+		6AF67C0120DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF67BFB20DDB1D70096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */; };
+		6AF67C0220DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF67BFD20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */; };
+		6AF67C0320DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF67BFF20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */; };
 		D453523150F84F268FA5C265 /* Pods_PostgameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */; };
 		FD6547AD0525C6433731BAF5 /* Pods_PostgameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */; };
 /* End PBXBuildFile section */
@@ -113,12 +113,6 @@
 		6A1B54B820D2D15900870DC2 /* CreateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateButton.swift; sourceTree = "<group>"; };
 		6A1B54BA20D3012700870DC2 /* ContentScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScene.swift; sourceTree = "<group>"; };
 		6A1B54C020D4327900870DC2 /* Postgame-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Postgame-Bridging-Header.h"; sourceTree = "<group>"; };
-		6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_ResponseSchema.m; sourceTree = "<group>"; };
-		6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_RequestSchema.m; sourceTree = "<group>"; };
-		6A1B54C320D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_ResponseSchema.h; sourceTree = "<group>"; };
-		6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m; sourceTree = "<group>"; };
-		6A1B54C520D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h; sourceTree = "<group>"; };
-		6A1B54C620D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_RequestSchema.h; sourceTree = "<group>"; };
 		6A1B54CA20D4350400870DC2 /* APIGatewayService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIGatewayService.swift; sourceTree = "<group>"; };
 		6A1B54CD20D4616F00870DC2 /* DynamoDBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamoDBService.swift; sourceTree = "<group>"; };
 		6A1B54CF20D47BEC00870DC2 /* ViewController+Gesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Gesture.swift"; sourceTree = "<group>"; };
@@ -161,6 +155,12 @@
 		6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewController.swift; sourceTree = "<group>"; };
 		6AF5278F208BC0B00039363B /* UpdatePasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatePasswordViewController.swift; sourceTree = "<group>"; };
 		6AF67BF920DD80370096CEA0 /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		6AF67BFB20DDB1D70096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_ResponseSchema.m; sourceTree = "<group>"; };
+		6AF67BFC20DDB1D70096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h; sourceTree = "<group>"; };
+		6AF67BFD20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m; sourceTree = "<group>"; };
+		6AF67BFE20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_RequestSchema.h; sourceTree = "<group>"; };
+		6AF67BFF20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AWSAPI_QJVZDPTXRF_RequestSchema.m; sourceTree = "<group>"; };
+		6AF67C0020DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AWSAPI_QJVZDPTXRF_ResponseSchema.h; sourceTree = "<group>"; };
 		A1424D84FBAFFF7B1B5B2869 /* Pods-PostgameUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PostgameUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PostgameUITests/Pods-PostgameUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostgameUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7777FCF3D8FDFE72C7E814E /* Pods-Postgame.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Postgame.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Postgame/Pods-Postgame.debug.xcconfig"; sourceTree = "<group>"; };
@@ -246,13 +246,13 @@
 		6A1B54BF20D4326700870DC2 /* APIGateway */ = {
 			isa = PBXGroup;
 			children = (
+				6AF67BFC20DDB1D70096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */,
+				6AF67BFD20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */,
+				6AF67BFE20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */,
+				6AF67BFF20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */,
+				6AF67C0020DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.h */,
+				6AF67BFB20DDB1D70096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */,
 				6A1B54CA20D4350400870DC2 /* APIGatewayService.swift */,
-				6A1B54C520D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.h */,
-				6A1B54C420D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */,
-				6A1B54C620D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.h */,
-				6A1B54C220D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */,
-				6A1B54C320D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.h */,
-				6A1B54C120D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */,
 				6A1B54C020D4327900870DC2 /* Postgame-Bridging-Header.h */,
 			);
 			path = APIGateway;
@@ -794,6 +794,7 @@
 				6A1B54D520D8253500870DC2 /* Descriptor.swift in Sources */,
 				6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */,
 				6A1B54CB20D4350400870DC2 /* APIGatewayService.swift in Sources */,
+				6AF67C0320DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */,
 				6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */,
 				6A1B54A520D01A8700870DC2 /* NonMaxSuppression.swift in Sources */,
 				6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */,
@@ -801,14 +802,15 @@
 				6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */,
 				6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */,
 				6A1B54AA20D0764C00870DC2 /* DescriptorCache.swift in Sources */,
+				6AF67C0120DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */,
 				6A1B54D220D47D2E00870DC2 /* LongPressIndicator.swift in Sources */,
 				6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */,
 				6AEBAB6120CEEEAC00741EB0 /* DetectVerticalRect.swift in Sources */,
 				6A1B549520D019E500870DC2 /* DescriptorComputer.swift in Sources */,
-				6A1B54C720D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */,
 				6A1B54A320D01A8700870DC2 /* MultiArray.swift in Sources */,
 				6A93257820D85A8000E0C9B4 /* UserView.swift in Sources */,
 				6A1B548F20D0036400870DC2 /* VerticalRectInfo.swift in Sources */,
+				6AF67C0220DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */,
 				6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */,
 				6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */,
 				6A1B54AC20D17F2B00870DC2 /* Lifespan.swift in Sources */,
@@ -817,7 +819,6 @@
 				6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */,
 				6AEC1AA0208799B2008E0FF8 /* ViewController+UISetup.swift in Sources */,
 				6AF52780208AC3E80039363B /* GeolocationService.swift in Sources */,
-				6A1B54C820D4327A00870DC2 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */,
 				6AEC1AA320879B23008E0FF8 /* extension.swift in Sources */,
 				6A1B54A420D01A8700870DC2 /* CVPixelBuffer+Helpers.swift in Sources */,
 				6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */,
@@ -831,7 +832,6 @@
 				6AF52784208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift in Sources */,
 				6A1B54A220D01A8700870DC2 /* Predictions.swift in Sources */,
 				6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */,
-				6A1B54C920D4327B00870DC2 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */,
 				6AEC1AA92087C514008E0FF8 /* CreationView.swift in Sources */,
 				6A93257620D859D600E0C9B4 /* CountView.swift in Sources */,
 				6AEBAB5620CDF3AE00741EB0 /* S3Servie.swift in Sources */,
@@ -991,6 +991,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 24G6VR25PU;
@@ -1001,6 +1002,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.Postgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Postgame/Model/AWS/APIGateway/Postgame-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -1014,6 +1017,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
 				INFOPLIST_FILE = Postgame/Info.plist;
@@ -1023,6 +1027,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.postgame.Postgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Postgame/Model/AWS/APIGateway/Postgame-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

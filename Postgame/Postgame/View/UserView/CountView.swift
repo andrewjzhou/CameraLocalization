@@ -48,20 +48,20 @@ class CountView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, U
         urls.removeAll()
         counts.removeAll()
         
-        let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
-        
-        let _ = DynamoDBService.sharedInstance.usernameQuery(username)
-            .subscribe(onNext: { (posts) in
-                for post in posts {
-                    self.urls.append(post._key!)
-                    self.counts.append(Int(post._view_count!))
-                }
-            }, onCompleted: {
-                DispatchQueue.main.sync {
-                    self.list.reloadData()
-                }
-            })
-            .disposed(by: disposeBag)
+        if let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username {
+            let _ = DynamoDBService.sharedInstance.usernameQuery(username)
+                .subscribe(onNext: { (posts) in
+                    for post in posts {
+                        self.urls.append(post._key!)
+                        self.counts.append(Int(post._view_count!))
+                    }
+                }, onCompleted: {
+                    DispatchQueue.main.sync {
+                        self.list.reloadData()
+                    }
+                })
+                .disposed(by: disposeBag)
+        }
     }
     
     

@@ -42,8 +42,8 @@ class APIGatewayService {
         let serviceConfiguration = AWSServiceConfiguration(
             region: AWSRegionType.USEast2,
             credentialsProvider: AWSMobileClient.sharedInstance().getCredentialsProvider())
-        
-        
+        print("response-Provider: ",AWSMobileClient.sharedInstance().getCredentialsProvider())
+ 
         AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.register(with: serviceConfiguration!, forKey: "CloudLogicAPIKey")
         
         // Fetch the Cloud Logic client to be used for invocation
@@ -64,8 +64,8 @@ class APIGatewayService {
             let responseString =
                 String(data: result.responseData!, encoding: .utf8)
             
-//            print(responseString)
-//            print(result.statusCode)
+            print(responseString)
+            print("response: ", result.statusCode)
             
             return nil
         }

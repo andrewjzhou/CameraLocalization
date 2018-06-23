@@ -49,7 +49,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupUILayout()
+        fetchUserAttributes()
         
         setupScreenshoButtonRx()
 
@@ -74,19 +74,20 @@ class ViewController: UIViewController {
 //            showSignIn()
 //        }
 //
-      fetchUserAttributes()
+    
+    
       
     }
     
     var user:AWSCognitoIdentityUser?
     var userAttributes:[AWSCognitoIdentityProviderAttributeType]?
     func fetchUserAttributes() {
-        
+        print("SignIn: fetchUserAttributes()")
         user = AppDelegate.defaultUserPool().currentUser()
         print("User: \(user)")
         user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
             guard task.result != nil else {
-                
+                print("SignIn: fetchUserAttributes() continueOnSuccessWith Completion block")
                 return nil
             }
             
@@ -100,6 +101,7 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setupUILayout()
         
         // Run the view's session
         sceneView.session.run(trackingConfiguration)
