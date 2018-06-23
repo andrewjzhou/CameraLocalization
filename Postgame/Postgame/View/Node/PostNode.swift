@@ -80,6 +80,7 @@ class PostNode: SCNNode {
                     self.contentNode.load()
                 case .prompt:
                     self.contentNode.prompt()
+                    vibrate(.heavy)
                 case .active:
                     self.contentNode.activate()
 
@@ -244,5 +245,4 @@ fileprivate func findMostPopular(_ extents: [PostNodeExtent]) -> PostNodeExtent 
     let winner = extents[index]
     return winner
 }
-
 

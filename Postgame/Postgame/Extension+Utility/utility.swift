@@ -37,3 +37,8 @@ func convertFromCamera(_ rect: CGRect, size: CGSize) -> CGRect {
     
     return CGRect(x: x * size.width, y: y * size.height, width: w * size.width, height: h * size.height)
 }
+
+func vibrate(_ style: UIImpactFeedbackStyle) {
+    let generator = UIImpactFeedbackGenerator(style: style)
+    generator.impactOccurred()
+}

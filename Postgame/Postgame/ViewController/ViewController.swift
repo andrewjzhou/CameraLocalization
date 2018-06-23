@@ -66,27 +66,9 @@ class ViewController: UIViewController {
         setuplongPressSubject()
         
         setupPostNodeInteractions()
-        
-        fetchUserAttributes()
 
     }
-    
-    func fetchUserAttributes() {
-        print("SignIn: fetchUserAttributes()")
-        let user = AWSCognitoIdentityUserPool.default().currentUser()
-        user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
-//            guard task.result != nil else {
-//                print("SignIn: fetchUserAttributes() continueOnSuccessWith Completion block")
-//                return nil
-//            }
-//
-//            self.userAttributes = task.result?.userAttributes
-//            self.userAttributes?.forEach({ (attribute) in
-//
-//            })
-            return nil
-        })
-    }
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -103,6 +85,8 @@ class ViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        // Authenticate user
+        AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
     }
     
     
