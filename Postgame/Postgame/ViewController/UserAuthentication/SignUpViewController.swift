@@ -19,7 +19,7 @@ class SignUpViewController: UIViewController {
     var email: UITextField?
     var signUpButton: UIButton?
     
-    let pool = AppDelegate.defaultUserPool()
+    let pool = AWSCognitoIdentityUserPool.default()
     var sentTo: String?
     
     override func viewWillAppear(_ animated: Bool) {

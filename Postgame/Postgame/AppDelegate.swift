@@ -16,10 +16,6 @@ import AWSCognitoIdentityProvider
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    class func defaultUserPool() -> AWSCognitoIdentityUserPool {
-        return AWSCognitoIdentityUserPool(forKey: AWSCognitoUserPoolsSignInProviderKey)
-    }
-    
     var window: UIWindow?
     var navigationController: UINavigationController?
     let signInViewController = SignInViewController()
@@ -49,41 +45,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.navigationController = UINavigationController(rootViewController: signInViewController)
         
         // AWS User Pool
-        setupCognitoUserPool()
-        
-//        navigationController.setNavigationBarHidden(true, animated: false)
-//        navigationController.pushViewController(signInViewController, animated: false)
-//
+        let pool = AWSCognitoIdentityUserPool.default()
+        pool.delegate = self
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window!.rootViewController = ViewController()
         window!.makeKeyAndVisible()
         
-        
-        // Create AWSMobileClient to connect with AWS
-//        return AWSMobileClient.sharedInstance().interceptApplication(application, didFinishLaunchingWithOptions: launchOptions)
         return true
     }
     
-    func setupCognitoUserPool() {
-        // setup service configuration
-        let serviceConfiguration = AWSServiceConfiguration(region: AWSRegionType.USEast2, credentialsProvider: nil)
-        
-        // create pool configuration
-        let defaultConfig = AWSCognitoIdentityUserPool.default().userPoolConfiguration
-        let poolConfiguration = AWSCognitoIdentityUserPoolConfiguration(clientId: defaultConfig.clientId,
-                                                                        clientSecret: defaultConfig.clientSecret,
-                                                                        poolId: defaultConfig.poolId)
-        
-        // initialize user pool client
-        AWSCognitoIdentityUserPool.register(with: serviceConfiguration, userPoolConfiguration: poolConfiguration, forKey: AWSCognitoUserPoolsSignInProviderKey)
-        
-        // fetch the user pool client we initialized in above step
-        let pool:AWSCognitoIdentityUserPool = AppDelegate.defaultUserPool()
-        pool.delegate = self
-    }
-    
-   
     
     func logUser() {
         // TODO: Use the current user's information
@@ -142,38 +113,14 @@ extension AppDelegate: AWSCognitoIdentityInteractiveAuthenticationDelegate {
             self.navigationController!.popToRootViewController(animated: true)
             if (!self.navigationController!.isViewLoaded || self.navigationController!.view.window == nil) {
                 self.window?.rootViewController?.present(self.navigationController!,
-                                                         animated: false,
+                                                         animated: true,
                                                          completion: nil)
             }
             
         }
         return self.signInViewController
     }
-    //
-    //    func startMultiFactorAuthentication() -> AWSCognitoIdentityMultiFactorAuthentication {
-    //        if (self.mfaViewController == nil) {
-    //            self.mfaViewController = MFAViewController()
-    //            self.mfaViewController?.modalPresentationStyle = .popover
-    //        }
-    //        DispatchQueue.main.async {
-    //            if (!self.mfaViewController!.isViewLoaded
-    //                || self.mfaViewController!.view.window == nil) {
-    //                //display mfa as popover on current view controller
-    //                let viewController = self.window?.rootViewController!
-    //                viewController?.present(self.mfaViewController!,
-    //                                        animated: true,
-    //                                        completion: nil)
-    //
-    //                // configure popover vc
-    //                let presentationController = self.mfaViewController!.popoverPresentationController
-    //                presentationController?.permittedArrowDirections = UIPopoverArrowDirection.left
-    //                presentationController?.sourceView = viewController!.view
-    //                presentationController?.sourceRect = viewController!.view.bounds
-    //            }
-    //        }
-    //        return self.mfaViewController!
-    //    }
-    //
+
     func startRememberDevice() -> AWSCognitoIdentityRememberDevice {
         print("SignIn: startRememberDevice() in AppDelegate")
         return self

@@ -66,35 +66,22 @@ class ViewController: UIViewController {
         setuplongPressSubject()
         
         setupPostNodeInteractions()
-//
-//        // SignIn View Controllers
-//        // Customie UI by following: https://docs.aws.amazon.com/aws-mobile/latest/developerguide/add-aws-mobile-user-sign-in-customize.html
-//        // Get rid of email field in sign-up
-//        if !AWSSignInManager.sharedInstance().isLoggedIn {
-//            showSignIn()
-//        }
-//
-    
-    
-      
+
     }
     
-    var user:AWSCognitoIdentityUser?
-    var userAttributes:[AWSCognitoIdentityProviderAttributeType]?
     func fetchUserAttributes() {
         print("SignIn: fetchUserAttributes()")
-        user = AppDelegate.defaultUserPool().currentUser()
-        print("User: \(user)")
+        var user = AWSCognitoIdentityUserPool.default().currentUser()
         user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
-            guard task.result != nil else {
-                print("SignIn: fetchUserAttributes() continueOnSuccessWith Completion block")
-                return nil
-            }
-            
-            self.userAttributes = task.result?.userAttributes
-            self.userAttributes?.forEach({ (attribute) in
-                
-            })
+//            guard task.result != nil else {
+//                print("SignIn: fetchUserAttributes() continueOnSuccessWith Completion block")
+//                return nil
+//            }
+//
+//            self.userAttributes = task.result?.userAttributes
+//            self.userAttributes?.forEach({ (attribute) in
+//
+//            })
             return nil
         })
     }
@@ -378,8 +365,8 @@ extension ViewController {
 //        AWSSignInManager.sharedInstance().logout(completionHandler: {(result: Any?, error: Error?) in
 //            self.showSignIn()
 //        })
-        AppDelegate.defaultUserPool().currentUser()?.signOut()
-        AppDelegate.defaultUserPool().currentUser()?.getDetails().continueOnSuccessWith { (task) -> AnyObject? in
+        AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
+        AWSCognitoIdentityUserPool.default().currentUser()?.getDetails().continueOnSuccessWith { (task) -> AnyObject? in
             DispatchQueue.main.async(execute: {
                 var response = task.result
             })
