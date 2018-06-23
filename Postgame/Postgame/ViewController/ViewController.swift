@@ -337,34 +337,10 @@ extension ViewController {
 
 
 extension ViewController {
-    // Show sign-in view controller
-    func showSignIn() {
-        // Customize Sign-In UI
-//        let config = AWSAuthUIConfiguration()
-//        config.enableUserPoolsUI = true
-//        config.backgroundColor = UIColor.blue
-//        config.font = UIFont (name: "Helvetica Neue", size: 20)
-//        config.isBackgroundColorFullScreen = true
-//        config.canCancel = true
-
-        
-//        AWSAuthUIViewController
-//            .presentViewController(with: self.navigationController!,
-//                                   configuration: nil,
-//                                   completionHandler: { (provider: AWSSignInProvider, error: Error?) in
-//                                    if error != nil {
-//                                        print("Error occurred: \(String(describing: error))")
-//                                    } else {
-//                                        // Sign in successful.
-//                                    }
-//            })
-    }
     
     // Sign out current user
     func signOut() {
-//        AWSSignInManager.sharedInstance().logout(completionHandler: {(result: Any?, error: Error?) in
-//            self.showSignIn()
-//        })
+
         AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
         AWSCognitoIdentityUserPool.default().currentUser()?.getDetails().continueOnSuccessWith { (task) -> AnyObject? in
             DispatchQueue.main.async(execute: {
