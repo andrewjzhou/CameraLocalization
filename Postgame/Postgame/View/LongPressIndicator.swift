@@ -29,7 +29,7 @@ class LongPressIndicator: UIView {
                 }
             } else {
                 pulsatingLayer.isHidden = true
-                coreLayer.strokeColor = UIColor.red.cgColor
+                coreLayer.strokeColor = UIColor.green.cgColor
                 coreLayer.opacity = 0.8
             }
         }
