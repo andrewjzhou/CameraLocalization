@@ -16,7 +16,6 @@ fileprivate let buttonLength : CGFloat = 54.0
 fileprivate let buttonAlpha : CGFloat = 0.5
 fileprivate let screenHeight = UIScreen.main.bounds.height
 fileprivate let screenWidth = UIScreen.main.bounds.width
-fileprivate let disposeBag = DisposeBag()
 
 extension ViewController {
     
@@ -39,6 +38,9 @@ extension ViewController {
         
         // On shelf. Change color of buttons based on camera feed in real-time
 //        colorButtonsRealTime()
+        
+        // Set theme 
+//        Chameleon.setGlobalThemeUsingPrimaryColor(.green, with: .contrast)
     }
     
     
@@ -106,6 +108,7 @@ extension ViewController {
     }
     
     private func colorButtonsRealTime() {
+        let disposeBag = DisposeBag()
         let arFrameObservable =
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
