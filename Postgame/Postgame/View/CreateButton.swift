@@ -25,6 +25,26 @@ class CreateButton: SpringButton {
         super.init(frame: frame)
     }
     
+    // Clear post inside createButton using Zoom out animation
+    func clear() {
+        if post == nil { return }
+        guard let superview = self.superview else { return }
+
+        let zoomButton = SpringButton(frame: self.frame)
+        zoomButton.setImage(post!, for: .normal)
+        zoomButton.clipsToBounds = true
+        zoomButton.layer.cornerRadius = 0.5 * self.frame.width
+        superview.addSubview(zoomButton)
+        superview.bringSubview(toFront: zoomButton)
+       
+        self.post = nil
+        zoomButton.animation = "zoomOut"
+        zoomButton.animateNext {
+            zoomButton.removeFromSuperview()
+        }
+        
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

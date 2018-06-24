@@ -186,14 +186,8 @@ extension ViewController {
                 return self.createButton.post != nil
             })
             .subscribe(onNext: {_ in
-                self.createButton.animation = "zoomOut"
-                self.createButton.animateToNext {
-                    self.createButton.post = nil // default image
-                    self.createButton.animation = "flipY"
-                    self.createButton.curve = "easeInSine"
-                    self.createButton.duration = 0.2
-                    self.createButton.animate()
-                }
+
+              self.createButton.clear()
             
             })
             .disposed(by: disposeBag)
@@ -208,6 +202,7 @@ extension ViewController {
             .disposed(by: disposeBag)
         
         // Refresh descriptor cache
+        
         indicatorButton.rx.tap.subscribe(onNext: { _ in
             self.descriptorCache.refresh()
         }).disposed(by: disposeBag)
