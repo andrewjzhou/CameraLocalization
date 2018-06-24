@@ -35,7 +35,6 @@ class CreateButton: SpringButton {
         zoomButton.clipsToBounds = true
         zoomButton.layer.cornerRadius = 0.5 * self.frame.width
         superview.addSubview(zoomButton)
-        superview.bringSubview(toFront: zoomButton)
        
         self.post = nil
         zoomButton.animation = "zoomOut"
