@@ -17,6 +17,8 @@ import AWSAuthCore
 import AWSAuthUI
 import Crashlytics
 import AWSUserPoolsSignIn
+import ChameleonFramework
+
 
 class ViewController: UIViewController {
     
@@ -238,6 +240,7 @@ extension ViewController {
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
                 .throttle(0.1, scheduler:  MainScheduler.instance)
+                .share()
         
         // 2. Detect rectangles attached to vertical surfaces in the real world
         let verticalRectObservable =

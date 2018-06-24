@@ -23,6 +23,7 @@ target 'Postgame' do
   pod 'Crashlytics'
   ## UI
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
+  pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chameleon.git'
 
   target 'PostgameTests' do
     inherit! :search_paths

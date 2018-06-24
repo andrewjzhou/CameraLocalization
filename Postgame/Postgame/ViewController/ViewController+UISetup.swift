@@ -8,11 +8,15 @@
 
 import UIKit
 import ARKit
+import RxSwift
+import RxCocoa
+import ChameleonFramework
 
 fileprivate let buttonLength : CGFloat = 54.0
 fileprivate let buttonAlpha : CGFloat = 0.5
 fileprivate let screenHeight = UIScreen.main.bounds.height
 fileprivate let screenWidth = UIScreen.main.bounds.width
+fileprivate let disposeBag = DisposeBag()
 
 extension ViewController {
     
@@ -33,7 +37,8 @@ extension ViewController {
         
         setupUserView()
         
-        print("SignIn: setup UI")
+        // On shelf. Change color of buttons based on camera feed in real-time
+//        colorButtonsRealTime()
     }
     
     
@@ -99,6 +104,37 @@ extension ViewController {
         userView.addGestureRecognizer(swipe)
     
     }
+    
+    private func colorButtonsRealTime() {
+        let arFrameObservable =
+            sceneView.session.rx.didUpdateFrame
+                // slow down frame rate
+//                .throttle(0.1, scheduler:  MainScheduler.instance)
+//                .share()
+        
+        arFrameObservable
+            .debug("Chameleon: getting image")
+            .map { UIImage(pixelBuffer: $0.capturedImage) } // get capturedImage from each frame
+            .filter{ $0 != nil }
+            .debug("Chameleon: getting color")
+            .map { AverageColorFromImage($0!) } // get average color from each frame image
+//            .map { ComplementaryFlatColorOf($0) }
+//            .map { ContrastColorOf($0, returnFlat: true) }
+            .subscribe(onNext: { (color) in
+                
+                print("Chameleon color: \(color)")
+                self.resetButton.setBackgroundColor(color.withAlphaComponent(buttonAlpha))
+                self.createButton.setBackgroundColor(color.withAlphaComponent(buttonAlpha))
+                self.indicatorButton.setBackgroundColor(color.withAlphaComponent(buttonAlpha))
+                self.screenshotButton.setBackgroundColor(color.withAlphaComponent(buttonAlpha))
+                self.userButton.setBackgroundColor(color.withAlphaComponent(buttonAlpha))
+            })
+            .disposed(by: disposeBag)
+                
+        
+    }
+    
+
 }
 
 

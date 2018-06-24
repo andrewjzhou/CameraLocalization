@@ -307,6 +307,13 @@ extension UIImage {
     }
 }
 
+extension UIButton {
+    func setBackgroundColor(_ color: UIColor) {
+        self.setBackgroundImage(UIImage.from(color: color), for: .normal)
+
+    }
+}
+
 extension UIView {
     // Configure constraints of UIView manually
     func addConstraintsWithFormat(_ format: String, views: UIView...) {

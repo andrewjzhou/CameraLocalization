@@ -22,6 +22,9 @@ PODS:
   - AWSUserPoolsSignIn (2.6.21):
     - AWSAuthCore (= 2.6.21)
     - AWSCognitoIdentityProvider (= 2.6.21)
+  - ChameleonFramework/Default (2.1.0)
+  - ChameleonFramework/Swift (2.1.0):
+    - ChameleonFramework/Default
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
   - Fabric (1.7.7)
@@ -39,6 +42,7 @@ DEPENDENCIES:
   - AWSMobileClient (~> 2.6.13)
   - AWSS3 (~> 2.6.13)
   - AWSUserPoolsSignIn (~> 2.6.13)
+  - ChameleonFramework/Swift (from `https://github.com/ViccAlexander/Chameleon.git`)
   - Crashlytics
   - Fabric
   - RxCocoa (~> 4.0)
@@ -46,10 +50,15 @@ DEPENDENCIES:
   - Spring (from `https://github.com/MengTo/Spring.git`)
 
 EXTERNAL SOURCES:
+  ChameleonFramework:
+    :git: https://github.com/ViccAlexander/Chameleon.git
   Spring:
     :git: https://github.com/MengTo/Spring.git
 
 CHECKOUT OPTIONS:
+  ChameleonFramework:
+    :commit: 6dd284bde21ea2e7f9fd89bc36f40df16e16369d
+    :git: https://github.com/ViccAlexander/Chameleon.git
   Spring:
     :commit: c540239f3590bbaf4a35c3959c329dd5ed4e3eee
     :git: https://github.com/MengTo/Spring.git
@@ -66,12 +75,13 @@ SPEC CHECKSUMS:
   AWSMobileClient: f61ef1ca52cf561a3831f4c29b8bfc43234db8f3
   AWSS3: e6b042fdbf092ffd49bf7998b3fd5be729949ee7
   AWSUserPoolsSignIn: 5c2a162e62cdcb47fb0f3f5ede4dec492fc00307
+  ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
   RxSwift: e49536837d9901277638493ea537394d4b55f570
   Spring: 3c7666eccefdeb87140008dc81043f89f8dbb787
 
-PODFILE CHECKSUM: c87bcefc618c144953b55f3dabf857286a9a431f
+PODFILE CHECKSUM: a2c03798d241cb9349e4ed2c71e79750f030f0c1
 
 COCOAPODS: 1.4.0
