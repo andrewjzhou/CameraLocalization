@@ -68,7 +68,18 @@ class ViewController: UIViewController {
         setuplongPressSubject()
         
         setupPostNodeInteractions()
+        
+        let title = TotalView()
+        view.addSubview(title)
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.setTopConstraint(equalTo: view.topAnchor, offset: 0)
+        title.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        title.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        title.setHeightConstraint(UIScreen.main.bounds.height / 3)
+        view.bringSubview(toFront: title)
+        
 
+        
     }
 
     
