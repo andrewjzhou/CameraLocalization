@@ -283,14 +283,22 @@
 			path = Node;
 			sourceTree = "<group>";
 		};
-		6A93257420D8567A00E0C9B4 /* UserView */ = {
+		6A8EA74020E1458900B178C1 /* CountView */ = {
 			isa = PBXGroup;
 			children = (
 				6A93257520D859D600E0C9B4 /* CountView.swift */,
+				6A8EA73E20E1255200B178C1 /* TotalView.swift */,
+				6A8EA73C20E1254600B178C1 /* TopView.swift */,
+			);
+			path = CountView;
+			sourceTree = "<group>";
+		};
+		6A93257420D8567A00E0C9B4 /* UserView */ = {
+			isa = PBXGroup;
+			children = (
+				6A8EA74020E1458900B178C1 /* CountView */,
 				6A93257720D85A8000E0C9B4 /* UserView.swift */,
 				6A8EA73A20E050D000B178C1 /* UserMenu.swift */,
-				6A8EA73C20E1254600B178C1 /* TopView.swift */,
-				6A8EA73E20E1255200B178C1 /* TotalView.swift */,
 			);
 			path = UserView;
 			sourceTree = "<group>";

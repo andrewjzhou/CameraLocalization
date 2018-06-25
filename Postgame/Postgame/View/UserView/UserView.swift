@@ -9,146 +9,72 @@
 import UIKit
 import RxSwift
 
-class UserView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
-    lazy var menu: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 2
-        layout.scrollDirection = .vertical
-        
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.dataSource = self
-        cv.delegate = self
-        return cv
-    }()
-    
+class UserView: UIView {
+    let menu = UserMenu()
     let countView = CountView()
-    
-    let cellId = "userInfoCellId"
-    
-    private let signOutPublisher = PublishSubject<Any>()
-    
-    private(set) var signOutObservable: Observable<Any>
-    
-    init() {
-        signOutObservable = signOutPublisher.asObservable()
-        
-        super.init(frame: .zero)
-        
-        // User Info
-        self.backgroundColor = .black
-        self.alpha = 0.9
-        
-        menu.register(MenuCell.self, forCellWithReuseIdentifier: cellId)
-        addSubview(menu)
-        menu.translatesAutoresizingMaskIntoConstraints = false
-        menu.topAnchor.constraint(equalTo: self.topAnchor, constant: UIScreen.main.bounds.height * 0.13).isActive = true
-        menu.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: UIScreen.main.bounds.height * -0.13).isActive = true
-        menu.leftAnchor.constraint(equalTo: self.leftAnchor, constant: UIScreen.main.bounds.width * 0.13).isActive = true
-        menu.rightAnchor.constraint(equalTo: self.rightAnchor, constant: UIScreen.main.bounds.width * -0.13).isActive = true
-        menu.backgroundColor = .clear
-        
-        addSubview(countView)
-        countView.translatesAutoresizingMaskIntoConstraints = false
-        countView.topAnchor.constraint(equalTo: self.topAnchor, constant: UIScreen.main.bounds.height * 0.13).isActive = true
-        countView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: UIScreen.main.bounds.height * -0.13).isActive = true
-        countView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: UIScreen.main.bounds.width * 0.13).isActive = true
-        countView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: UIScreen.main.bounds.width * -0.13).isActive = true
-        countView.backgroundColor = .clear
-        countView.alpha = 0
-    }
-    
-    override func didMoveToSuperview() {
-        self.translatesAutoresizingMaskIntoConstraints = false
-        guard let view = superview else {return}
-        self.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        self.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        self.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        self.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        self.transform = CGAffineTransform(translationX: 0, y: -UIScreen.main.bounds.height)
-    }
-    
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch indexPath.row{
-        case 0:
-            // Reload countView and show
-            countView.refresh()
-            UIView.animate(withDuration: 0.5) {
-                self.countView.alpha = 1
-            }
-        case 1:
-            // Change password
-            print("1")
-        case 2:
-            // SignOut
-            signOutPublisher.onCompleted()
-        default:
-            break
-        }
-    }
-    
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MenuCell
-        switch indexPath.row{
-        case 0:
-            cell.label.text = "Views"
-        case 1:
-            cell.label.text = "Change Password"
-        case 2:
-            cell.label.text = "Sign Out"
-        default:
-            break
-        }
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = menu.bounds.width
-        let height = menu.bounds.height * 0.2
-        return CGSize.init(width: width, height: height)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class MenuCell: UICollectionViewCell {
-    var label = UILabel()
-    
+    let settingsView = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .clear
+        let margin: CGFloat = 4
         
-        contentView.backgroundColor = .yellow
+        let backgroundView = UIView()
+        addSubview(backgroundView)
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.setTopConstraint(equalTo: topAnchor, offset: 0)
+        backgroundView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
+        backgroundView.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
+        backgroundView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
+        backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
         
-        label.textColor = .black
+        let containerView = UIView()
+        addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.setTopConstraint(equalTo: topAnchor, offset: margin)
+        containerView.setBottomConstraint(equalTo: bottomAnchor, offset: -margin)
+        containerView.setLeadingConstraint(equalTo: leadingAnchor, offset: margin)
+        containerView.setTrailingConstraint(equalTo: trailingAnchor, offset: -margin)
+        containerView.clipsToBounds = true
+        containerView.layer.cornerRadius = 16
         
-        contentView.addSubview(label)
-        contentView.addConstraintsWithFormat("H:|-10-[v0]|", views: label)
-        contentView.addConstraintsWithFormat("V:|[v0]|", views: label)
+        containerView.addSubview(menu)
+        menu.translatesAutoresizingMaskIntoConstraints = false
+        menu.setTopConstraint(equalTo: containerView.topAnchor, offset: 0)
+        menu.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
+        menu.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
+        menu.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0.1).isActive = true
         
-        contentView.layer.cornerRadius = self.bounds.width * 0.1
-        contentView.layer.borderWidth = self.bounds.height * 0.3
-        contentView.layer.borderColor = UIColor.clear.cgColor
-        contentView.layer.masksToBounds = true
+        containerView.addSubview(settingsView)
+        settingsView.translatesAutoresizingMaskIntoConstraints = false
+        settingsView.setTopConstraint(equalTo: menu.bottomAnchor, offset: 0)
+        settingsView.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
+        settingsView.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
+        settingsView.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
+        settingsView.backgroundColor = UIColor.flatPlum.withAlphaComponent(0.7)
         
-        layer.shadowColor = UIColor.lightGray.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 2.0)
-        layer.shadowRadius = 2.0
-        layer.shadowOpacity = 1.0
-        layer.masksToBounds = false
-        layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.contentView.layer.cornerRadius).cgPath
+        containerView.addSubview(countView)
+        countView.translatesAutoresizingMaskIntoConstraints = false
+        countView.setTopConstraint(equalTo: menu.bottomAnchor, offset: 0)
+        countView.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
+        countView.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
+        countView.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
+        
+        menu.didSelectDriver.drive(onNext: { (index) in
+            switch index {
+            case 0:
+                containerView.bringSubview(toFront: self.countView)
+            case 1:
+                containerView.bringSubview(toFront: self.settingsView)
+            default:
+                return
+            }
+        }).disposed(by: disposeBag)
+        
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    
+    required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }
+
+fileprivate let disposeBag = DisposeBag()

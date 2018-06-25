@@ -69,13 +69,13 @@ class ViewController: UIViewController {
         
         setupPostNodeInteractions()
         
-        let title = TopView()
+        let title = UserView()
         view.addSubview(title)
         title.translatesAutoresizingMaskIntoConstraints = false
         title.setTopConstraint(equalTo: view.topAnchor, offset: 0)
         title.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
         title.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
-        title.setHeightConstraint(UIScreen.main.bounds.height / 2)
+        title.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
         view.bringSubview(toFront: title)
         
 
@@ -233,13 +233,6 @@ extension ViewController {
             })
             .disposed(by: disposeBag)
         
-        // Sign-Out
-        userView.signOutObservable
-            .subscribe(onCompleted: {
-                self.signOut()
-            })
-            .disposed(by: disposeBag)
-
     }
 }
 
