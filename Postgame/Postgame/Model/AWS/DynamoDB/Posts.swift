@@ -21,7 +21,7 @@ class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     var _key: String?
     var _location: String?
     var _username: String?
-    var _view_count: NSNumber?
+    var _viewCount: NSNumber?
     
     class func dynamoDBTableName() -> String {
         
@@ -38,7 +38,7 @@ class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
             "_key" : "key",
             "_location" : "location",
             "_username" : "username",
-            "_view_count" : "view_count",
+            "_viewCount" : "view_count",
         ]
     }
 }

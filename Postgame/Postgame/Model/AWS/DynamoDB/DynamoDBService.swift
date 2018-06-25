@@ -7,7 +7,9 @@
 //
 
 import AWSDynamoDB
+import AWSUserPoolsSignIn
 import RxSwift
+import RxCocoa
 
 class DynamoDBService {
     
@@ -16,6 +18,7 @@ class DynamoDBService {
     
     private init() {}
     
+    /// Mark:- Posts
     func create(key: String,  username: String) {
         let postItem: Posts = Posts()
         
@@ -25,7 +28,7 @@ class DynamoDBService {
         postItem._key = key
         postItem._location = location
         postItem._username = username
-        postItem._view_count = 0
+        postItem._viewCount = 0
         
         dynamoDbObjectMapper.save(postItem) { (error) in
             if let error = error {
@@ -119,4 +122,84 @@ class DynamoDBService {
     func incrementViews(_ key: String) {
         APIGatewayService.sharedInstance.DynamoDB_incrementViews(key)
     }
+    
+    /// Mark:- ViewCount
+    func registerUser(_ id: String) {
+        let vcItem: ViewCount = ViewCount()
+        
+        vcItem._userId = id
+        
+        // recents initialization
+        vcItem._recent1Key = "nil"
+        vcItem._recent1Views = NSNumber(value: 0)
+        vcItem._recent2Key = "nil"
+        vcItem._recent2Views = NSNumber(value: 0)
+        vcItem._recent3Key = "nil"
+        vcItem._recent3Views = NSNumber(value: 0)
+        vcItem._recent4Key = "nil"
+        vcItem._recent4Views = NSNumber(value: 0)
+        vcItem._recent5Key = "nil"
+        vcItem._recent5Views = NSNumber(value: 0)
+        
+        // tops initialization
+        vcItem._top1Key = "nil"
+        vcItem._top1Views = NSNumber(value: 0)
+        vcItem._top2Key = "nil"
+        vcItem._top2Views = NSNumber(value: 0)
+        vcItem._top3Key = "nil"
+        vcItem._top3Views = NSNumber(value: 0)
+        vcItem._top4Key = "nil"
+        vcItem._top4Views = NSNumber(value: 0)
+        vcItem._top5Key = "nil"
+        vcItem._top5Views = NSNumber(value: 0)
+        
+        // total initialization
+        vcItem._totalViews = NSNumber(value: 0)
+        
+        dynamoDbObjectMapper.save(vcItem) { (error) in
+            if let error = error {
+                print("Amazon DynamoDB Save Error: \(error)")
+                print("Amazon DynamoDB Save Error: \(vcItem)")
+            
+                return
+            }
+            print("ViewCont: An item was saved.")
+        }
+    }
+    
+    func viewCountQuery(_ userId: String) -> Driver<ViewCount?> {
+        let publisher = PublishSubject<ViewCount?>()
+        
+        // 1) Configure the query
+        let queryExpression = AWSDynamoDBQueryExpression()
+        queryExpression.keyConditionExpression = "#_userId = :_userId"
+        
+        queryExpression.expressionAttributeNames = [
+            "#_userId": "userId",
+        ]
+        queryExpression.expressionAttributeValues = [
+            ":_userId": userId,
+        ]
+        
+        
+        // 2) Make the query
+        dynamoDbObjectMapper.query(ViewCount.self, expression: queryExpression) { (output: AWSDynamoDBPaginatedOutput?, error: Error?) in
+            if error != nil {
+                print("The request failed. Error: \(String(describing: error))")
+                publisher.onCompleted()
+            }
+            
+            if output != nil {
+                for item in output!.items {
+                    if let vc = item as? ViewCount {
+                        publisher.onNext(vc)
+                    }
+                }
+            }
+            publisher.onCompleted()
+        }
+        
+        return publisher.asDriver(onErrorJustReturn: nil)
+    }
+    
 }

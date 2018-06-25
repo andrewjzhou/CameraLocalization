@@ -79,7 +79,6 @@ class ViewController: UIViewController {
         view.bringSubview(toFront: title)
         
 
-        
     }
 
     
@@ -333,7 +332,7 @@ extension ViewController {
         }
         self.highlightedRectangleOutlineLayers.removeAll()
     }
-
+    
 }
 
 

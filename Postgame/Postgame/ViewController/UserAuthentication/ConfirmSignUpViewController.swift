@@ -133,7 +133,11 @@ class ConfirmSignUpViewController: UIViewController {
                         let phone:String = strongSelf.userInfo?["phone"],
                         let email:String = strongSelf.userInfo?["email"]
                         else {return}
-//                    SocketIOManager.sharedInstance.registerUser(username: username, phone: phone, email: email)
+                    
+                    // Register user in ViewCount table
+                    // Need testing
+                    DynamoDBService.sharedInstance.registerUser(username)
+
                 }
             })
             return nil

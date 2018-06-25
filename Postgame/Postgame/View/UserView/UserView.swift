@@ -66,6 +66,7 @@ class UserView: UIView {
                 containerView.bringSubview(toFront: self.countView)
             case 1:
                 containerView.bringSubview(toFront: self.settingsView)
+                self.countView.refresh()
             default:
                 return
             }

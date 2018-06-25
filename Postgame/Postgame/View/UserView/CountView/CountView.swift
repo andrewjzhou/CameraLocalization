@@ -7,7 +7,8 @@
 //
 
 import UIKit
-
+import RxSwift
+import AWSUserPoolsSignIn
 
 class CountView: UIView {
     
@@ -33,7 +34,23 @@ class CountView: UIView {
         
     }
     
+    func refresh() {
+        guard let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.username else {return}
+        DynamoDBService.sharedInstance.viewCountQuery(username)
+            .drive(onNext: { (vc) in
+                // load data for TotalView
+                if let totalCount = vc?._totalViews {
+                    print("Totalcount is : " , totalCount)
+                    self.totalView.setNumber(Int(totalCount))
+                }
+                // load data for TopView
+            })
+            .disposed(by: disposeBag)
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+fileprivate let disposeBag = DisposeBag()
