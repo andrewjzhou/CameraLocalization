@@ -21,8 +21,8 @@ class TotalView: UIView {
         titleLabel.setTopConstraint(equalTo: topAnchor, offset: 0)
         titleLabel.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
         titleLabel.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
-        titleLabel.setHeightConstraint(64)
-        titleLabel.text = "Total: "
+        titleLabel.setHeightConstraint(32)
+        titleLabel.text = "Total : "
         titleLabel.textAlignment = .center
         
         addSubview(numberLabel)
@@ -34,7 +34,7 @@ class TotalView: UIView {
         numberLabel.text = "0 0 0 , 0 0 0 , 0 0 0"
         numberLabel.textAlignment = .center
         
-        
+        // debugging
         titleLabel.backgroundColor = UIColor.flatLime
         numberLabel.backgroundColor = UIColor.flatBlue
     

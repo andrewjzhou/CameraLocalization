@@ -58,8 +58,7 @@ class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Show either CountView or SettingsView in SuperView
         let index = CGFloat(indexPath.item)
-        print("index: \(index)")
-         horizontalBarLeftAnchorConstraint?.constant = index * frame.width * 0.5
+        horizontalBarLeftAnchorConstraint?.constant = index * frame.width * 0.5
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
