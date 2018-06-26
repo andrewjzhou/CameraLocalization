@@ -132,26 +132,36 @@ class DynamoDBService {
         
         // recents initialization
         vcItem._recent1Key = "nil"
+        vcItem._recent1Date = "nil"
         vcItem._recent1Views = NSNumber(value: 0)
         vcItem._recent2Key = "nil"
+        vcItem._recent2Date = "nil"
         vcItem._recent2Views = NSNumber(value: 0)
         vcItem._recent3Key = "nil"
+        vcItem._recent3Date = "nil"
         vcItem._recent3Views = NSNumber(value: 0)
         vcItem._recent4Key = "nil"
+        vcItem._recent4Date = "nil"
         vcItem._recent4Views = NSNumber(value: 0)
         vcItem._recent5Key = "nil"
+        vcItem._recent5Date = "nil"
         vcItem._recent5Views = NSNumber(value: 0)
         
         // tops initialization
         vcItem._top1Key = "nil"
+        vcItem._top1Date = "nil"
         vcItem._top1Views = NSNumber(value: 0)
         vcItem._top2Key = "nil"
+        vcItem._top2Date = "nil"
         vcItem._top2Views = NSNumber(value: 0)
         vcItem._top3Key = "nil"
+        vcItem._top3Date = "nil"
         vcItem._top3Views = NSNumber(value: 0)
         vcItem._top4Key = "nil"
+        vcItem._top4Date = "nil"
         vcItem._top4Views = NSNumber(value: 0)
         vcItem._top5Key = "nil"
+        vcItem._top5Date = "nil"
         vcItem._top5Views = NSNumber(value: 0)
         
         // total initialization

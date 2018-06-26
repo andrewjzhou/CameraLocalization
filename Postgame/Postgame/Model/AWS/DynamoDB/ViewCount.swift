@@ -15,28 +15,37 @@ import Foundation
 import UIKit
 import AWSDynamoDB
 
-@objcMembers
 class ViewCount: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     
     var _userId: String?
+    var _recent1Date: String?
     var _recent1Key: String?
     var _recent1Views: NSNumber?
+    var _recent2Date: String?
     var _recent2Key: String?
     var _recent2Views: NSNumber?
+    var _recent3Date: String?
     var _recent3Key: String?
     var _recent3Views: NSNumber?
+    var _recent4Date: String?
     var _recent4Key: String?
     var _recent4Views: NSNumber?
+    var _recent5Date: String?
     var _recent5Key: String?
     var _recent5Views: NSNumber?
+    var _top1Date: String?
     var _top1Key: String?
     var _top1Views: NSNumber?
+    var _top2Date: String?
     var _top2Key: String?
     var _top2Views: NSNumber?
+    var _top3Date: String?
     var _top3Key: String?
     var _top3Views: NSNumber?
+    var _top4Date: String?
     var _top4Key: String?
     var _top4Views: NSNumber?
+    var _top5Date: String?
     var _top5Key: String?
     var _top5Views: NSNumber?
     var _totalViews: NSNumber?
@@ -54,24 +63,34 @@ class ViewCount: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     override class func jsonKeyPathsByPropertyKey() -> [AnyHashable: Any] {
         return [
             "_userId" : "userId",
+            "_recent1Date" : "recent1_date",
             "_recent1Key" : "recent1_key",
             "_recent1Views" : "recent1_views",
+            "_recent2Date" : "recent2_date",
             "_recent2Key" : "recent2_key",
             "_recent2Views" : "recent2_views",
+            "_recent3Date" : "recent3_date",
             "_recent3Key" : "recent3_key",
             "_recent3Views" : "recent3_views",
+            "_recent4Date" : "recent4_date",
             "_recent4Key" : "recent4_key",
             "_recent4Views" : "recent4_views",
+            "_recent5Date" : "recent5_date",
             "_recent5Key" : "recent5_key",
             "_recent5Views" : "recent5_views",
+            "_top1Date" : "top1_date",
             "_top1Key" : "top1_key",
             "_top1Views" : "top1_views",
+            "_top2Date" : "top2_date",
             "_top2Key" : "top2_key",
             "_top2Views" : "top2_views",
+            "_top3Date" : "top3_date",
             "_top3Key" : "top3_key",
             "_top3Views" : "top3_views",
+            "_top4Date" : "top4_date",
             "_top4Key" : "top4_key",
             "_top4Views" : "top4_views",
+            "_top5Date" : "top5_date",
             "_top5Key" : "top5_key",
             "_top5Views" : "top5_views",
             "_totalViews" : "total_views",
