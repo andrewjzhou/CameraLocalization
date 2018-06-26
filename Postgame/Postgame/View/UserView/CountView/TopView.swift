@@ -24,7 +24,7 @@ class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     
     let cellId = "cellId"
     
-    var topTitles = [String]()
+    var topKeys = [String]()
     var topViews = [Int]()
     
     override init(frame: CGRect) {

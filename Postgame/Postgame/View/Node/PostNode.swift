@@ -221,10 +221,11 @@ fileprivate func getKey(_ location: (Double,Double)) -> String {
     return key
 }
 
-fileprivate func recordDate() -> String {
+func recordDate() -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.locale = Locale(identifier: "en_US")
-    dateFormatter.dateFormat = "yyyy-MM-dd'@'HH:mm:ss"
+
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     return dateFormatter.string(from: Date())
 }
 

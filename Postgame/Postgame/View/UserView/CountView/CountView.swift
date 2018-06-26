@@ -14,6 +14,7 @@ class CountView: UIView {
     
     let totalView = TotalView()
     let topView = TopView()
+    var viewCount: ViewCount?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -38,12 +39,15 @@ class CountView: UIView {
         guard let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.username else {return}
         DynamoDBService.sharedInstance.viewCountQuery(username)
             .drive(onNext: { (vc) in
+                self.viewCount = vc
                 // load data for TotalView
                 if let totalCount = vc?._totalViews {
                     print("Totalcount is : " , totalCount)
                     self.totalView.setNumber(Int(totalCount))
                 }
+                
                 // load data for TopView
+                
             })
             .disposed(by: disposeBag)
     }

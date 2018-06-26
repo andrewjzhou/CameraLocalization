@@ -29,6 +29,7 @@ class DynamoDBService {
         postItem._location = location
         postItem._username = username
         postItem._viewCount = 0
+        postItem._creationDate = recordDate()
         
         dynamoDbObjectMapper.save(postItem) { (error) in
             if let error = error {
