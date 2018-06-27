@@ -9,7 +9,7 @@
 import UIKit
 import RxSwift
 
-class UserView: UIView {
+final class UserView: UIView {
     let menu = UserMenu()
     let countView = CountView()
     let settingsView = UIView()

@@ -8,7 +8,7 @@
 
 import ARKit
 
-class ContentScene: SKScene {
+final class ContentScene: SKScene {
     private let sceneSize = UIScreen.main.bounds.size
     
     private var contentNode: SKSpriteNode

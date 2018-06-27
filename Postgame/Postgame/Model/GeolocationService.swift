@@ -15,7 +15,7 @@ import CoreLocation
 import RxSwift
 import RxCocoa
 
-class GeolocationService {
+final class GeolocationService {
     
     static let instance = GeolocationService()
     private (set) var authorized: Driver<Bool>
@@ -46,6 +46,7 @@ class GeolocationService {
                     return false
                 }
         }
+        
         
         // Observable. Update location and format to 4 decimals
         location = locationManager.rx.didUpdateLocations

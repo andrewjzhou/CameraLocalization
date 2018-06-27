@@ -15,7 +15,7 @@ import AWSUserPoolsSignIn
 
 fileprivate let disposeBag = DisposeBag()
 
-class PostNode: SCNNode {
+final class PostNode: SCNNode {
     
     private let statePublisher = PublishSubject<PostNodeState>()
     
@@ -65,9 +65,10 @@ class PostNode: SCNNode {
         
         self.isHidden = true // Hide during initialization
         
+        print("debug1")
         self.addChildNode(contentNode)
       
-        
+        print("debug2")
         // React to state changes
         statePublisher.asObservable()
             .subscribe(onNext: { (state) in
@@ -80,7 +81,7 @@ class PostNode: SCNNode {
                     self.contentNode.load()
                 case .prompt:
                     self.contentNode.prompt()
-                    vibrate(.heavy)
+//                    vibrate(.heavy)
                 case .active:
                     self.contentNode.activate()
 
@@ -89,15 +90,18 @@ class PostNode: SCNNode {
             })
             .disposed(by: disposeBag)
         
+        print("debug3")
         // Add PostNode as child to its AnchorNode and set position
         info.anchorNode.addChildNode(self)
+        print("debug4")
         self.position = info.position
 
         // Match descriptor to cache
         if let matchKey = cache.findMatch(info.descriptor!) {
+            
             // Set loading screen
             self.statePublisher.onNext(.load)
-            
+            print("debug4.1")
             // Download post and set content
             let postDownloadObservable = S3Service.sharedInstance.downloadPost(matchKey)
             postDownloadObservable
@@ -112,6 +116,7 @@ class PostNode: SCNNode {
                 .disposed(by: disposeBag)
             
         } else {
+            print("debug4.2")
             if info.post == nil {
                 // Inactive = Placeholder
                 self.statePublisher.onNext(.inactive)
@@ -121,13 +126,14 @@ class PostNode: SCNNode {
             }
         }
         
+        print("debug5")
         // Self-destruct after lifespan is up. Clean bad postnodes
         lifespan.completeObservable
             .subscribe(onCompleted: {
                 self.removeFromParentNode()
             })
             .disposed(by: disposeBag)
-        
+        print("debug6")
         // Update extent
         extentPublisher.asObservable()
             .do(onNext: { (_) in
@@ -145,7 +151,7 @@ class PostNode: SCNNode {
                 self.extent = newExtent
             })
             .disposed(by: disposeBag)
-        
+        print("debug7")
     }
     
     func setContent(_ image: UIImage) {

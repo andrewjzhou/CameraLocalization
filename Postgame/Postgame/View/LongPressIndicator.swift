@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LongPressIndicator: UIView {
+final class LongPressIndicator: UIView {
     
     private var pulsatingLayer = CAShapeLayer()
     private var coreLayer = CAShapeLayer()

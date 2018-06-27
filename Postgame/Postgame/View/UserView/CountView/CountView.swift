@@ -10,15 +10,15 @@ import UIKit
 import RxSwift
 import AWSUserPoolsSignIn
 
-class CountView: UIView {
+final class CountView: UIView {
     
     let totalView = TotalView()
     let topView = TopView()
     var viewCount: ViewCount?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
+    override init(frame: CGRect) { super.init(frame: frame) }
+    
+    override func layoutSubviews() {
         addSubview(totalView)
         totalView.translatesAutoresizingMaskIntoConstraints = false
         totalView.setTopConstraint(equalTo: topAnchor, offset: 0)
@@ -32,7 +32,6 @@ class CountView: UIView {
         topView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
         topView.setTopConstraint(equalTo: totalView.bottomAnchor, offset: 0)
         topView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
-        
     }
     
     func refresh() {
@@ -47,6 +46,7 @@ class CountView: UIView {
                 }
                 
                 // load data for TopView
+                self.topView.setup(vc!)
                 
             })
             .disposed(by: disposeBag)

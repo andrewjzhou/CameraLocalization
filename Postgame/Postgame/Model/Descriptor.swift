@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Descriptor: NSObject {
+final class Descriptor: NSObject { // consider making this a struct
     let key: String
     let value: [Double]
     let location: (Double, Double)

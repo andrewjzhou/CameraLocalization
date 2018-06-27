@@ -19,7 +19,7 @@ import Vision
 import RxCocoa
 import RxSwift
 
-class DescriptorComputer: NSObject {
+final class DescriptorComputer: NSObject {
     
     // CaffeNet processing Request
     lazy var model = try VNCoreMLModel(for: CaffenetExtractor().model)

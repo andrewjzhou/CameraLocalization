@@ -11,7 +11,7 @@
 import RxSwift
 import RxCocoa
 
-class DescriptorCache {
+final class DescriptorCache {
     // Matching threshold.
     // Beware of tradeoff between false postivie and false negative
     // Currently set low to limit duplicate errors (less false negative, more false positive)
@@ -100,6 +100,7 @@ class DescriptorCache {
     
     // Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
     func findMatch(_ target: [Double]) -> String? {
+        print("finding best match")
         var bestMatchKey: String? = nil
         var bestMatchSimilarity: Double? = nil
         

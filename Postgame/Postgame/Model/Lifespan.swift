@@ -8,7 +8,7 @@
 
 import RxSwift
 
-class Lifespan: NSObject {
+final class Lifespan: NSObject {
     
     private var currTimer: Disposable?
     

@@ -11,7 +11,7 @@ import ChameleonFramework
 import RxSwift
 
 
-class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+final class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -130,6 +130,8 @@ class UserMenuCell: BaseCell {
 
 
 class BaseCell: UICollectionViewCell {
+    
+    private(set) var disposeBag = DisposeBag()
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -137,6 +139,10 @@ class BaseCell: UICollectionViewCell {
     
     func setupViews() {
         
+    }
+    
+    override func prepareForReuse() {
+        disposeBag = DisposeBag()
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -21,7 +21,7 @@ import RxCocoa
 // public ? Any app user can create, read, update, and delete files in this folder.
 // Need to add <retry upon failure> for downloading.
 
-class S3Service {
+final class S3Service {
     // S3 descriptor Key Format: public/descriptor/lattitude/longitude/creation-date/first-username
     // S3 post Key Format: public/post/lattitude/longitude/creation-date/first-username
     

@@ -351,7 +351,7 @@
 			children = (
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
 				6A8EA74520E16D9800B178C1 /* awsconfiguration.json */,
-				6AEC1A9E20879941008E0FF8 /* ViewController */,
+				6AEC1A9E20879941008E0FF8 /* Controller */,
 				6AF5277E208AC3C30039363B /* Model */,
 				6AEC1AA42087AD66008E0FF8 /* View */,
 				6AEC1AA120879B06008E0FF8 /* Extension+Utility */,
@@ -380,7 +380,7 @@
 			path = PostgameUITests;
 			sourceTree = "<group>";
 		};
-		6AEC1A9E20879941008E0FF8 /* ViewController */ = {
+		6AEC1A9E20879941008E0FF8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
 				6AEC1A722085BF06008E0FF8 /* ViewController.swift */,
@@ -388,7 +388,7 @@
 				6A1B54CF20D47BEC00870DC2 /* ViewController+Gesture.swift */,
 				6AF52793208BC2E20039363B /* UserAuthentication */,
 			);
-			path = ViewController;
+			path = Controller;
 			sourceTree = "<group>";
 		};
 		6AEC1AA120879B06008E0FF8 /* Extension+Utility */ = {
@@ -1048,6 +1048,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 24G6VR25PU;
+				GCC_OPTIMIZATION_LEVEL = s;
 				INFOPLIST_FILE = Postgame/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

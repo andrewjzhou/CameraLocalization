@@ -8,7 +8,7 @@
 
 import Foundation
 
-class TotalView: UIView {
+final class TotalView: UIView {
     
     var titleLabel = UILabel()
     var numberLabel = UILabel()

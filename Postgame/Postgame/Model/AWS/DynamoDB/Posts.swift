@@ -15,6 +15,7 @@ import Foundation
 import UIKit
 import AWSDynamoDB
 
+@objcMembers
 class Posts: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     
     var _key: String?

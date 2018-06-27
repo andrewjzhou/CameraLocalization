@@ -9,7 +9,7 @@
 import UIKit
 import Spring
 
-class CreateButton: SpringButton {
+final class CreateButton: SpringButton {
     
     var post: UIImage? = nil {
         didSet {

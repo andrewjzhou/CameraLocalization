@@ -15,6 +15,7 @@ import Foundation
 import UIKit
 import AWSDynamoDB
 
+@objcMembers
 class ViewCount: AWSDynamoDBObjectModel, AWSDynamoDBModeling {
     
     var _userId: String?

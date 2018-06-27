@@ -8,8 +8,9 @@
 
 import Foundation
 
-class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
+    let imageCache = NSCache<NSString, UIImage>()
     let titleLabel = UILabel()
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -24,8 +25,7 @@ class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     
     let cellId = "cellId"
     
-    var topKeys = [String]()
-    var topViews = [Int]()
+    var cellInfos: [CellInfo]?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,26 +51,66 @@ class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
         titleLabel.backgroundColor = UIColor.flatMint
         collectionView.backgroundColor = UIColor.flatSand
     
+        
+    }
+    
+    func setup(_ vc: ViewCount) {
+        cellInfos = [CellInfo]()
+        if vc._recent1Key != "nil" {
+            let info = CellInfo(key: vc._recent1Key!, date: vc._recent1Date!, views: vc._recent1Views!.intValue)
+            cellInfos!.append(info)
+        }
+        if vc._recent2Key != "nil" {
+            let info = CellInfo(key: vc._recent2Key!, date: vc._recent2Date!, views: vc._recent2Views!.intValue)
+            cellInfos!.append(info)
+        }
+        if vc._recent3Key != "nil" {
+            let info = CellInfo(key: vc._recent3Key!, date: vc._recent3Date!, views: vc._recent3Views!.intValue)
+            cellInfos!.append(info)
+        }
+        if vc._recent4Key != "nil" {
+            let info = CellInfo(key: vc._recent4Key!, date: vc._recent4Date!, views: vc._recent4Views!.intValue)
+            cellInfos!.append(info)
+        }
+        if vc._recent5Key != "nil" {
+            let info = CellInfo(key: vc._recent5Key!, date: vc._recent5Date!, views: vc._recent5Views!.intValue)
+            cellInfos!.append(info)
+        }
+        
+        collectionView.reloadData()
     }
     
 
     // CollectionView Setup
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return (cellInfos != nil) ? cellInfos!.count : 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TopViewCell
+        guard let infos = cellInfos else { return cell }
+        let info = infos[indexPath.row]
         
-        cell.imageView.image = UIImage(named: "ic_camera_alt")?.withRenderingMode(.alwaysTemplate)
-        cell.tintColor = UIColor.green
+        cell.titleLabel.text = info.date
+        cell.numberLabel.text = String(info.views)
+        
+        if let imageToShow = imageCache.object(forKey: info.key as NSString) {
+            cell.imageView.image = imageToShow
+        } else {
+            S3Service.sharedInstance.downloadPost(info.key)
+                .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
+                .drive(onNext: { (image) in
+                    cell.imageView.image  = image
+                    self.imageCache.setObject(image, forKey: info.key as NSString)
+                })
+                .disposed(by: cell.disposeBag)
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        print("TopView: frame heigeht is \(frame.height)")
-        print("TopView: cv frame height is \(collectionView.frame.height)")
+        
         return CGSize(width: collectionView.frame.width, height: collectionView.frame.height / 5)
     }
     
@@ -85,10 +125,11 @@ class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UIC
     }
 }
 
-class TopViewCell: BaseCell {
+final class TopViewCell: BaseCell {
     let imageView = UIImageView()
     let titleLabel = UILabel()
     let numberLabel = UILabel()
+
     
     override func setupViews() {
         super.setupViews()
@@ -132,4 +173,11 @@ fileprivate extension Int {
         
         return formattedNumber!
     }
+}
+
+
+struct CellInfo {
+    let key: String
+    let date: String
+    let views: Int
 }

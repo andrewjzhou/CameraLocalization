@@ -69,14 +69,15 @@ class ViewController: UIViewController {
         
         setupPostNodeInteractions()
         
-//        let title = UserView()
-//        view.addSubview(title)
-//        title.translatesAutoresizingMaskIntoConstraints = false
-//        title.setTopConstraint(equalTo: view.topAnchor, offset: 0)
-//        title.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
-//        title.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
-//        title.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-//        view.bringSubview(toFront: title)
+        let title = UserView()
+        view.addSubview(title)
+        title.translatesAutoresizingMaskIntoConstraints = false
+        title.setTopConstraint(equalTo: view.topAnchor, offset: 0)
+        title.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        title.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        title.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        view.bringSubview(toFront: title)
+        
 
     }
 
@@ -292,6 +293,8 @@ extension ViewController {
                 .disposed(by: disposeBag)
         
     }
+    
+    
 }
 
 

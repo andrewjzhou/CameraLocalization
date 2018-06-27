@@ -8,7 +8,7 @@
 
 import UIKit
 
-class IndicatorButton: UIButton {
+final class IndicatorButton: UIButton {
     private let indicator = UILabel()
     
     override init(frame: CGRect) {
