@@ -13,10 +13,10 @@ import RxCocoa
 import RxSwift
 import AWSUserPoolsSignIn
 
-fileprivate let disposeBag = DisposeBag()
+
 
 final class PostNode: SCNNode {
-    
+    let disposeBag = DisposeBag()
     private let statePublisher = PublishSubject<PostNodeState>()
     
     // Use statePublisher to set state. DO NOT DIRECTLY SET STATE

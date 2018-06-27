@@ -9,6 +9,7 @@
 import RxSwift
 
 final class Lifespan: NSObject {
+    let disposeBag = DisposeBag()
     
     private var currTimer: Disposable?
     
@@ -74,4 +75,3 @@ fileprivate func timer(_ count: Int) -> Observable<Int> {
 
 fileprivate let increment = 5
 
-fileprivate let disposeBag = DisposeBag()

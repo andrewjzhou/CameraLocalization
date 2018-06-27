@@ -13,6 +13,7 @@ final class UserView: UIView {
     let menu = UserMenu()
     let countView = CountView()
     let settingsView = UIView()
+    let disposeBag = DisposeBag()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -77,5 +78,3 @@ final class UserView: UIView {
     
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }
-
-fileprivate let disposeBag = DisposeBag()

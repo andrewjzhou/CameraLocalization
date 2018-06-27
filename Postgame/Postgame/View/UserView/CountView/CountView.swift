@@ -11,6 +11,7 @@ import RxSwift
 import AWSUserPoolsSignIn
 
 final class CountView: UIView {
+    let disposeBag = DisposeBag()
     
     let totalView = TotalView()
     let topView = TopView()
@@ -57,5 +58,3 @@ final class CountView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
-
-fileprivate let disposeBag = DisposeBag()

@@ -12,6 +12,7 @@ import RxSwift
 import RxCocoa
 
 final class DescriptorCache {
+    let disposeBag = DisposeBag()
     // Matching threshold.
     // Beware of tradeoff between false postivie and false negative
     // Currently set low to limit duplicate errors (less false negative, more false positive)
@@ -170,5 +171,4 @@ fileprivate func converToString(_ location: (Double,Double)) -> String {
     return location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
 }
 
-fileprivate let disposeBag = DisposeBag()
 

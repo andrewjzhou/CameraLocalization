@@ -21,7 +21,7 @@ import ChameleonFramework
 
 
 class ViewController: UIViewController {
-    
+    let disposeBag = DisposeBag()
     fileprivate let trackingConfiguration: ARWorldTrackingConfiguration = {
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.vertical]
@@ -355,4 +355,3 @@ extension ViewController {
    
 }
 
-fileprivate let disposeBag = DisposeBag()
