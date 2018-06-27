@@ -25,7 +25,20 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     
     let cellId = "cellId"
     
-    var cellInfos: [CellInfo]?
+    var topInfos: [CellInfo]?
+    var recentInfos: [CellInfo]?
+    
+    enum state { case top, recent }
+    var currState = state.top {
+        didSet {
+            if currState == .top {
+                self.titleLabel.text = "Top 5 :"
+            } else {
+                self.titleLabel.text = "Recent 5 : "
+            }
+            collectionView.reloadData()
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -50,31 +63,60 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         
         titleLabel.backgroundColor = UIColor.flatMint
         collectionView.backgroundColor = UIColor.flatSand
-    
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        titleLabel.addGestureRecognizer(tap)
+        titleLabel.isUserInteractionEnabled = true
+        
+    }
+    @objc func handleTap (sender: UITapGestureRecognizer) {
+        currState = (currState == .top) ? .recent : .top
+        print("This is being tapped: \(currState)")
     }
     
     func setup(_ vc: ViewCount) {
-        cellInfos = [CellInfo]()
+        topInfos = [CellInfo]()
+        if vc._recent1Key != "nil" {
+            let info = CellInfo(key: vc._top1Key!, date: vc._top1Date!, views: vc._top1Views!.intValue)
+            topInfos!.append(info)
+        }
+        if vc._recent2Key != "nil" {
+            let info = CellInfo(key: vc._top2Key!, date: vc._top2Date!, views: vc._top2Views!.intValue)
+            topInfos!.append(info)
+        }
+        if vc._recent3Key != "nil" {
+            let info = CellInfo(key: vc._top3Key!, date: vc._top3Date!, views: vc._top3Views!.intValue)
+            topInfos!.append(info)
+        }
+        if vc._recent4Key != "nil" {
+            let info = CellInfo(key: vc._top4Key!, date: vc._top4Date!, views: vc._top4Views!.intValue)
+            topInfos!.append(info)
+        }
+        if vc._recent5Key != "nil" {
+            let info = CellInfo(key: vc._top5Key!, date: vc._top5Date!, views: vc._top5Views!.intValue)
+            topInfos!.append(info)
+        }
+        
+        recentInfos = [CellInfo]()
         if vc._recent1Key != "nil" {
             let info = CellInfo(key: vc._recent1Key!, date: vc._recent1Date!, views: vc._recent1Views!.intValue)
-            cellInfos!.append(info)
+            recentInfos!.append(info)
         }
         if vc._recent2Key != "nil" {
             let info = CellInfo(key: vc._recent2Key!, date: vc._recent2Date!, views: vc._recent2Views!.intValue)
-            cellInfos!.append(info)
+            recentInfos!.append(info)
         }
         if vc._recent3Key != "nil" {
             let info = CellInfo(key: vc._recent3Key!, date: vc._recent3Date!, views: vc._recent3Views!.intValue)
-            cellInfos!.append(info)
+            recentInfos!.append(info)
         }
         if vc._recent4Key != "nil" {
             let info = CellInfo(key: vc._recent4Key!, date: vc._recent4Date!, views: vc._recent4Views!.intValue)
-            cellInfos!.append(info)
+            recentInfos!.append(info)
         }
         if vc._recent5Key != "nil" {
             let info = CellInfo(key: vc._recent5Key!, date: vc._recent5Date!, views: vc._recent5Views!.intValue)
-            cellInfos!.append(info)
+            recentInfos!.append(info)
         }
         
         collectionView.reloadData()
@@ -83,27 +125,30 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
 
     // CollectionView Setup
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return (cellInfos != nil) ? cellInfos!.count : 0
+        let infos = (currState == .top) ? topInfos : recentInfos
+        return (infos != nil) ? infos!.count : 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TopViewCell
-        guard let infos = cellInfos else { return cell }
-        let info = infos[indexPath.row]
-        
-        cell.titleLabel.text = info.date
-        cell.numberLabel.text = String(info.views)
-        
-        if let imageToShow = imageCache.object(forKey: info.key as NSString) {
-            cell.imageView.image = imageToShow
-        } else {
-            S3Service.sharedInstance.downloadPost(info.key)
-                .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
-                .drive(onNext: { (image) in
-                    cell.imageView.image  = image
-                    self.imageCache.setObject(image, forKey: info.key as NSString)
-                })
-                .disposed(by: cell.disposeBag)
+        let infos = (currState == .top) ? topInfos : recentInfos
+        if infos != nil {
+            let info = infos![indexPath.row]
+            
+            cell.titleLabel.text = info.date
+            cell.numberLabel.text = String(info.views)
+            
+            if let imageToShow = imageCache.object(forKey: info.key as NSString) {
+                cell.imageView.image = imageToShow
+            } else {
+                S3Service.sharedInstance.downloadPost(info.key)
+                    .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
+                    .drive(onNext: { (image) in
+                        cell.imageView.image  = image
+                        self.imageCache.setObject(image, forKey: info.key as NSString)
+                    })
+                    .disposed(by: cell.disposeBag)
+            }
         }
         
         return cell

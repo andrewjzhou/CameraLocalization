@@ -16,9 +16,8 @@ final class CountView: UIView {
     let topView = TopView()
     var viewCount: ViewCount?
     
-    override init(frame: CGRect) { super.init(frame: frame) }
-    
-    override func layoutSubviews() {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         addSubview(totalView)
         totalView.translatesAutoresizingMaskIntoConstraints = false
         totalView.setTopConstraint(equalTo: topAnchor, offset: 0)
@@ -32,6 +31,8 @@ final class CountView: UIView {
         topView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
         topView.setTopConstraint(equalTo: totalView.bottomAnchor, offset: 0)
         topView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
+        
+        
     }
     
     func refresh() {
