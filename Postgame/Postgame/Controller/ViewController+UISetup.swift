@@ -101,9 +101,19 @@ extension ViewController {
     
     private func setupUserView() {
         view.addSubview(userView)
+        userView.translatesAutoresizingMaskIntoConstraints = false
+        userView.setTopConstraint(equalTo: view.topAnchor, offset: 0)
+        userView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        userView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        userView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        view.bringSubview(toFront: userView)
+        userView.transform = CGAffineTransform(translationX: 0, y: -UIScreen.main.bounds.height)
+        
         let swipe = UISwipeGestureRecognizer(target: self, action: #selector(handleUserViewSwipe(sender:)))
         swipe.direction = .up
         userView.addGestureRecognizer(swipe)
+        
+    
     
     }
     

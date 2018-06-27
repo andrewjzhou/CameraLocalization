@@ -69,15 +69,6 @@ class ViewController: UIViewController {
         
         setupPostNodeInteractions()
         
-        let title = UserView()
-        view.addSubview(title)
-        title.translatesAutoresizingMaskIntoConstraints = false
-        title.setTopConstraint(equalTo: view.topAnchor, offset: 0)
-        title.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
-        title.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
-        title.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        view.bringSubview(toFront: title)
-        
 
     }
 
@@ -177,7 +168,7 @@ extension ViewController {
                             self.createButton.animate()
                         }
                     })
-                    .disposed(by: disposeBag)
+                    .disposed(by: self.disposeBag)
                 
                 
                 // Hide main UIButtons
@@ -228,6 +219,7 @@ extension ViewController {
                 self.userView.alpha = 1
                 UIView.animate(withDuration: 0.5) {
                     self.userView.transform = .identity
+                    self.userView.countView.refresh()
                 }
             })
             .disposed(by: disposeBag)

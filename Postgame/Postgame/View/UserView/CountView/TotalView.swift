@@ -7,7 +7,6 @@
 //
 
 import Foundation
-
 final class TotalView: UIView {
     
     var titleLabel = UILabel()
