@@ -121,6 +121,7 @@ final class DynamoDBService {
     }
     
     func incrementViews(_ key: String) {
+        print("Incrementing Views")
         APIGatewayService.sharedInstance.DynamoDB_incrementViews(key)
     }
     

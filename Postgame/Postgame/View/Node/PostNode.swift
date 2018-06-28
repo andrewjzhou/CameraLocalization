@@ -14,7 +14,7 @@ import RxSwift
 import AWSUserPoolsSignIn
 
 
-
+// image cache
 final class PostNode: SCNNode {
     let disposeBag = DisposeBag()
     private let statePublisher = PublishSubject<PostNodeState>()
@@ -112,6 +112,9 @@ final class PostNode: SCNNode {
                     self.statePublisher.onNext(.active)
                     
                     self.key = matchKey // Change current key associated with node
+                    
+                    // increment
+                    DynamoDBService.sharedInstance.incrementViews(self.key)
                 })
                 .disposed(by: disposeBag)
             

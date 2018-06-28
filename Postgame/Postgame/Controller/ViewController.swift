@@ -71,8 +71,6 @@ class ViewController: UIViewController {
         
         handleWakeFromBackground()
         
-        var date = recordDate()
-        
         
     }
     
