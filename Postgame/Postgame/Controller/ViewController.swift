@@ -146,7 +146,7 @@ extension ViewController {
                 // Create new CreationView
                 let creationView = CreationView()
                 self.view.addSubview(creationView) // sets layout inside didMoveToSuperview()
-                
+            
                 
                 // Handle exit of creationView - React to createView exitSubject, which returns nil (cancelled) or uiimage (finnished)
                 creationView.exitSubject

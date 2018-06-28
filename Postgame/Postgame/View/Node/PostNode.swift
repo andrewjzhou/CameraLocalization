@@ -65,10 +65,8 @@ final class PostNode: SCNNode {
         
         self.isHidden = true // Hide during initialization
         
-        print("debug1")
         self.addChildNode(contentNode)
       
-        print("debug2")
         // React to state changes
         statePublisher.asObservable()
             .subscribe(onNext: { (state) in
@@ -90,10 +88,8 @@ final class PostNode: SCNNode {
             })
             .disposed(by: disposeBag)
         
-        print("debug3")
         // Add PostNode as child to its AnchorNode and set position
         info.anchorNode.addChildNode(self)
-        print("debug4")
         self.position = info.position
 
         // Match descriptor to cache
@@ -101,12 +97,12 @@ final class PostNode: SCNNode {
             
             // Set loading screen
             self.statePublisher.onNext(.load)
-            print("debug4.1")
+   
             // Download post and set content
             let postDownloadObservable = S3Service.sharedInstance.downloadPost(matchKey)
             postDownloadObservable
                 .subscribe(onNext: { (image) in
-                    print("PostNode: Downloaded Post using key: \(matchKey)")
+                
                     self.setContent(image)
                    
                     self.statePublisher.onNext(.active)
@@ -114,12 +110,13 @@ final class PostNode: SCNNode {
                     self.key = matchKey // Change current key associated with node
                     
                     // increment
+                    // This is getting called multiple times before picture actually gets showned
                     DynamoDBService.sharedInstance.incrementViews(self.key)
                 })
                 .disposed(by: disposeBag)
             
         } else {
-            print("debug4.2")
+        
             if info.post == nil {
                 // Inactive = Placeholder
                 self.statePublisher.onNext(.inactive)
@@ -129,14 +126,13 @@ final class PostNode: SCNNode {
             }
         }
         
-        print("debug5")
         // Self-destruct after lifespan is up. Clean bad postnodes
         lifespan.completeObservable
             .subscribe(onCompleted: {
                 self.removeFromParentNode()
             })
             .disposed(by: disposeBag)
-        print("debug6")
+     
         // Update extent
         extentPublisher.asObservable()
             .do(onNext: { (_) in
@@ -154,7 +150,6 @@ final class PostNode: SCNNode {
                 self.extent = newExtent
             })
             .disposed(by: disposeBag)
-        print("debug7")
     }
     
     func setContent(_ image: UIImage) {
@@ -164,7 +159,7 @@ final class PostNode: SCNNode {
     
     func updateExtent(_ extent: PostNodeExtent) {
         if initializing && lifespan.isLong {
-            print("Initialize: turned off")
+
             initializing = false
         }
         
@@ -182,7 +177,6 @@ final class PostNode: SCNNode {
         db.create(key: key, username: username)
         
         cache.update(Descriptor(key: key, value: info.descriptor!))
-        print("Recorded")
     }
     
 
