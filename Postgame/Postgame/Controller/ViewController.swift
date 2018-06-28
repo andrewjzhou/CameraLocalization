@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         
     }
     
-    func handleWakeFromBackgroun() {
+    func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
             .subscribe(onNext: { (_) in
                 // Run the view's session
