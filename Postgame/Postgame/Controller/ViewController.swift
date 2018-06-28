@@ -31,8 +31,6 @@ class ViewController: UIViewController {
     let geolocationService = GeolocationService.instance
     
     lazy var descriptorCache = DescriptorCache(geolocationService)
-    
-    let longPressSubject = BehaviorSubject<UILongPressGestureRecognizer>(value: UILongPressGestureRecognizer())
 
     // UI Elements
     let sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
@@ -66,7 +64,7 @@ class ViewController: UIViewController {
         
         setupPostRx() // Setup AR Post Discovery / Placement
         
-        setuplongPressSubject()
+        setuplongPress()
         
         setupPostNodeInteractions()
         

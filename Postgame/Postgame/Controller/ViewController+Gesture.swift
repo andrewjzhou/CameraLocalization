@@ -13,7 +13,7 @@ import RxCocoa
 extension ViewController {
     
     // Use long press to select real-world vertical rectangles
-    func setuplongPressSubject() {
+    func setuplongPress() {
         // Long Press Indicator (hide when view loads)
         view.addSubview(longPressIndicator)
         longPressIndicator.isHidden = true
@@ -23,10 +23,6 @@ extension ViewController {
     }
     
     @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
-        
-        // Observe long press action through longPressSubject. Used in setupPostRx()
-        longPressSubject.onNext(sender)
-        
         
         // Refresh Cache
         // Consider if this is overdone/expensive
@@ -53,7 +49,6 @@ extension ViewController {
             }
         } else {
             longPressIndicator.isHidden = true
-            print("Long Press indicator center : \(longPressIndicator.center)" )
         }
 
     }
