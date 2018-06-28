@@ -47,6 +47,7 @@ class ViewController: UIViewController {
 
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,18 +77,18 @@ class ViewController: UIViewController {
     
     func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
-            .subscribe(onNext: { (_) in
+            .subscribe(onNext: { [sceneView, disposeBag] _ in
                 // Run the view's session
-                self.sceneView.session.run(self.trackingConfiguration)
-                //        sceneView.showsStatistics = true // For debugging
+                sceneView.session.run(self.trackingConfiguration)
+                sceneView.showsStatistics = true // For debugging
                 
                 // Reset tracking state when interruption ends
                 let _ =
-                self.sceneView.session.rx.sessionInterruptionEnded
+                sceneView.session.rx.sessionInterruptionEnded
                     .subscribe{ (_) in
                         self.resetSession()
                     }
-                    .disposed(by: self.disposeBag)
+                    .disposed(by: disposeBag)
                 
                 // Authenticate user
                 AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
@@ -232,65 +233,75 @@ extension ViewController {
 extension ViewController {
     func setupPostRx() {
         
-        // 1. Slow down number of frames read
+        /// 1. Slow down number of frames read
+        let rectDetector = RectDetector()
         let arFrameObservable =
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
                 .throttle(0.1, scheduler:  MainScheduler.instance)
                 .filter { _ in
-                    AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser() != nil
+                    return AWSCognitoUserPoolsSignInProvider.sharedInstance().isLoggedIn()
                 } // quick fix.
-                .share()
-        
-        // 2. Detect rectangles attached to vertical surfaces in the real world
-        let verticalRectObservable =
-            arFrameObservable
-                .debug("Detect vertical rectangle")
-                .flatMap{ detectVerticalRect(frame: $0, in: self.sceneView) }
-                .debug("Check long press")
-                .withLatestFrom(longPressSubject) { (observation, sender) -> VNRectangleObservation? in
-                    // Continue PostNode creation/discovery process only if either of the two requirements are met
-                    if self.createButton.post == nil { // a. if user is not posting
-                        return observation
-                    } else if sender.state.isActive { // b. if user is posting and long pressing
-                        let convertedRect = self.sceneView.convertFromCamera(observation.boundingBox)
-                        let currTouchLocation = sender.location(in: self.sceneView)
-                        if convertedRect.contains(currTouchLocation) { // user select observation through long press
-                            return observation
-                        }
-                    }
-                    
-                    return nil
-                }
-                .filter{ $0 != nil }
-        
-        // 3. Compute geometric information and descriptor for each vertical rectangle observered previously
-        let descriptorComputer = DescriptorComputer()
-        let infoObservable =
-            verticalRectObservable
-                .debug("Get vertical rect info")
-                .map({ (observation) -> VerticalRectInfo? in
-                    var info = VerticalRectInfo(for: observation!, in: self.sceneView) // Compute geometric information
-                    info?.post = self.createButton.post
-                    return info
-                })
-                .filter { $0 != nil }
-                .debug("Compute descriptor")
-                .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
-                .filter { $0 != nil }
-
-        // 4. Generate PostNode
-        let _ =
-            infoObservable
-                .debug("Generate post node")
-                .map { PostNode(info: $0!, cache: self.descriptorCache) }
-                .subscribe(onNext: { (postNode) in
-                    print("PostNode created: ", postNode)
+                .subscribe(onNext: { (frame) in
+                    rectDetector.detectRectangle(in: frame)
                 })
                 .disposed(by: disposeBag)
         
+        /// 2. Find rectangles attached to vertical surfaces in the real world
+        rectDetector.rectDriver
+            .filter({ [sceneView] (observation)  in
+                // check that rectangle is attached to a vertical plane
+                let center = sceneView.convertFromCamera(observation.center)
+                return sceneView.isPointOnPlane(center)
+            })
+            .filter({ [createButton, longPressIndicator, sceneView] (observation) in
+                 // continue if one of two requirements are met
+                if createButton.post == nil {
+                    // a. if user is not posting
+                    return true
+                } else if longPressIndicator.isOnPlane {
+                    // b. if user is posting and long pressing
+                    let convertedRect = sceneView.convertFromCamera(observation.boundingBox)
+                    return convertedRect.contains(longPressIndicator.center)
+                }
+                return false
+            })
+            
+            .drive(onNext: { (observation) in
+                self.removeRectOutlineLayers()
+                self.highlightObservation(observation)
+            })
+            .disposed(by: disposeBag)
+        
+        
+//        // 3. Compute geometric information and descriptor for each vertical rectangle observered previously
+//        let descriptorComputer = DescriptorComputer()
+//        let infoObservable =
+//            verticalRectObservable
+//                .debug("Get vertical rect info")
+//                .map({ (observation) -> VerticalRectInfo? in
+//                    var info = VerticalRectInfo(for: observation!, in: self.sceneView) // Compute geometric information
+//                    info?.post = self.createButton.post
+//                    return info
+//                })
+//                .filter { $0 != nil }
+//                .debug("Compute descriptor")
+//                .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
+//                .filter { $0 != nil }
+//
+//        // 4. Generate PostNode
+//        let _ =
+//            infoObservable
+//                .debug("Generate post node")
+//                .map { PostNode(info: $0!, cache: self.descriptorCache) }
+//                .subscribe(onNext: { (postNode) in
+//                    print("PostNode created: ", postNode)
+//                })
+//                .disposed(by: disposeBag)
+        
     }
     
+
     
 }
 
@@ -348,7 +359,6 @@ extension ViewController {
             return nil
         }
     }
-    
-   
+
 }
 

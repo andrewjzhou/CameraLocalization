@@ -48,7 +48,7 @@
 		6AEBAB5620CDF3AE00741EB0 /* S3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
-		6AEBAB6120CEEEAC00741EB0 /* DetectVerticalRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB6020CEEEAC00741EB0 /* DetectVerticalRect.swift */; };
+		6AEBAB6120CEEEAC00741EB0 /* RectDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB6020CEEEAC00741EB0 /* RectDetector.swift */; };
 		6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */; };
 		6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A722085BF06008E0FF8 /* ViewController.swift */; };
 		6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AEC1A772085BF07008E0FF8 /* Assets.xcassets */; };
@@ -143,7 +143,7 @@
 		6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
-		6AEBAB6020CEEEAC00741EB0 /* DetectVerticalRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectVerticalRect.swift; sourceTree = "<group>"; };
+		6AEBAB6020CEEEAC00741EB0 /* RectDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectDetector.swift; sourceTree = "<group>"; };
 		6AEC1A6B2085BF06008E0FF8 /* Postgame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Postgame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6AEC1A722085BF06008E0FF8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -476,7 +476,7 @@
 				6A1B54D420D8253500870DC2 /* Descriptor.swift */,
 				6A1B54A920D0764C00870DC2 /* DescriptorCache.swift */,
 				6A1B549420D019E500870DC2 /* DescriptorComputer.swift */,
-				6AEBAB6020CEEEAC00741EB0 /* DetectVerticalRect.swift */,
+				6AEBAB6020CEEEAC00741EB0 /* RectDetector.swift */,
 				6AF5277F208AC3E80039363B /* GeolocationService.swift */,
 				6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */,
 				6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */,
@@ -857,7 +857,7 @@
 				6AF67C0120DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */,
 				6A1B54D220D47D2E00870DC2 /* LongPressIndicator.swift in Sources */,
 				6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */,
-				6AEBAB6120CEEEAC00741EB0 /* DetectVerticalRect.swift in Sources */,
+				6AEBAB6120CEEEAC00741EB0 /* RectDetector.swift in Sources */,
 				6A1B549520D019E500870DC2 /* DescriptorComputer.swift in Sources */,
 				6A1B54A320D01A8700870DC2 /* MultiArray.swift in Sources */,
 				6A93257820D85A8000E0C9B4 /* UserView.swift in Sources */,

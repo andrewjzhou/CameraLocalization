@@ -45,18 +45,10 @@ extension ARSCNView {
         
         return HitTestRay(origin: cameraPos, direction: rayDirection)
     }
-}
-
-extension CGPoint {
-    /**
-     Check if point lies on a vertical plane in given sceneView.
-     */
-    func isOnVerticalPlane(in sceneView: ARSCNView) -> Bool {
-        let results = sceneView.hitTest(self, types: .existingPlaneUsingExtent)
-        if let _ = results.first{
-            return true
-        }
-        return false
+    
+    func isPointOnPlane(_ point: CGPoint) -> Bool {
+        let results = self.hitTest(point, types: .existingPlaneUsingExtent)
+        return results.first != nil
     }
 }
 

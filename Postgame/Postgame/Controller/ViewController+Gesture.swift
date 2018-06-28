@@ -43,7 +43,7 @@ extension ViewController {
             // Animate long press indicator
             longPressIndicator.isHidden = false
             longPressIndicator.center = point
-            longPressIndicator.pulsate = (point.isOnVerticalPlane(in: sceneView)) ? false : true
+            longPressIndicator.isOnPlane = sceneView.isPointOnPlane(point)
             
             // Delete inactive post nodes touched by long press
             let scnHitTestResults = sceneView.hitTest(point, options: nil)
@@ -53,8 +53,9 @@ extension ViewController {
             }
         } else {
             longPressIndicator.isHidden = true
+            print("Long Press indicator center : \(longPressIndicator.center)" )
         }
-        print("indicator state: ", longPressIndicator.pulsate)
+
     }
     
     // Use tap to interact with post nodes
