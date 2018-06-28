@@ -135,7 +135,9 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         if infos != nil {
             let info = infos![indexPath.row]
             
-            cell.titleLabel.text = info.date
+            // Format date
+            let date = formatDateForDisplay(info.date)
+            cell.titleLabel.text = date
             cell.numberLabel.text = String(info.views)
             
             if let imageToShow = imageCache.object(forKey: info.key as NSString) {
@@ -208,6 +210,19 @@ final class TopViewCell: BaseCell {
         titleLabel.numberOfLines = 2
     }
     
+}
+
+func formatDateForDisplay(_ date: String) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    let date = dateFormatter.date(from: date)
+    
+    // new format
+    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    dateFormatter.dateFormat = "h:mm a 'on' MMMM dd, yyyy"
+    dateFormatter.amSymbol = "AM"
+    dateFormatter.pmSymbol = "PM"
+    return dateFormatter.string(from: date!)
 }
 
 fileprivate extension Int {

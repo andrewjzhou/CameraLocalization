@@ -71,6 +71,9 @@ class ViewController: UIViewController {
         
         handleWakeFromBackground()
         
+        var date = recordDate()
+        
+        
     }
     
     func handleWakeFromBackground() {
@@ -236,6 +239,9 @@ extension ViewController {
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
                 .throttle(0.1, scheduler:  MainScheduler.instance)
+                .filter { _ in
+                    AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser() != nil
+                } // quick fix.
                 .share()
         
         // 2. Detect rectangles attached to vertical surfaces in the real world
