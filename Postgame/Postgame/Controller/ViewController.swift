@@ -69,29 +69,30 @@ class ViewController: UIViewController {
         
         setupPostNodeInteractions()
         
-
+        handleWakeFromBackground()
+        
     }
-
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // Run the view's session
-        sceneView.session.run(trackingConfiguration)
-//        sceneView.showsStatistics = true // For debugging
-        
-        // Reset tracking state when interruption ends
-        let _ =
-        sceneView.session.rx.sessionInterruptionEnded
-            .subscribe{ (_) in
-                self.resetSession()
-            }
+    func handleWakeFromBackgroun() {
+        NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
+            .subscribe(onNext: { (_) in
+                // Run the view's session
+                self.sceneView.session.run(self.trackingConfiguration)
+                //        sceneView.showsStatistics = true // For debugging
+                
+                // Reset tracking state when interruption ends
+                let _ =
+                self.sceneView.session.rx.sessionInterruptionEnded
+                    .subscribe{ (_) in
+                        self.resetSession()
+                    }
+                    .disposed(by: self.disposeBag)
+                
+                // Authenticate user
+                AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
+            })
             .disposed(by: disposeBag)
-        
-        // Authenticate user
-        AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
     }
-    
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -265,7 +266,7 @@ extension ViewController {
             verticalRectObservable
                 .debug("Get vertical rect info")
                 .map({ (observation) -> VerticalRectInfo? in
-                    let info = VerticalRectInfo(for: observation!, in: self.sceneView) // Compute geometric information
+                    var info = VerticalRectInfo(for: observation!, in: self.sceneView) // Compute geometric information
                     info?.post = self.createButton.post
                     return info
                 })

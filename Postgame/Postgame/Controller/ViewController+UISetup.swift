@@ -38,9 +38,6 @@ extension ViewController {
         
         // On shelf. Change color of buttons based on camera feed in real-time
 //        colorButtonsRealTime()
-        
-        // Set theme 
-//        Chameleon.setGlobalThemeUsingPrimaryColor(.green, with: .contrast)
     }
     
     

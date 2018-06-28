@@ -8,6 +8,7 @@
 
 import UIKit
 import AWSCognitoIdentityProvider
+import ChameleonFramework
 
 class SignInViewController: UIViewController {
     
@@ -25,28 +26,33 @@ class SignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        self.navigationController?.isNavigationBarHidden = true
+    
+        view.backgroundColor = UIColor.flatRed
+       
         
-        //        // Configure Logo
-        //        logo = UIImageView(image: UIImage(named: "banksy")!)
-        //        view.addSubview(logo!)
-        //        logo!.translatesAutoresizingMaskIntoConstraints = false
-        //        logo!.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height * 0.2).isActive = true
-        //        logo!.heightAnchor.constraint(equalToConstant: view.bounds.width * 0.6).isActive = true
-        //        logo!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.2).isActive = true
-        //        logo!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.2).isActive = true
+        // Configure Logo
+        logo = UIImageView(image: UIImage(named: "postgame_logo")!)
+        view.addSubview(logo!)
+        logo!.translatesAutoresizingMaskIntoConstraints = false
+        logo!.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height * 0.1).isActive = true
+        logo!.heightAnchor.constraint(equalToConstant: view.bounds.width * 0.3).isActive = true
+        logo!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.15).isActive = true
+        logo!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.15).isActive = true
         
         // Configure Username
         username = UITextField()
         view.addSubview(username!)
         username!.translatesAutoresizingMaskIntoConstraints = false
-        username!.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height * 0.1).isActive = true
+        username!.topAnchor.constraint(equalTo: logo!.bottomAnchor, constant: view.bounds.height * 0.1).isActive = true
         username!.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.07).isActive = true
         username!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.05).isActive = true
         username!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
         username!.placeholder = "Username"
+        username!.font = UIFont(name: "DueDate", size: 12)
         //        username!.isUserInteractionEnabled = false
-        username!.backgroundColor = .orange
+        username!.backgroundColor = .flatWhite
+        
         
         // Configure Password
         password = UITextField()
@@ -57,8 +63,10 @@ class SignInViewController: UIViewController {
         password!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.05).isActive = true
         password!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
         password!.placeholder = "Password"
+        password!.font = UIFont(name: "DueDate", size: 12)
+        password!.isSecureTextEntry = true
         //        password!.isUserInteractionEnabled = false
-        password!.backgroundColor = .orange
+        password!.backgroundColor = .flatWhite
         
         // Configure SignInButton
         signInButton = UIButton()
@@ -68,8 +76,10 @@ class SignInViewController: UIViewController {
         signInButton!.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.05).isActive = true
         signInButton!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.05).isActive = true
         signInButton!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
+        signInButton!.tintColor = UIColor.flatBlack
         signInButton!.setTitle("Sign In", for: .normal)
-        signInButton!.backgroundColor = .gray
+        signInButton!.titleLabel!.font = UIFont(name: "DueDate", size: 12)
+        signInButton!.backgroundColor = .flatGreen
         signInButton!.addTarget(self, action: #selector(onSignInButton), for: .touchUpInside)
         
         // Configure SignUpButton
@@ -81,7 +91,9 @@ class SignInViewController: UIViewController {
         signUpButton!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.05).isActive = true
         signUpButton!.widthAnchor.constraint(equalToConstant: 64).isActive = true
         signUpButton!.setTitle("Sign Up", for: .normal)
-        signUpButton!.backgroundColor = .gray
+        signUpButton!.titleLabel!.font = UIFont(name: "DueDate", size: 12)
+        signUpButton!.backgroundColor = .flatWhite
+        signUpButton!.titleLabel!.textColor = UIColor.flatBlack
         signUpButton!.addTarget(self, action: #selector(onSignUpButton), for: .touchUpInside)
         
         // Configure ForgotPasswordButton
@@ -93,7 +105,9 @@ class SignInViewController: UIViewController {
         fogotPasswordButton!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
         fogotPasswordButton!.widthAnchor.constraint(equalToConstant: 160).isActive = true
         fogotPasswordButton!.setTitle("Forgot Password", for: .normal)
-        fogotPasswordButton!.backgroundColor = .gray
+        fogotPasswordButton!.titleLabel!.font = UIFont(name: "DueDate", size: 12)
+        fogotPasswordButton!.titleLabel!.textColor = UIColor.flatBlack
+        fogotPasswordButton!.backgroundColor = .flatWhite
         fogotPasswordButton!.addTarget(self, action: #selector(onFogotPasswordButton), for: .touchUpInside)
         
     }

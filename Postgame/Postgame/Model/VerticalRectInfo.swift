@@ -9,7 +9,7 @@
 import ARKit
 import Vision
 
-final class VerticalRectInfo: NSObject {
+final class VerticalRectInfo {
     // Center position in 3D space
     private(set) var position: SCNVector3
     

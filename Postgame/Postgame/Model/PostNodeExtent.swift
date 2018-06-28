@@ -8,7 +8,7 @@
 
 import ARKit
 
-final class PostNodeExtent {
+struct PostNodeExtent {
     
     private(set) var position: SCNVector3
     private(set) var size: CGSize
