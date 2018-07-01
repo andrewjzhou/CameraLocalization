@@ -28,11 +28,12 @@ class SignInViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
     
-        view.backgroundColor = UIColor.flatRed
+        view.backgroundColor = UIColor.flatWhite
        
         
         // Configure Logo
-        logo = UIImageView(image: UIImage(named: "postgame_logo")!)
+        logo = UIImageView(image: UIImage(named: "logo_large")!)
+        logo?.contentMode = .scaleAspectFill
         view.addSubview(logo!)
         logo!.translatesAutoresizingMaskIntoConstraints = false
         logo!.topAnchor.constraint(equalTo: view.topAnchor, constant: view.bounds.height * 0.1).isActive = true
@@ -42,6 +43,8 @@ class SignInViewController: UIViewController {
         
         // Configure Username
         username = UITextField()
+        username?.background = UIImage.init(named: "logo_large")
+        username?.contentMode = .scaleToFill
         view.addSubview(username!)
         username!.translatesAutoresizingMaskIntoConstraints = false
         username!.topAnchor.constraint(equalTo: logo!.bottomAnchor, constant: view.bounds.height * 0.1).isActive = true
@@ -49,10 +52,13 @@ class SignInViewController: UIViewController {
         username!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.05).isActive = true
         username!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
         username!.placeholder = "Username"
-        username!.font = UIFont(name: "DueDate", size: 12)
+        username!.font = UIFont(name: "Catatan Perjalanan", size: 12)
         //        username!.isUserInteractionEnabled = false
         username!.backgroundColor = .flatWhite
-        
+        username!.layer.borderColor = UIColor.flatBlack.cgColor
+        username!.layer.masksToBounds = true
+        username!.layer.borderWidth = 4.0
+        username!.layer.cornerRadius = 8.0
         
         // Configure Password
         password = UITextField()
@@ -63,7 +69,7 @@ class SignInViewController: UIViewController {
         password!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.05).isActive = true
         password!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
         password!.placeholder = "Password"
-        password!.font = UIFont(name: "DueDate", size: 12)
+        password!.font = UIFont(name: "Catatan Perjalanan", size: 12)
         password!.isSecureTextEntry = true
         //        password!.isUserInteractionEnabled = false
         password!.backgroundColor = .flatWhite
@@ -78,7 +84,7 @@ class SignInViewController: UIViewController {
         signInButton!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
         signInButton!.tintColor = UIColor.flatBlack
         signInButton!.setTitle("Sign In", for: .normal)
-        signInButton!.titleLabel!.font = UIFont(name: "DueDate", size: 12)
+        signInButton!.titleLabel!.font = UIFont(name: "Catatan Perjalanan", size: 12)
         signInButton!.backgroundColor = .flatGreen
         signInButton!.addTarget(self, action: #selector(onSignInButton), for: .touchUpInside)
         
@@ -91,7 +97,7 @@ class SignInViewController: UIViewController {
         signUpButton!.leftAnchor.constraint(equalTo: view.leftAnchor, constant: view.bounds.width * 0.05).isActive = true
         signUpButton!.widthAnchor.constraint(equalToConstant: 64).isActive = true
         signUpButton!.setTitle("Sign Up", for: .normal)
-        signUpButton!.titleLabel!.font = UIFont(name: "DueDate", size: 12)
+        signUpButton!.titleLabel!.font = UIFont(name: "Catatan Perjalanan", size: 12)
         signUpButton!.backgroundColor = .flatWhite
         signUpButton!.titleLabel!.textColor = UIColor.flatBlack
         signUpButton!.addTarget(self, action: #selector(onSignUpButton), for: .touchUpInside)
@@ -105,7 +111,7 @@ class SignInViewController: UIViewController {
         fogotPasswordButton!.rightAnchor.constraint(equalTo: view.rightAnchor, constant: view.bounds.width * -0.05).isActive = true
         fogotPasswordButton!.widthAnchor.constraint(equalToConstant: 160).isActive = true
         fogotPasswordButton!.setTitle("Forgot Password", for: .normal)
-        fogotPasswordButton!.titleLabel!.font = UIFont(name: "DueDate", size: 12)
+        fogotPasswordButton!.titleLabel!.font = UIFont(name: "Catatan Perjalanan", size: 12)
         fogotPasswordButton!.titleLabel!.textColor = UIColor.flatBlack
         fogotPasswordButton!.backgroundColor = .flatWhite
         fogotPasswordButton!.addTarget(self, action: #selector(onFogotPasswordButton), for: .touchUpInside)

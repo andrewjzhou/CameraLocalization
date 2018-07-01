@@ -76,6 +76,7 @@
 		6AF67C0120DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF67BFB20DDB1D70096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m */; };
 		6AF67C0220DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF67BFD20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m */; };
 		6AF67C0320DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AF67BFF20DDB1D80096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m */; };
+		6AFDC42C20E923ED009ED7E5 /* CP.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6AC6C8E420E80F6700126391 /* CP.ttf */; };
 		D453523150F84F268FA5C265 /* Pods_PostgameTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */; };
 		FD6547AD0525C6433731BAF5 /* Pods_PostgameUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7C665EFF03E997DD92392CF /* Pods_PostgameUITests.framework */; };
 /* End PBXBuildFile section */
@@ -617,6 +618,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AFDC42C20E923ED009ED7E5 /* CP.ttf in Resources */,
 				6AC6C8DF20E430F600126391 /* dock_51.ttf in Resources */,
 				6AC6C8E120E4316A00126391 /* DueDate.ttf in Resources */,
 				6A98CC6520E41714003A0E44 /* ka1.ttf in Resources */,

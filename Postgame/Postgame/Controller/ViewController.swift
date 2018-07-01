@@ -70,6 +70,8 @@ class ViewController: UIViewController {
         
         handleWakeFromBackground()
         
+
+//        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
         
     }
     

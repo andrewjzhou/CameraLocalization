@@ -47,7 +47,13 @@ final class VerticalRectInfo {
         guard let nodeForAnchor = sceneView.node(for: anchor) else {return nil}
         self.anchorNode = nodeForAnchor
         
-        
+//         ---------
+//        let sphereGeometry = SCNSphere(radius: 1.0)
+//        sphereGeometry.firstMaterial?.diffuse.contents = UIColor.red
+//        let xPositive = SCNNode(geometry: sphereGeometry)
+//        nodeForAnchor.addChildNode(xPositive)
+//
+//        // ---------
         // Point with 3d position on the plane
         let planePoint = hitTestResult.worldVector
         
@@ -87,7 +93,7 @@ final class VerticalRectInfo {
         
         // Check if node already exists, or if node would occlude another node
         for child in (anchorNode.childNodes as! [PostNode]) {
-            
+        
             let IoUThreshold:Float = 0.2
             let selfExtent = PostNodeExtent(position: self.position, size: self.size)
             let otherExtent = child.extent
