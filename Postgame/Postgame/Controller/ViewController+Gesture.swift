@@ -62,6 +62,7 @@ extension ViewController {
     @objc func handleTap (sender: UILongPressGestureRecognizer) {
         // Select post node that is tapped
         let point = sender.location(in: sceneView)
+        print("Tapped location: \(point)")
         let scnHitTestResults = sceneView.hitTest(point, options: nil)
         guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
         

@@ -90,8 +90,11 @@ final class PostNode: SCNNode {
         
         // Add PostNode as child to its AnchorNode and set position
         info.anchorNode.addChildNode(self)
-        self.position = info.position
-
+        position = info.position
+        eulerAngles.x = -.pi / 2
+        eulerAngles.y = info.orientation!
+     
+        
         // Match descriptor to cache
         if let matchKey = cache.findMatch(info.descriptor!) {
             

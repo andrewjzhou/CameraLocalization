@@ -52,6 +52,7 @@
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>CP.ttf</string>
 		<string>JMH Cthulhumbus Arcade.otf</string>
 		<string>DueDate.ttf</string>
 		<string>ka 1.ttf</string>

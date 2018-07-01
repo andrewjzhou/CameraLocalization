@@ -397,7 +397,7 @@ extension UIView {
      into a point within the given view.
      */
     func convertFromCamera(_ point: CGPoint) -> CGPoint {
-        let orientation = UIApplication.shared.statusBarOrientation
+        let orientation = UIDevice.current.orientation
         
         switch orientation {
         case .portrait, .unknown:
@@ -408,6 +408,8 @@ extension UIView {
             return CGPoint(x: point.x * frame.width, y: (1 - point.y) * frame.height)
         case .portraitUpsideDown:
             return CGPoint(x: (1 - point.y) * frame.width, y: (1 - point.x) * frame.height)
+        default:
+            return CGPoint(x: point.y * frame.width, y: point.x * frame.height)
         }
     }
     
@@ -416,7 +418,7 @@ extension UIView {
      into a point within the given view.
      */
     func convertFromCamera(_ rect: CGRect) -> CGRect {
-        let orientation = UIApplication.shared.statusBarOrientation
+        let orientation = UIDevice.current.orientation
         let x, y, w, h: CGFloat
         
         switch orientation {
@@ -440,6 +442,11 @@ extension UIView {
             h = rect.width
             x = 1 - rect.origin.y - w
             y = 1 - rect.origin.x - h
+        default:
+            w = rect.height
+            h = rect.width
+            x = rect.origin.y
+            y = rect.origin.x
         }
         
         return CGRect(x: x * frame.width, y: y * frame.height, width: w * frame.width, height: h * frame.height)

@@ -28,6 +28,8 @@ final class VerticalRectInfo {
     // Post Node content
     var post: UIImage? = nil
     
+    var orientation: Float?
+    
     
     init?(for observation: VNRectangleObservation, in sceneView: ARSCNView) {
         // Perform hit test to get plane information
@@ -45,6 +47,7 @@ final class VerticalRectInfo {
         guard let nodeForAnchor = sceneView.node(for: anchor) else {return nil}
         self.anchorNode = nodeForAnchor
         
+        
         // Point with 3d position on the plane
         let planePoint = hitTestResult.worldVector
         
@@ -52,6 +55,7 @@ final class VerticalRectInfo {
         let planeVector = planePoint - anchorNode.worldPosition
         let yUnit = SCNVector3Make(0, 1, 0)
         let normal = yUnit.crossProduct(planeVector)
+    
         
         // Create hit-test rays to perform hit-test more accurately with plane extent is not necessarily detected fully
         // Camera position is different from position in sceneView
@@ -68,6 +72,10 @@ final class VerticalRectInfo {
                 print("VerticalRectInfo Failed: no corners found")
                 return nil
         }
+        let distX = tr.x - tl.x
+        let distZ = tr.z - tl.z
+        orientation = -atan(distZ / distX)
+        print("Orientation value: \(orientation!), tr: \(tr), tl: \(tl)")
         
         // Center of the plane relative to anchor
         let pos = tr.midpoint(from: bl)
@@ -113,15 +121,22 @@ final class VerticalRectInfo {
 //                }
             }
         }
+    
         
         // Record real-world surface image associated with the plane rectangle
         guard let currFrame = sceneView.session.currentFrame else {return nil}
         let currImage = CIImage(cvPixelBuffer: currFrame.capturedImage)
         let convertedRect = convertFromCamera(observation.boundingBox, size: currImage.extent.size)
+        
+        print("Testing Rect: top left ")
+        
         let rect = expandRect(convertedRect, extent: currImage.extent)
         let croppedImage = currImage.cropped(to: rect)
         self.realImage = resizeAndOrient(ciImage: croppedImage)!
        
+        
+        
+        
     }
     
 }
@@ -186,7 +201,7 @@ fileprivate func expandRect(_ rect: CGRect, extent container: CGRect) -> CGRect 
 //}
 
 fileprivate func orient(ciImage: CIImage) -> UIImage {
-    let orientation = UIApplication.shared.statusBarOrientation
+    let orientation = UIDevice.current.orientation
     
     switch orientation {
     case .portrait, .unknown:
@@ -197,6 +212,8 @@ fileprivate func orient(ciImage: CIImage) -> UIImage {
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .up)
     case .portraitUpsideDown:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .left)
+    default:
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right)
     }
 }
 

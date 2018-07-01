@@ -45,6 +45,7 @@
 		6AC6C8DF20E430F600126391 /* dock_51.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6AC6C8DE20E430F600126391 /* dock_51.ttf */; };
 		6AC6C8E120E4316A00126391 /* DueDate.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6AC6C8E020E4316A00126391 /* DueDate.ttf */; };
 		6AC6C8E320E45C3900126391 /* NotificationCenter+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C8E220E45C3900126391 /* NotificationCenter+Rx.swift */; };
+		6AC6C8E620E811C800126391 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */; };
 		6AEBAB5620CDF3AE00741EB0 /* S3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
@@ -140,6 +141,8 @@
 		6AC6C8DE20E430F600126391 /* dock_51.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = dock_51.ttf; sourceTree = "<group>"; };
 		6AC6C8E020E4316A00126391 /* DueDate.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = DueDate.ttf; sourceTree = "<group>"; };
 		6AC6C8E220E45C3900126391 /* NotificationCenter+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+Rx.swift"; sourceTree = "<group>"; };
+		6AC6C8E420E80F6700126391 /* CP.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = CP.ttf; sourceTree = "<group>"; };
+		6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
@@ -323,6 +326,7 @@
 				6AC6C8E020E4316A00126391 /* DueDate.ttf */,
 				6AC6C8DE20E430F600126391 /* dock_51.ttf */,
 				6A98CC6220E41702003A0E44 /* JMH Cthulhumbus Arcade.otf */,
+				6AC6C8E420E80F6700126391 /* CP.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -407,6 +411,7 @@
 				6AEC1A722085BF06008E0FF8 /* ViewController.swift */,
 				6AEC1A9F208799B2008E0FF8 /* ViewController+UISetup.swift */,
 				6A1B54CF20D47BEC00870DC2 /* ViewController+Gesture.swift */,
+				6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */,
 				6AF52793208BC2E20039363B /* UserAuthentication */,
 			);
 			path = Controller;
@@ -616,6 +621,7 @@
 				6AC6C8E120E4316A00126391 /* DueDate.ttf in Resources */,
 				6A98CC6520E41714003A0E44 /* ka1.ttf in Resources */,
 				6A8EA74620E16D9900B178C1 /* awsconfiguration.json in Resources */,
+				6AC6C8E620E811C800126391 /* LaunchScreen.storyboard in Resources */,
 				6AEC1A782085BF07008E0FF8 /* Assets.xcassets in Resources */,
 				6A98CC6320E41702003A0E44 /* JMH Cthulhumbus Arcade.otf in Resources */,
 			);
