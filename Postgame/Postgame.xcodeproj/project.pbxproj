@@ -491,11 +491,11 @@
 				6AEBAB6020CEEEAC00741EB0 /* RectDetector.swift */,
 				6AF5277F208AC3E80039363B /* GeolocationService.swift */,
 				6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */,
-				6AFDC43120EACA25009ED7E5 /* TTL.swift */,
 				6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */,
 				6A1B548E20D0036400870DC2 /* VerticalRectInfo.swift */,
 				6AFDC42D20EA88B9009ED7E5 /* RectInfo.swift */,
 				6AFDC42F20EA8ACE009ED7E5 /* RectGeometry.swift */,
+				6AFDC43120EACA25009ED7E5 /* TTL.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

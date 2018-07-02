@@ -27,6 +27,7 @@ final class TTL {
     
     init() {
         timer = setTimer(5)
+        completePublisher.disposed(by: disposeBag)
     }
     
     // increment TTL

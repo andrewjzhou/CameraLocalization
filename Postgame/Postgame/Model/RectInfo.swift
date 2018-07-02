@@ -112,6 +112,7 @@ struct RectInfo {
             // width, height
             width = trPos.distance(from: tlPos)
             height = trPos.distance(from: brPos)
+            
         case .portraitUpsideDown:
             let brPos = sceneView.scene.rootNode.convertPosition(tl, to: anchorNode)
             let blPos = sceneView.scene.rootNode.convertPosition(tr, to: anchorNode)
