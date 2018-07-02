@@ -47,13 +47,7 @@ final class VerticalRectInfo {
         guard let nodeForAnchor = sceneView.node(for: anchor) else {return nil}
         self.anchorNode = nodeForAnchor
         
-//         ---------
-//        let sphereGeometry = SCNSphere(radius: 1.0)
-//        sphereGeometry.firstMaterial?.diffuse.contents = UIColor.red
-//        let xPositive = SCNNode(geometry: sphereGeometry)
-//        nodeForAnchor.addChildNode(xPositive)
-//
-//        // ---------
+        
         // Point with 3d position on the plane
         let planePoint = hitTestResult.worldVector
         
@@ -78,22 +72,77 @@ final class VerticalRectInfo {
                 print("VerticalRectInfo Failed: no corners found")
                 return nil
         }
-        let distX = tr.x - tl.x
-        let distZ = tr.z - tl.z
-        orientation = -atan(distZ / distX)
-        print("Orientation value: \(orientation!), tr: \(tr), tl: \(tl)")
-        
-        // Center of the plane relative to anchor
-        let pos = tr.midpoint(from: bl)
-        let convertedPos = sceneView.scene.rootNode.convertPosition(pos, to: anchorNode) // Convert position to anchorNode's coordinate system
-        self.position = SCNVector3(convertedPos.x, 0, convertedPos.z) // x (+ is right, - is left), z (+ is down, - is up)
-        
-        // Size of the plane
-        self.size = CGSize(width: tr.distance(from: tl), height: tl.distance(from: bl))
+
+       
+        //         ---------
+        self.position = SCNVector3Make(0, 0, 0)
+        self.size = CGSize(width: 0, height: 0)
+        self.orientation = 0
+        switch UIDevice.current.orientation {
+        case .portrait, .unknown:
+            let tlPos = sceneView.scene.rootNode.convertPosition(tl, to: anchorNode)
+            let trPos = sceneView.scene.rootNode.convertPosition(tr, to: anchorNode)
+            let blPos = sceneView.scene.rootNode.convertPosition(bl, to: anchorNode)
+            
+            let distX = trPos.x - tlPos.x
+            let distZ = trPos.z - tlPos.z
+            orientation = -atan(distZ / distX)
+            
+            // Center of the plane relative to anchor
+            let pos = trPos.midpoint(from: blPos)
+            self.position = SCNVector3(pos.x, 0, pos.z) // x (+ is right, - is left), z (+ is down, - is up)
+            
+            // Size of the plane
+            self.size = CGSize(width: tr.distance(from: tl), height: tl.distance(from: bl))
+        case .landscapeLeft:
+            let blPos = sceneView.scene.rootNode.convertPosition(tl, to: anchorNode)
+            let tlPos = sceneView.scene.rootNode.convertPosition(tr, to: anchorNode)
+            let brPos = sceneView.scene.rootNode.convertPosition(bl, to: anchorNode)
+            
+            let distX = brPos.x - blPos.x
+            let distZ = brPos.z - blPos.z
+            orientation = -atan(distZ / distX)
+            
+            let pos = tlPos.midpoint(from: brPos)
+            self.position = SCNVector3(pos.x, 0, pos.z) // x (+ is right, - is left), z (+ is down, - is up)
+            
+            // Size of the plane
+            self.size = CGSize(width: brPos.distance(from: blPos), height: tlPos.distance(from: blPos))
+        case .landscapeRight:
+            let trPos = sceneView.scene.rootNode.convertPosition(tl, to: anchorNode)
+            let brPos = sceneView.scene.rootNode.convertPosition(tr, to: anchorNode)
+            let tlPos = sceneView.scene.rootNode.convertPosition(bl, to: anchorNode)
+            
+            let distX = trPos.x - tlPos.x
+            let distZ = trPos.z - tlPos.z
+            orientation = -atan(distZ / distX)
+            
+            let pos = tlPos.midpoint(from: brPos)
+            self.position = SCNVector3(pos.x, 0, pos.z) // x (+ is right, - is left), z (+ is down, - is up)
+            
+            // Size of the plane
+            self.size = CGSize(width: trPos.distance(from: tlPos), height: trPos.distance(from: brPos))
+        case .portraitUpsideDown:
+            let brPos = sceneView.scene.rootNode.convertPosition(tl, to: anchorNode)
+            let blPos = sceneView.scene.rootNode.convertPosition(tr, to: anchorNode)
+            let trPos = sceneView.scene.rootNode.convertPosition(bl, to: anchorNode)
+            
+            let distX = brPos.x - blPos.x
+            let distZ = brPos.z - blPos.z
+            orientation = -atan(distZ / distX)
+            
+            let pos = trPos.midpoint(from: blPos)
+            self.position = SCNVector3(pos.x, 0, pos.z) // x (+ is right, - is left), z (+ is down, - is up)
+            
+            // Size of the plane
+            self.size = CGSize(width: brPos.distance(from: blPos), height: trPos.distance(from: brPos))
+        default:
+            break
+        }
         
         // Check if node already exists, or if node would occlude another node
-        for child in (anchorNode.childNodes as! [PostNode]) {
-        
+        for child in (anchorNode.childNodes) {
+            guard let child = child as? PostNode else { continue }
             let IoUThreshold:Float = 0.2
             let selfExtent = PostNodeExtent(position: self.position, size: self.size)
             let otherExtent = child.extent
@@ -126,6 +175,7 @@ final class VerticalRectInfo {
                     return nil
 //                }
             }
+            
         }
     
         
@@ -134,14 +184,13 @@ final class VerticalRectInfo {
         let currImage = CIImage(cvPixelBuffer: currFrame.capturedImage)
         let convertedRect = convertFromCamera(observation.boundingBox, size: currImage.extent.size)
         
-        print("Testing Rect: top left ")
+//        let rect = expandRect(convertedRect, extent: currImage.extent)
+        let croppedImage = currImage.cropped(to: convertedRect)
         
-        let rect = expandRect(convertedRect, extent: currImage.extent)
-        let croppedImage = currImage.cropped(to: rect)
         self.realImage = resizeAndOrient(ciImage: croppedImage)!
-       
-        
-        
+    
+        let iv = sceneView.subviews[0] as! UIImageView
+        iv.image = self.realImage
         
     }
     
@@ -161,34 +210,34 @@ fileprivate func planeLineIntersectPoint(planeVector: SCNVector3 , planePoint: S
     return nil
 }
 
-// expand rectangle region for cropped image for more room for CoreML vision request
-fileprivate func expandRect(_ rect: CGRect, extent container: CGRect) -> CGRect {
-    // TODO: play with increment ratio to see how it affect vision request results
-    let widthIncrement = rect.size.width * 0.1
-    let heighIncrement = rect.size.height * 0.1
-    
-    var x = rect.origin.x - widthIncrement / 2.0
-    if x < container.origin.x {
-        x = container.origin.x
-    }
-    
-    var width = rect.size.width + widthIncrement
-    if (x + width > container.origin.x + container.size.width) {
-        width = container.size.width - x
-    }
-    
-    var y = rect.origin.y - heighIncrement / 2.0
-    if y < container.origin.y {
-        y = container.origin.y
-    }
-    
-    var height = rect.size.height + heighIncrement
-    if (y + height > container.origin.y + container.size.height) {
-        height = container.size.height - y
-    }
-    
-    return CGRect(x: x, y: y, width: width, height: height)
-}
+//// expand rectangle region for cropped image for more room for CoreML vision request
+//fileprivate func expandRect(_ rect: CGRect, extent container: CGRect) -> CGRect {
+//    // TODO: play with increment ratio to see how it affect vision request results
+//    let widthIncrement = rect.size.width * 0.1
+//    let heighIncrement = rect.size.height * 0.1
+//
+//    var x = rect.origin.x - widthIncrement / 2.0
+//    if x < container.origin.x {
+//        x = container.origin.x
+//    }
+//
+//    var width = rect.size.width + widthIncrement
+//    if (x + width > container.origin.x + container.size.width) {
+//        width = container.size.width - x
+//    }
+//
+//    var y = rect.origin.y - heighIncrement / 2.0
+//    if y < container.origin.y {
+//        y = container.origin.y
+//    }
+//
+//    var height = rect.size.height + heighIncrement
+//    if (y + height > container.origin.y + container.size.height) {
+//        height = container.size.height - y
+//    }
+//
+//    return CGRect(x: x, y: y, width: width, height: height)
+//}
 
 // Resize and Orient CIImage, then Return UIImage
 //fileprivate func resizeAndOrient(ciImage: CIImage, withPercentage percentage: CGFloat) -> UIImage? {
@@ -213,9 +262,9 @@ fileprivate func orient(ciImage: CIImage) -> UIImage {
     case .portrait, .unknown:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right)
     case .landscapeLeft:
-        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .down)
-    case .landscapeRight:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .up)
+    case .landscapeRight:
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .down)
     case .portraitUpsideDown:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .left)
     default:
@@ -225,18 +274,20 @@ fileprivate func orient(ciImage: CIImage) -> UIImage {
 
 
 fileprivate func resizeAndOrient(ciImage: CIImage) -> UIImage? {
-    let orientation = UIApplication.shared.statusBarOrientation
+    let orientation = UIDevice.current.orientation
 
 
     switch orientation {
     case .portrait, .unknown:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right).resized(width: 227, height: 227)
     case .landscapeLeft:
-        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .down).resized(width: 227, height: 227)
-    case .landscapeRight:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .up).resized(width: 227, height: 227)
+    case .landscapeRight:
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .down).resized(width: 227, height: 227)
     case .portraitUpsideDown:
         return UIImage(ciImage: ciImage, scale: 1.0, orientation: .left).resized(width: 227, height: 227)
+    default:
+        return UIImage(ciImage: ciImage, scale: 1.0, orientation: .right).resized(width: 227, height: 227)
     }
 }
 

@@ -397,20 +397,21 @@ extension UIView {
      into a point within the given view.
      */
     func convertFromCamera(_ point: CGPoint) -> CGPoint {
-        let orientation = UIDevice.current.orientation
-        
-        switch orientation {
-        case .portrait, .unknown:
-            return CGPoint(x: point.y * frame.width, y: point.x * frame.height)
-        case .landscapeLeft:
-            return CGPoint(x: (1 - point.x) * frame.width, y: point.y * frame.height)
-        case .landscapeRight:
-            return CGPoint(x: point.x * frame.width, y: (1 - point.y) * frame.height)
-        case .portraitUpsideDown:
-            return CGPoint(x: (1 - point.y) * frame.width, y: (1 - point.x) * frame.height)
-        default:
-            return CGPoint(x: point.y * frame.width, y: point.x * frame.height)
-        }
+        return CGPoint(x: point.y * frame.width, y: point.x * frame.height)
+//        let orientation = UIDevice.current.orientation
+//
+//        switch orientation {
+//        case .portrait, .unknown:
+//            return CGPoint(x: point.y * frame.width, y: point.x * frame.height)
+//        case .landscapeLeft:
+//            return CGPoint(x: (1 - point.x) * frame.width, y: point.y * frame.height)
+//        case .landscapeRight:
+//            return CGPoint(x: point.x * frame.width, y: (1 - point.y) * frame.height)
+//        case .portraitUpsideDown:
+//            return CGPoint(x: (1 - point.y) * frame.width, y: (1 - point.x) * frame.height)
+//        default:
+//            return CGPoint(x: point.y * frame.width, y: point.x * frame.height)
+//        }
     }
     
     /**

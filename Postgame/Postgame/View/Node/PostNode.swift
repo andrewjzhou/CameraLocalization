@@ -93,6 +93,7 @@ final class PostNode: SCNNode {
         position = info.position
         eulerAngles.x = -.pi / 2
         eulerAngles.y = info.orientation!
+        print("Orientation value is : \(info.orientation!)")
      
         
         // Match descriptor to cache

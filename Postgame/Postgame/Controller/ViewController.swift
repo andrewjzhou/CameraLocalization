@@ -69,10 +69,17 @@ class ViewController: UIViewController {
         setupPostNodeInteractions()
         
         handleWakeFromBackground()
-        
-
+    
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
         
+        let iv = UIImageView()
+        sceneView.addSubview(iv)
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.setWidthConstraint(200)
+        iv.setHeightConstraint(200)
+        iv.setTrailingConstraint(equalTo: sceneView.trailingAnchor, offset: 0)
+        iv.setBottomConstraint(equalTo: sceneView.bottomAnchor, offset: 0)
+        sceneView.bringSubview(toFront: iv)
     }
     
     func handleWakeFromBackground() {

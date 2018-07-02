@@ -10,6 +10,7 @@ import UIKit
 
 func convertFromCamera(_ rect: CGRect, size: CGSize) -> CGRect {
     let orientation = UIApplication.shared.statusBarOrientation
+   
     let x, y, w, h: CGFloat
     
     switch orientation {
