@@ -19,17 +19,13 @@ struct RectInfo {
     
     init? (for observation: VNRectangleObservation, in sceneView: ARSCNView) {
     
-        let center = sceneView.convertFromCamera(observation.center)
-        guard let hitTestResult = sceneView.hitTest(center, types: .existingPlaneUsingExtent).first else {
-            print("RectInfo Failed: no plane point")
-            return nil
-        }
-        
         /// MARK:- Anchor
-        guard let anchor = hitTestResult.anchor as? ARPlaneAnchor,
+        let center = sceneView.convertFromCamera(observation.center)
+        guard let hitTestResult = sceneView.hitTest(center, types: .existingPlaneUsingExtent).first,
+            let anchor = hitTestResult.anchor as? ARPlaneAnchor,
             let nodeForAnchor = sceneView.node(for: anchor) else {
-            print("RectInfo Failed: no anchor")
-            return nil
+                print("RectInfo Failed: no anchor")
+                return nil
         }
         self.anchorNode = nodeForAnchor
         
