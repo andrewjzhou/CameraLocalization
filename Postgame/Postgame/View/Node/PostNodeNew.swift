@@ -11,12 +11,14 @@ import Vision
 import SpriteKit
 import RxCocoa
 import RxSwift
+import AWSUserPoolsSignIn
 
 final class PostNodeNew: SCNNode {
     private let disposeBag = DisposeBag()
     private let ttl = TTL()
     private var contentNode: ContentNode
     
+    // state changes. control display
     enum PostNodeState { case active, inactive, load, prompt }
     private(set) var state: PostNodeState = .inactive {
         willSet { previousState = state }
@@ -35,6 +37,7 @@ final class PostNodeNew: SCNNode {
     }
     private var previousState: PostNodeState = .inactive
     
+    // geometry updates
     private var geometryUpdater: GeometryUpdater {
         didSet {
             position = geometryUpdater.currGeometry.center
@@ -61,11 +64,35 @@ final class PostNodeNew: SCNNode {
         }
     }
     
+    // recorder: record updates and upload to AWS
+    private var recorder: Recorder?
+    struct Recorder {
+        let key: String
+        let descriptor: [Double]
+        let username: String
+        var image: UIImage?
+        
+        func record() {
+            guard let image = image else { return }
+            // S3
+            let s3 = S3Service.sharedInstance
+            s3.uploadDescriptor(descriptor, key: key)
+            s3.uploadPost(image, key: key)
+            // DynamoDB
+            let db = DynamoDBService.sharedInstance
+            db.create(key: key, username: username)
+            
+//            cache.update(Descriptor(key: key, value: info.descriptor!))
+        }
+    }
+    
     init(_ info: RectInfo) {
         contentNode = ContentNode(size: CGSize(width: info.geometry.width,
                                                height: info.geometry.height))
         geometryUpdater = GeometryUpdater(currGeometry: info.geometry, status: .stage1)
         super.init()
+        
+        addChildNode(contentNode)
         
         // set position
         let anchor = info.anchorNode
@@ -76,17 +103,25 @@ final class PostNodeNew: SCNNode {
         eulerAngles.x = -.pi / 2
         eulerAngles.y = info.geometry.orientation
         
-        // set initial state
+        // set initial state and recorder
         switch info.key.status {
         case .inactive:
             contentNode.deactivate()
         case .new:
             state = .prompt
             contentNode.prompt()
+            recorder = Recorder(key: info.key.identifier!,
+                                descriptor: info.descriptor!,
+                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
+                                image: nil)
         case .used:
             state = .active
             contentNode.activate()
-            setContent(info.post!)
+            downloadAndSetContent(info.key.identifier!)
+            recorder = Recorder(key: info.key.identifier!,
+                                descriptor: info.descriptor!,
+                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
+                                image: nil)
         }
         
         
@@ -100,6 +135,7 @@ final class PostNodeNew: SCNNode {
         geometryPublisher.asObservable()
             .observeOn(MainScheduler.instance)
             .filter({ [geometryUpdater] _ in
+                // no more updates needed if confirmed
                 return geometryUpdater.status != .confirmed
             })
             .do(onNext: { [ttl] _ in
@@ -117,11 +153,29 @@ final class PostNodeNew: SCNNode {
             }).disposed(by: disposeBag)
     }
     
+    // Display the image in Content Node
     func setContent(_ image: UIImage) {
         contentNode.content = image.convertToScene()
         state = .active
+        if var recorder = recorder { recorder.image = image }
     }
     
+    func downloadAndSetContent(_ key: String) {
+        // Download post and set content
+        let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
+        postDownloadObservable.observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (image) in
+                if self == nil { return }
+                self!.setContent(image)
+                
+                // increment
+                // This is getting called multiple times before picture actually gets showned
+                DynamoDBService.sharedInstance.incrementViews(key)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    // Observe a new Rect Geometry update
     func updateGeometry(_ update: RectGeometry) { geometryPublisher.onNext(update) }
    
     // Set prompt screen to inform user to add / update
