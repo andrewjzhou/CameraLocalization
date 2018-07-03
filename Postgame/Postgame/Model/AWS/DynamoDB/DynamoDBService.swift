@@ -11,7 +11,7 @@ import AWSUserPoolsSignIn
 import RxSwift
 import RxCocoa
 
-final class DynamoDBService {
+struct DynamoDBService {
     
     static let sharedInstance = DynamoDBService()
     private let dynamoDbObjectMapper = AWSDynamoDBObjectMapper.default()

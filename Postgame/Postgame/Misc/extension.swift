@@ -50,6 +50,13 @@ extension ARSCNView {
         let results = self.hitTest(point, types: .existingPlaneUsingExtent)
         return results.first != nil
     }
+    
+    func isPointOnPost(_ point: CGPoint) -> Bool {
+        let results = self.hitTest(point, options: [.backFaceCulling: true])
+        guard let first = results.first,
+            let postNode = first.node as? PostNodeNew else { return false }
+        return postNode.geometryUpdater.status == .confirmed
+    }
 }
 
 extension CGSize {

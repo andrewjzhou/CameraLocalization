@@ -38,7 +38,7 @@ final class PostNodeNew: SCNNode {
     private var previousState: PostNodeState = .inactive
     
     // geometry updates
-    private var geometryUpdater: GeometryUpdater {
+    private(set) var geometryUpdater: GeometryUpdater {
         didSet {
             position = geometryUpdater.currGeometry.center
             eulerAngles.y = geometryUpdater.currGeometry.orientation
@@ -87,12 +87,15 @@ final class PostNodeNew: SCNNode {
     }
     
     init(_ info: RectInfo) {
+        // initialize Geometry Updater
+        geometryUpdater = GeometryUpdater(currGeometry: info.geometry, status: .stage1)
+        
+        // set size and initialize Content Node
         contentNode = ContentNode(size: CGSize(width: info.geometry.width,
                                                height: info.geometry.height))
-        geometryUpdater = GeometryUpdater(currGeometry: info.geometry, status: .stage1)
         super.init()
-        
         addChildNode(contentNode)
+        isHidden = true // hide upon initalization, unhide when geometry receives enough updates
         
         // set position
         let anchor = info.anchorNode
@@ -123,26 +126,15 @@ final class PostNodeNew: SCNNode {
                                 username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
                                 image: nil)
         }
-
-        
-        
-        /// MARK:- Time to live
-        ttl.completeDriver.drive(onCompleted: {
-            self.removeFromParentNode()
-        }).disposed(by: disposeBag)
-        
         
         /// MARK:-  Geometry update
-        geometryPublisher.asObservable()
-            .observeOn(MainScheduler.instance)
+        let geometryObservable = geometryPublisher.asObservable().observeOn(MainScheduler.instance).share()
+        geometryObservable
             .filter({ [geometryUpdater] _ in
                 // no more updates needed if confirmed
                 return geometryUpdater.status != .confirmed
             })
-            .do(onNext: { [ttl] _ in
-                ttl.increment()
-            })
-            .buffer(timeSpan: 20, count: 15, scheduler: MainScheduler.instance)
+            .buffer(timeSpan: 5, count: 5, scheduler: MainScheduler.instance)
             .filter{ $0.count != 0 }
             .subscribe(onNext: { [weak self] updates in
                 if self == nil { return }
@@ -151,7 +143,20 @@ final class PostNodeNew: SCNNode {
                     self!.geometryUpdater.upgradeStatus()
                 }
                 self!.geometryUpdater.currGeometry = newGeometry
+                
             }).disposed(by: disposeBag)
+
+        
+        /// MARK:- Time to live
+        ttl.completeDriver.drive(onCompleted: {
+            self.removeFromParentNode()
+        }).disposed(by: disposeBag)
+        
+        geometryObservable.take(2).subscribe(onNext: { [weak self] _ in
+            if self == nil { return }
+            self!.ttl.increment()
+            self!.isHidden = (self!.ttl.state == .unlimited) ? false : true
+        }).disposed(by: disposeBag)
     }
     
     // Display the image in Content Node

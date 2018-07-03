@@ -19,8 +19,8 @@ struct RectInfo {
     var post: UIImage?
     
     struct AWSKey {
-        let identifier: String?
-        let status: AWSKeyStatus
+        var identifier: String?
+        var status: AWSKeyStatus
         enum AWSKeyStatus { case new, used, inactive }
     }
     

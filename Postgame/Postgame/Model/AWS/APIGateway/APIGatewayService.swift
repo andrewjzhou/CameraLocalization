@@ -12,7 +12,7 @@ import AWSCore
 import AWSAPIGateway
 import AWSMobileClient
 
-class APIGatewayService {
+struct APIGatewayService {
     static let sharedInstance = APIGatewayService()
     private init() {}
     

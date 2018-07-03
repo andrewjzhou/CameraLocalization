@@ -17,7 +17,7 @@ struct RectGeometry {
     let projection: ProjectedRect
     
     // Thresholds
-    static let highIoUThreshold: Float = 0.5
+    static let highIoUThreshold: Float = 0.7
     static let lowIoUThreshold: Float = 0.2
 
     // Projecting self to 2D with no orientation for comparing purposes
@@ -53,7 +53,7 @@ struct RectGeometry {
         // check to see that the difference between orientation is low
         // if this check passes. assume they have the same orientation for later calculations (this methodology should be improved)
         // return 0, assuming no intersection, if orientation difference is large
-        let oriThreshold: Float = 0.05
+        let oriThreshold: Float = 0.1 // lenient
         if abs(that.orientation - orientation) > oriThreshold { return 0 }
         
         let areaInter = findIntersection(with: that)
@@ -63,7 +63,7 @@ struct RectGeometry {
     
     // If this is a variation of a known RectGeometry struct, then this is a candidate to update RectGeometry
     func isVariation(of that: RectGeometry) -> Bool {
-        let oriThreshold: Float = 0.05
+        let oriThreshold: Float = 0.1
         
         // check to see that the difference between orientation is low
         // if this check passes. assume they have the same orientation for later calculations (this methodology should be improved)
@@ -77,7 +77,7 @@ struct RectGeometry {
         
         // IoU check
         let iou = Float(areaInter / (self.projection.area + that.projection.area - areaInter))
-        if iou > RectGeometry.lowIoUThreshold { return true }
+        if iou > RectGeometry.highIoUThreshold { return true }
         
         return false
     }

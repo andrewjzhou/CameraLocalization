@@ -56,11 +56,12 @@ final class DescriptorCache {
                 }
                 return false
             })
-            .subscribe(onNext: { (location) in
-                self.lastLocation = location
+            .subscribe(onNext: { [weak self](location) in
+                if self == nil { return }
+                self!.lastLocation = location
                 
                 // Reload cache
-                self.refresh()
+                self!.refresh()
             })
             .disposed(by: disposeBag)
         
@@ -75,8 +76,9 @@ final class DescriptorCache {
             .flatMap { Observable.from($0) }
             .flatMap { S3Service.sharedInstance.downloadDescriptor($0) } // Download descriptors from S3
             .filter {$0 != nil}
-            .subscribe(onNext: { (descriptor) in
-                self.update(descriptor!)
+            .subscribe(onNext: { [weak self] (descriptor) in
+                if self == nil { return }
+                self!.update(descriptor!)
             })
             .disposed(by: disposeBag)
     }

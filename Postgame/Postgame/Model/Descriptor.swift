@@ -8,7 +8,8 @@
 
 import Foundation
 
-final class Descriptor: NSObject { // consider making this a struct
+struct Descriptor: Equatable {
+    // consider making this a struct
     let key: String
     let value: [Double]
     let location: (Double, Double)
@@ -23,12 +24,9 @@ final class Descriptor: NSObject { // consider making this a struct
         self.location = (lat, long)
     }
     
-    // Descriptors are equal if they have the same key 
-    override func isEqual(_ object: Any?) -> Bool {
-        guard let other = object as? Descriptor else {
-            return false
-        }
-        return self.key == other.key
+    // Descriptors are equal if they have the same key
+    static func == (lhs: Descriptor, rhs: Descriptor) -> Bool {
+        return lhs.key == rhs.key
     }
     
 }

@@ -28,7 +28,9 @@ class ViewController: UIViewController {
         return config
     }()
     
+    
     let geolocationService = GeolocationService.instance
+    var lastLocation: (Double, Double)?
     
     lazy var descriptorCache = DescriptorCache(geolocationService)
 
@@ -71,6 +73,12 @@ class ViewController: UIViewController {
         handleWakeFromBackground()
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
+        
+        geolocationService.location.drive(onNext: { [weak self] (coordinates) in
+            if self == nil { return }
+            self!.lastLocation = coordinates
+        })
+        
     }
     
     func handleWakeFromBackground() {
@@ -231,7 +239,7 @@ extension ViewController {
 extension ViewController {
     func setupPostRx() {
         
-        /// 1. Slow down number of frames read
+        /// 1. Slow down number of frames read and detect retangles
         let rectDetector = RectDetector()
         let _ =
             sceneView.session.rx.didUpdateFrame
@@ -251,7 +259,11 @@ extension ViewController {
             .filter({ [sceneView] (observation)  in
                 // check that rectangle is attached to a vertical plane
                 let center = sceneView.convertFromCamera(observation.center)
-                return sceneView.isPointOnPlane(center)
+                if !sceneView.isPointOnPlane(center) { return false }
+                
+                // check that rectangle does not on a confirmed rectangle
+                return !sceneView.isPointOnPost(center)
+                
             })
             .filter({ [createButton, longPressIndicator, sceneView] (observation) in
                  // continue if one of two requirements are met
@@ -268,20 +280,9 @@ extension ViewController {
             .do(onNext: { (observation) in
                 self.highlightObservation(observation)
             })
-            //--
-//            .drive(onNext: { (observation) in
-//                self.removeRectOutlineLayers()
-//                self.highlightObservation(observation)
-//                // --
-//                let info = VerticalRectInfo(for: observation, in: self.sceneView)
-//            })
-//            .disposed(by: disposeBag)
-            //--
-    
         
-        // 3. Compute geometric information and descriptor for each vertical rectangle observered previously
-        let descriptorComputer = DescriptorComputer()
-        let infoObservable =
+        /// 3. Compute geometric information and descriptor for each vertical rectangle observered previously
+        let geometryObservable =
             rectObservable.asObservable()
                 .debug("Get vertical rect info")
                 .map({ (observation) -> RectInfo? in
@@ -291,26 +292,54 @@ extension ViewController {
                     }
                     return info
                 })
-                .filter { $0 != nil }
-                // Check if this is just an update first, here!
+                .filter({ (info) -> Bool in
+                    guard let geometry = info?.geometry else { return false }
+                    // check if info is just an update
+                    for child in info!.anchorNode.childNodes as! [PostNodeNew] {
+                        if geometry.isVariation(of: child.geometryUpdater.currGeometry) {
+                            // update geometry and stop creating new post node
+                            child.updateGeometry(geometry)
+                            return false
+                        }
+                    }
+                    return true
+                })
                 .debug("Compute descriptor")
+        
+        /// 4. Compute and match descriptor
+        let descriptorComputer = DescriptorComputer()
+        let infoObservable =
+            geometryObservable
                 .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
                 .filter { $0 != nil }
+                .map { [weak self](info) -> RectInfo? in
+                    if self == nil { return nil }
+                    var info = info!
+                    let match = self!.descriptorCache.findMatch(info.descriptor!)
+                    if match != nil {
+                        info.key.status = .used
+                        info.key.identifier = match!
+                    } else if self!.createButton.post != nil {
+                        info.key.status = .new
+                        guard let key = self!.getKey() else { return nil }
+                        info.key.identifier = key
+                    } else {
+                        info.key.status = .inactive
+                    }
+                    return info
+                }
+                .filter { $0 != nil }
+        
+
+
+        /// 5. Generate PostNode
+        let _ =
+            infoObservable
                 .observeOn(MainScheduler.instance) // Return to main queue
                 .subscribe(onNext: { (info) in
-                    print("Got info - geometry: \(info!.geometry) descriptor: \(info!.descriptor!)")
+                    PostNodeNew(info!)
                 })
-            // Match descriptor
-
-        // 4. Generate PostNode
-//        let _ =
-//            infoObservable
-//                .debug("Generate post node")
-//                .map { PostNode(info: $0!, cache: self.descriptorCache) }
-//                .subscribe(onNext: { (postNode) in
-//                    print("PostNode created: ", postNode)
-//                })
-//                .disposed(by: disposeBag)
+                .disposed(by: disposeBag)
         
     }
     
@@ -373,6 +402,25 @@ extension ViewController {
             return nil
         }
     }
+    
+    func getKey() -> String? {
+        guard let location = lastLocation else { return nil }
+        let locationString = location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
+        let date = recordDate()
+        let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
+        let key = locationString + "/" + date + "/" + username
+        
+        return key
+    }
+    
+    func recordDate() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US")
+        
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        return dateFormatter.string(from: Date())
+    }
+
 
 }
 
