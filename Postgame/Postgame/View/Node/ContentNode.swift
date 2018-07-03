@@ -27,7 +27,6 @@ final class ContentNode: SCNNode {
         planeGeometry.firstMaterial?.diffuse.wrapT = SCNWrapMode.init(rawValue: 2)!
         
         self.geometry = planeGeometry
-//        eulerAngles.x = -.pi / 2 // might need to set this property as a child node in post node if it doesn't work
 
     }
     

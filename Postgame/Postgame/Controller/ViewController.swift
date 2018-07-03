@@ -71,15 +71,6 @@ class ViewController: UIViewController {
         handleWakeFromBackground()
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
-        
-        let iv = UIImageView()
-        sceneView.addSubview(iv)
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.setWidthConstraint(200)
-        iv.setHeightConstraint(200)
-        iv.setTrailingConstraint(equalTo: sceneView.trailingAnchor, offset: 0)
-        iv.setBottomConstraint(equalTo: sceneView.bottomAnchor, offset: 0)
-        sceneView.bringSubview(toFront: iv)
     }
     
     func handleWakeFromBackground() {
@@ -256,7 +247,7 @@ extension ViewController {
                 .disposed(by: disposeBag)
         
         /// 2. Find rectangles attached to vertical surfaces in the real world
-        let verticalRectObservable = rectDetector.rectDriver
+        let rectObservable = rectDetector.rectDriver
             .filter({ [sceneView] (observation)  in
                 // check that rectangle is attached to a vertical plane
                 let center = sceneView.convertFromCamera(observation.center)
@@ -291,27 +282,35 @@ extension ViewController {
         // 3. Compute geometric information and descriptor for each vertical rectangle observered previously
         let descriptorComputer = DescriptorComputer()
         let infoObservable =
-            verticalRectObservable.asObservable()
+            rectObservable.asObservable()
                 .debug("Get vertical rect info")
-                .map({ (observation) -> VerticalRectInfo? in
-                    var info = VerticalRectInfo(for: observation, in: self.sceneView) // Compute geometric information
-                    info?.post = self.createButton.post
+                .map({ (observation) -> RectInfo? in
+                    var info = RectInfo(for: observation, in: self.sceneView) // Compute geometric information
+                    if let _ = info {
+                        info!.post = self.createButton.post
+                    }
                     return info
                 })
                 .filter { $0 != nil }
+                // Check if this is just an update first, here!
                 .debug("Compute descriptor")
                 .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
                 .filter { $0 != nil }
+                .observeOn(MainScheduler.instance) // Return to main queue
+                .subscribe(onNext: { (info) in
+                    print("Got info - geometry: \(info!.geometry) descriptor: \(info!.descriptor!)")
+                })
+            // Match descriptor
 
         // 4. Generate PostNode
-        let _ =
-            infoObservable
-                .debug("Generate post node")
-                .map { PostNode(info: $0!, cache: self.descriptorCache) }
-                .subscribe(onNext: { (postNode) in
-                    print("PostNode created: ", postNode)
-                })
-                .disposed(by: disposeBag)
+//        let _ =
+//            infoObservable
+//                .debug("Generate post node")
+//                .map { PostNode(info: $0!, cache: self.descriptorCache) }
+//                .subscribe(onNext: { (postNode) in
+//                    print("PostNode created: ", postNode)
+//                })
+//                .disposed(by: disposeBag)
         
     }
     

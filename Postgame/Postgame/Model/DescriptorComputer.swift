@@ -19,16 +19,13 @@ import Vision
 import RxCocoa
 import RxSwift
 
-final class DescriptorComputer: NSObject {
+final class DescriptorComputer {
+    private lazy var model = try VNCoreMLModel(for: CaffenetExtractor().model)
     
-    // CaffeNet processing Request
-    lazy var model = try VNCoreMLModel(for: CaffenetExtractor().model)
+    init() {}
     
-    override init() {
-        super.init()
-    }
-    
-    func compute(info: VerticalRectInfo) -> Observable<VerticalRectInfo?> {
+    func compute(info: RectInfo) -> Observable<RectInfo?> {
+        var info = info
         let orientation = CGImagePropertyOrientation(rawValue: UInt32(info.realImage.imageOrientation.rawValue))
         guard let ciImage = CIImage(image: info.realImage) else { fatalError("Unable to create \(CIImage.self) from \(info.realImage).") }
     
@@ -47,7 +44,11 @@ final class DescriptorComputer: NSObject {
                 }
                 
                 let array = MultiArray<Double>(multiArray)
-                let descriptor = self!.processArray(array)
+                guard let descriptor = self?.processArray(array) else {
+                    observer.onNext(nil)
+                    observer.onCompleted()
+                    return
+                }
                 
                 info.descriptor = descriptor
                 

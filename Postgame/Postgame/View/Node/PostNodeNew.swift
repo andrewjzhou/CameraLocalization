@@ -1,0 +1,136 @@
+//
+//  PostNodeNew.swift
+//  Postgame
+//
+//  Created by Andrew Jay Zhou on 7/2/18.
+//  Copyright © 2018 postgame. All rights reserved.
+//
+
+import ARKit
+import Vision
+import SpriteKit
+import RxCocoa
+import RxSwift
+
+final class PostNodeNew: SCNNode {
+    private let disposeBag = DisposeBag()
+    private let ttl = TTL()
+    private var contentNode: ContentNode
+    
+    enum PostNodeState { case active, inactive, load, prompt }
+    private(set) var state: PostNodeState = .inactive {
+        willSet { previousState = state }
+        didSet {
+            switch state {
+            case .active:
+                contentNode.activate()
+            case .inactive:
+                contentNode.deactivate()
+            case .load:
+                contentNode.load()
+            case .prompt:
+                contentNode.prompt()
+            }
+        }
+    }
+    private var previousState: PostNodeState = .inactive
+    
+    private var geometryUpdater: GeometryUpdater {
+        didSet {
+            position = geometryUpdater.currGeometry.center
+            eulerAngles.y = geometryUpdater.currGeometry.orientation
+            contentNode.updateSize(CGSize(width: geometryUpdater.currGeometry.width,
+                                          height: geometryUpdater.currGeometry.height))
+           
+        }
+    }
+    private var geometryPublisher = PublishSubject<RectGeometry>()
+    struct GeometryUpdater {
+        var currGeometry: RectGeometry
+        var status: UpdaterStatus
+        enum UpdaterStatus { case stage1, stage2, confirmed }
+        fileprivate mutating func upgradeStatus() {
+            switch status {
+            case .stage1:
+                status = .stage2
+            case .stage2:
+                status = .confirmed
+            case .confirmed:
+                break
+            }
+        }
+    }
+    
+    init(_ info: RectInfo) {
+        contentNode = ContentNode(size: CGSize(width: info.geometry.width,
+                                               height: info.geometry.height))
+        geometryUpdater = GeometryUpdater(currGeometry: info.geometry, status: .stage1)
+        super.init()
+        
+        // set position
+        let anchor = info.anchorNode
+        anchor.addChildNode(self)
+        position = info.geometry.center
+        
+        // set orientation
+        eulerAngles.x = -.pi / 2
+        eulerAngles.y = info.geometry.orientation
+        
+        // set initial state
+        switch info.key.status {
+        case .inactive:
+            contentNode.deactivate()
+        case .new:
+            state = .prompt
+            contentNode.prompt()
+        case .used:
+            state = .active
+            contentNode.activate()
+            setContent(info.post!)
+        }
+        
+        
+        /// MARK:- Time to live
+        ttl.completeDriver.drive(onCompleted: {
+            self.removeFromParentNode()
+        }).disposed(by: disposeBag)
+        
+        
+        /// MARK:-  Geometry update
+        geometryPublisher.asObservable()
+            .observeOn(MainScheduler.instance)
+            .filter({ [geometryUpdater] _ in
+                return geometryUpdater.status != .confirmed
+            })
+            .do(onNext: { [ttl] _ in
+                ttl.increment()
+            })
+            .buffer(timeSpan: 20, count: 15, scheduler: MainScheduler.instance)
+            .filter{ $0.count != 0 }
+            .subscribe(onNext: { [weak self] updates in
+                if self == nil { return }
+                let newGeometry = RectGeometry.findMostPopular(updates) // consider putting this on a background thread
+                if newGeometry.IoU(with: self!.geometryUpdater.currGeometry) > RectGeometry.highIoUThreshold {
+                    self!.geometryUpdater.upgradeStatus()
+                }
+                self!.geometryUpdater.currGeometry = newGeometry
+            }).disposed(by: disposeBag)
+    }
+    
+    func setContent(_ image: UIImage) {
+        contentNode.content = image.convertToScene()
+        state = .active
+    }
+    
+    func updateGeometry(_ update: RectGeometry) { geometryPublisher.onNext(update) }
+   
+    // Set prompt screen to inform user to add / update
+    func prompt() { state = .prompt }
+    
+    // Cancel prompt screen
+    func optOutPrompt() { state = (previousState == .active) ? .active : .inactive }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}

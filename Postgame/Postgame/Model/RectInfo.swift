@@ -13,9 +13,16 @@ struct RectInfo {
     let geometry: RectGeometry
     let realImage: UIImage
     let anchorNode: SCNNode
+    var key: AWSKey
     
     var descriptor: [Double]?
     var post: UIImage?
+    
+    struct AWSKey {
+        let identifier: String?
+        let status: AWSKeyStatus
+        enum AWSKeyStatus { case new, used, inactive }
+    }
     
     init? (for observation: VNRectangleObservation, in sceneView: ARSCNView) {
     
@@ -134,7 +141,7 @@ struct RectInfo {
         
         geometry = RectGeometry(center: position, width: width, height: height, orientation: orientation)
         
-        // MARK:- Real Image
+        /// MARK:- Real Image
         guard let currFrame = sceneView.session.currentFrame else { return nil }
         let currImage = CIImage(cvPixelBuffer: currFrame.capturedImage)
         let convertedRect = convertFromCamera(observation.boundingBox, size: currImage.extent.size)
@@ -142,8 +149,11 @@ struct RectInfo {
         let croppedImage = currImage.cropped(to: convertedRect)
         realImage = resizeAndOrient(ciImage: croppedImage)!
         
-        return nil
+        
+        /// MARK:- initialize key to inactive
+        key = AWSKey(identifier: nil, status: .inactive)
     }
+    
     
 }
 

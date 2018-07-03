@@ -188,10 +188,6 @@ final class VerticalRectInfo {
         let croppedImage = currImage.cropped(to: convertedRect)
         
         self.realImage = resizeAndOrient(ciImage: croppedImage)!
-    
-        let iv = sceneView.subviews[0] as! UIImageView
-        iv.image = self.realImage
-        
     }
     
 }

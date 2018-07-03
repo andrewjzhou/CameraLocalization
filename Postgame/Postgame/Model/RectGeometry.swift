@@ -15,6 +15,10 @@ struct RectGeometry {
     let height: CGFloat
     let orientation: Float
     let projection: ProjectedRect
+    
+    // Thresholds
+    static let highIoUThreshold: Float = 0.5
+    static let lowIoUThreshold: Float = 0.2
 
     // Projecting self to 2D with no orientation for comparing purposes
     struct ProjectedRect {
@@ -60,7 +64,6 @@ struct RectGeometry {
     // If this is a variation of a known RectGeometry struct, then this is a candidate to update RectGeometry
     func isVariation(of that: RectGeometry) -> Bool {
         let oriThreshold: Float = 0.05
-        let iouThreshold: Float = 0.25 // lenient
         
         // check to see that the difference between orientation is low
         // if this check passes. assume they have the same orientation for later calculations (this methodology should be improved)
@@ -74,7 +77,7 @@ struct RectGeometry {
         
         // IoU check
         let iou = Float(areaInter / (self.projection.area + that.projection.area - areaInter))
-        if iou > iouThreshold { return true }
+        if iou > RectGeometry.lowIoUThreshold { return true }
         
         return false
     }
@@ -94,4 +97,25 @@ struct RectGeometry {
         return areaInter
     }
     
+    // Find the object that has the largest sum of IoU values with all other objects in the array
+    static func findMostPopular(_ array: [RectGeometry]) -> RectGeometry {
+        let count = array.count
+        
+        if count == 0 {
+            return RectGeometry(center: SCNVector3Zero, width: 0, height: 0, orientation: 0)
+        }
+        
+        var score = Array(repeating: 0, count: count)
+        for i in 0 ..< count {
+            for j in (i+1) ..< count {
+                if array[i].IoU(with: array[j]) > RectGeometry.highIoUThreshold {
+                    score[i] += 1
+                    score[j] += 1
+                }
+            }
+        }
+        let index = score.index(of: score.max()!)!
+        let winner = array[index]
+        return winner
+    }
 }
