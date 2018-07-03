@@ -134,7 +134,7 @@ final class PostNodeNew: SCNNode {
                 // no more updates needed if confirmed
                 return geometryUpdater.status != .confirmed
             })
-            .buffer(timeSpan: 5, count: 5, scheduler: MainScheduler.instance)
+            .buffer(timeSpan: 15, count: 10, scheduler: MainScheduler.instance)
             .filter{ $0.count != 0 }
             .subscribe(onNext: { [weak self] updates in
                 if self == nil { return }

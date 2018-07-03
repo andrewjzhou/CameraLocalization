@@ -47,15 +47,18 @@ extension ARSCNView {
     }
     
     func isPointOnPlane(_ point: CGPoint) -> Bool {
-        let results = self.hitTest(point, types: .existingPlaneUsingExtent)
+        let results = hitTest(point, types: .existingPlaneUsingExtent)
         return results.first != nil
     }
     
     func isPointOnPost(_ point: CGPoint) -> Bool {
-        let results = self.hitTest(point, options: [.backFaceCulling: true])
-        guard let first = results.first,
-            let postNode = first.node as? PostNodeNew else { return false }
-        return postNode.geometryUpdater.status == .confirmed
+        let results = hitTest(point, options: [.backFaceCulling: true])
+        for result in results {
+            guard let contentNode = result.node as? ContentNode,
+                let postNode = contentNode.parent as? PostNodeNew else { continue }
+            if postNode.geometryUpdater.status == .confirmed { return true }
+        }
+        return false
     }
 }
 
