@@ -244,7 +244,7 @@ extension ViewController {
         let _ =
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
-                .throttle(0.1, scheduler:  MainScheduler.instance)
+                .throttle(0.05, scheduler:  MainScheduler.instance)
                 .filter { _ in
                     return AWSCognitoUserPoolsSignInProvider.sharedInstance().isLoggedIn()
                 } // quick fix.
@@ -261,8 +261,9 @@ extension ViewController {
                 let center = sceneView.convertFromCamera(observation.center)
                 if !sceneView.isPointOnPlane(center) { return false }
                 
-                // check that rectangle does not on a confirmed rectangle
-                return !sceneView.isPointOnPost(center)
+                // check that point is not on a confirmed node
+                // if point is on a confirmed node, eliminate unconfirmed nodes found by the same hit-test
+                return !sceneView.isPointOnPost(center, eliminate: true)
                 
             })
             .filter({ [createButton, longPressIndicator, sceneView] (observation) in

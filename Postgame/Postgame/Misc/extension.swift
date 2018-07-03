@@ -51,14 +51,24 @@ extension ARSCNView {
         return results.first != nil
     }
     
-    func isPointOnPost(_ point: CGPoint) -> Bool {
+    // Check if point is on a confirmed post node.
+    // If eliminate is true, eliminate unconfirmed nodes if there is a confirmed node
+    func isPointOnConfirmed(_ point: CGPoint, eliminateRest: Bool) -> Bool {
         let results = hitTest(point, options: [.backFaceCulling: true])
+        var toEliminate = [PostNodeNew](), found = false
+  
         for result in results {
             guard let contentNode = result.node as? ContentNode,
                 let postNode = contentNode.parent as? PostNodeNew else { continue }
-            if postNode.geometryUpdater.status == .confirmed { return true }
+            
+            if postNode.geometryUpdater.status == .confirmed { found = true }
+            else { toEliminate.append(postNode) }
         }
-        return false
+        if eliminateRest == true {
+            for node in toEliminate { node.removeFromParentNode() }
+        }
+        
+        return found
     }
 }
 
