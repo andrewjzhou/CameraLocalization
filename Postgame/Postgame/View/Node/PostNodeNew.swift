@@ -115,14 +115,15 @@ final class PostNodeNew: SCNNode {
                                 username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
                                 image: nil)
         case .used:
-            state = .active
-            contentNode.activate()
+            state = .load
+            contentNode.load()
             downloadAndSetContent(info.key.identifier!)
             recorder = Recorder(key: info.key.identifier!,
                                 descriptor: info.descriptor!,
                                 username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
                                 image: nil)
         }
+
         
         
         /// MARK:- Time to live
