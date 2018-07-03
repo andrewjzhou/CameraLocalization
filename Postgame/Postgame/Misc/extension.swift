@@ -62,9 +62,9 @@ extension ARSCNView {
                 let postNode = contentNode.parent as? PostNodeNew else { continue }
             
             if postNode.geometryUpdater.status == .confirmed { found = true }
-            else { toEliminate.append(postNode) }
+            else if eliminateRest { toEliminate.append(postNode) }
         }
-        if eliminateRest == true {
+        if found == true {
             for node in toEliminate { node.removeFromParentNode() }
         }
         

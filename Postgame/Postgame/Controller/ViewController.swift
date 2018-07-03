@@ -263,7 +263,7 @@ extension ViewController {
                 
                 // check that point is not on a confirmed node
                 // if point is on a confirmed node, eliminate unconfirmed nodes found by the same hit-test
-                return !sceneView.isPointOnPost(center, eliminate: true)
+                return !sceneView.isPointOnConfirmed(center, eliminateRest: true)
                 
             })
             .filter({ [createButton, longPressIndicator, sceneView] (observation) in
