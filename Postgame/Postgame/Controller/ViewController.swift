@@ -285,7 +285,6 @@ extension ViewController {
         /// 3. Compute geometric information and descriptor for each vertical rectangle observered previously
         let geometryObservable =
             rectObservable.asObservable()
-                .debug("Get vertical rect info")
                 .map({ (observation) -> RectInfo? in
                     var info = RectInfo(for: observation, in: self.sceneView) // Compute geometric information
                     if let _ = info {
@@ -296,7 +295,7 @@ extension ViewController {
                 .filter({ (info) -> Bool in
                     guard let geometry = info?.geometry else { return false }
                     // check if info is just an update
-                    for child in info!.anchorNode.childNodes as! [PostNodeNew] {
+                    for child in info!.anchorNode.childNodes as! [PostNode] {
                         if geometry.isVariation(of: child.geometryUpdater.currGeometry) {
                             // update geometry and stop creating new post node
                             child.updateGeometry(geometry)
@@ -305,7 +304,6 @@ extension ViewController {
                     }
                     return true
                 })
-                .debug("Compute descriptor")
         
         /// 4. Compute and match descriptor
         let descriptorComputer = DescriptorComputer()
@@ -320,10 +318,13 @@ extension ViewController {
                     if match != nil {
                         info.key.status = .used
                         info.key.identifier = match!
-                    } else if self!.createButton.post != nil {
+                    } else if info.post != nil {
                         info.key.status = .new
                         guard let key = self!.getKey() else { return nil }
                         info.key.identifier = key
+                        
+                        let descriptorToCache = Descriptor(key: key, value: info.descriptor!)
+                        self!.descriptorCache.update(descriptorToCache)
                     } else {
                         info.key.status = .inactive
                     }
@@ -332,13 +333,12 @@ extension ViewController {
                 .filter { $0 != nil }
         
 
-
         /// 5. Generate PostNode
         let _ =
             infoObservable
                 .observeOn(MainScheduler.instance) // Return to main queue
                 .subscribe(onNext: { (info) in
-                    PostNodeNew(info!)
+                    let _ = PostNode(info!)
                 })
                 .disposed(by: disposeBag)
         

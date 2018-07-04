@@ -110,7 +110,7 @@ final class DescriptorCache {
         for (_, descriptor) in cache {
             let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
             
-            print("similarity: \(similarity)")
+            print("DescriptorCache: descriptor in cache : \(descriptor.key)")
             
             if similarity > threshold {
                 if bestMatchSimilarity == nil { // Found first best match

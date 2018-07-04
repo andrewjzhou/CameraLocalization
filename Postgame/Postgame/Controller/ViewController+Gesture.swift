@@ -80,7 +80,9 @@ extension ViewController {
             createButton.sendActions(for: .touchUpInside)
             
             // upload descriptor and post to S3
-            postNode.record()
+            if let recorder = postNode.recorder {
+                recorder.record()
+            }
             
         } else if postNode.state == .prompt && createButton.post == nil { // Cancelling
             
