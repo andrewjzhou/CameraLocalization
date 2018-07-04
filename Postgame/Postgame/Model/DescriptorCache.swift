@@ -17,56 +17,23 @@ final class DescriptorCache {
     // Beware of tradeoff between false postivie and false negative
     // Currently set low to limit duplicate errors (less false negative, more false positive)
     let threshold = 0.75
-    
-    private(set) var cache: [String : Descriptor] {
-        didSet{
-            // Update count
-            countSubject.onNext(cache.count)
-        }
-    }
-    
-    private(set) var geolocationService: GeolocationService
-    
     var lastLocation: (Double,Double)?
     
-    // Use countSubject to drive counter
-    private let countSubject = BehaviorSubject<Int>(value: 0)
+    private(set) var cache = [String : Descriptor]() {
+        didSet{ countSubject.onNext(cache.count) }
+    }
     
     // IndicatorButton in main View Controller uses counter to disploy number of posts nearby
-    private(set) var counter: Driver<Int>
+    private let countSubject = BehaviorSubject<Int>(value: 0)
+    private(set) lazy var counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0)
     
     // Every observered event downloads descriptor to cache
-    private let cacheRequestSubject = PublishSubject<(Double, Double)>()
+    private let queryPublisher = PublishSubject<(Double, Double)>()
     
-    init(_ geolocationService: GeolocationService) {
-        cache = [String : Descriptor]()
-    
-        counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0)
-        
-        self.geolocationService = geolocationService
-        
-        // Get the current user coordinate and filter
-        let userLocation = geolocationService.location.asObservable()
-        userLocation
-            .filter({ (location) -> Bool in
-                if self.lastLocation == nil {
-                    return true
-                } else if self.lastLocation! != location {
-                    return true
-                }
-                return false
-            })
-            .subscribe(onNext: { [weak self](location) in
-                if self == nil { return }
-                self!.lastLocation = location
-                
-                // Reload cache
-                self!.refresh()
-            })
-            .disposed(by: disposeBag)
-        
+    init() {
         // Download descriptors
-        cacheRequestSubject.asObservable()
+        queryPublisher.asObservable()
+            .throttle(2, scheduler: MainScheduler.instance)
             .map({ location -> [(Double,Double)] in
                 generateNeighborCoordinates(location)
             })
@@ -83,35 +50,37 @@ final class DescriptorCache {
             .disposed(by: disposeBag)
     }
     
-    // Append or update descriptor
-    func update(_ descriptor: Descriptor) {
-            cache.updateValue(descriptor, forKey: descriptor.key)
+    // Make new query using location
+    func query(_ location:(Double, Double)) {
+        if lastLocation != nil && lastLocation! == location { return }
+        
+        lastLocation = location
+        refresh()
     }
     
     // Reload cache
     func refresh() {
         if let location = self.lastLocation {
-            
             // Refresh cache. Remove descriptors that are not inside user region
              cache = cache.filter { $0.value.neighbors(location) }
             
             // Download nearby descriptors
-             cacheRequestSubject.onNext(location)
+             queryPublisher.onNext(location)
         }
     }
+    
+    // Append or update descriptor
+    func update(_ descriptor: Descriptor) { cache.updateValue(descriptor, forKey: descriptor.key) }
     
     
     // Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
     func findMatch(_ target: [Double]) -> String? {
-        print("finding best match")
-        var bestMatchKey: String? = nil
-        var bestMatchSimilarity: Double? = nil
+        var bestMatchKey: String? = nil, bestMatchSimilarity: Double? = nil
         
         for (_, descriptor) in cache {
             let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
-            
+
             print("DescriptorCache: descriptor in cache : \(descriptor.key)")
-            
             if similarity > threshold {
                 if bestMatchSimilarity == nil { // Found first best match
                     bestMatchKey = descriptor.key
@@ -123,9 +92,7 @@ final class DescriptorCache {
             }
         }
         
-        if bestMatchKey != nil {
-            print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)")
-        }
+        if bestMatchKey != nil { print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)") }
         
         return bestMatchKey
     }

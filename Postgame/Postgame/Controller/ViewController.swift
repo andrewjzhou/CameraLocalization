@@ -22,7 +22,8 @@ import ChameleonFramework
 
 class ViewController: UIViewController {
     let disposeBag = DisposeBag()
-    fileprivate let trackingConfiguration: ARWorldTrackingConfiguration = {
+    
+    let trackingConfiguration: ARWorldTrackingConfiguration = {
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.vertical]
         return config
@@ -32,7 +33,7 @@ class ViewController: UIViewController {
     let geolocationService = GeolocationService.instance
     var lastLocation: (Double, Double)?
     
-    lazy var descriptorCache = DescriptorCache(geolocationService)
+    lazy var descriptorCache = DescriptorCache()
     var imageCache = NSCache<NSString, UIImage>()
 
     // UI Elements
@@ -72,14 +73,18 @@ class ViewController: UIViewController {
         setupPostNodeInteractions()
         
         handleWakeFromBackground()
+        
+        handleGeolocationService()
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
-        
+    }
+    
+    func handleGeolocationService() {
         geolocationService.location.drive(onNext: { [weak self] (coordinates) in
             if self == nil { return }
             self!.lastLocation = coordinates
-        })
-        
+            self!.descriptorCache.query(coordinates)
+        }).disposed(by: disposeBag)
     }
     
     func handleWakeFromBackground() {
