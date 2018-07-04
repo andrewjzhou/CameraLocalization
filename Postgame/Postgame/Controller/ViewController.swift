@@ -33,6 +33,7 @@ class ViewController: UIViewController {
     var lastLocation: (Double, Double)?
     
     lazy var descriptorCache = DescriptorCache(geolocationService)
+    var imageCache = NSCache<NSString, UIImage>()
 
     // UI Elements
     let sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
@@ -311,12 +312,6 @@ extension ViewController {
                 .flatMap{ PostNode($0!).confirmObservable }
                 .filter{ $0 != nil }
         
-        
-//                .debug("Confirmation: confirmObservable")
-//                .drive(onCompleted: {
-//                    print("Confirmation: listened")
-//                })
-//
         /// 5. Render
         let descriptorComputer = DescriptorComputer()
         let _ =
@@ -327,75 +322,22 @@ extension ViewController {
             .subscribe(onNext: { [weak self] (node) in
                 if self == nil { return }
                 let match = self!.descriptorCache.findMatch(node!.recorder.descriptor!)
-                if match != nil {
+                if match != nil { // Post already exists
                     node!.recorder.key = match!
-                    node!.downloadAndSetContent(match!)
-                } else if self!.createButton.post != nil {
+                    if let image = self!.imageCache.object(forKey: match! as NSString) {
+                        node!.setContent(image)
+                        DynamoDBService.sharedInstance.incrementViews(match!)
+                    } else {
+                        node!.downloadAndSetContent(match!, cache: self!.imageCache)
+                    }
+                } else if self!.createButton.post != nil { // Post to be added
                     node!.recorder.key = self!.getKey()
                     node!.prompt()
-                } else {
+                } else { // Placeholder
                     node!.deactivate()
                 }
             })
             .disposed(by: disposeBag)
-//            .map { [weak self](node) -> RectInfo? in
-//                if self == nil { return nil }
-//                var descriptor = no
-//                let match = self!.descriptorCache.findMatch(info.descriptor!)
-//                if match != nil {
-//                    info.key.status = .used
-//                    info.key.identifier = match!
-//                } else if info.post != nil {
-//                    info.key.status = .new
-//                    guard let key = self!.getKey() else { return nil }
-//                    info.key.identifier = key
-//
-//                    let descriptorToCache = Descriptor(key: key, value: info.descriptor!)
-//                    self!.descriptorCache.update(descriptorToCache)
-//                } else {
-//                    info.key.status = .inactive
-//                }
-//                return info
-//        }
-
-        
-        
-        /// 4. Compute and match descriptor
-//        let descriptorComputer = DescriptorComputer()
-//        let infoObservable =
-//            geometryObservable
-//                .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
-//                .filter { $0 != nil }
-//                .map { [weak self](info) -> RectInfo? in
-//                    if self == nil { return nil }
-//                    var info = info!
-//                    let match = self!.descriptorCache.findMatch(info.descriptor!)
-//                    if match != nil {
-//                        info.key.status = .used
-//                        info.key.identifier = match!
-//                    } else if info.post != nil {
-//                        info.key.status = .new
-//                        guard let key = self!.getKey() else { return nil }
-//                        info.key.identifier = key
-//
-//                        let descriptorToCache = Descriptor(key: key, value: info.descriptor!)
-//                        self!.descriptorCache.update(descriptorToCache)
-//                    } else {
-//                        info.key.status = .inactive
-//                    }
-//                    return info
-//                }
-//                .filter { $0 != nil }
-        
-
-        /// 5. Generate PostNode
-//        let _ =
-//            infoObservable
-//                .observeOn(MainScheduler.instance) // Return to main queue
-//                .subscribe(onNext: { (info) in
-//                    let _ = PostNode(info!)
-//                })
-//                .disposed(by: disposeBag)
         
     }
     

@@ -110,6 +110,7 @@ final class PostNode: SCNNode {
         super.init()
         addChildNode(contentNode)
         isHidden = true // hide upon initalization, unhide when geometry receives enough updates
+        contentNode.deactivate()
         
         // set position
         let anchor = info.anchorNode
@@ -119,28 +120,6 @@ final class PostNode: SCNNode {
         // set orientation
         eulerAngles.x = -.pi / 2
         eulerAngles.y = info.geometry.orientation
-        
-        // set initial state and recorder
-        contentNode.deactivate()
-//        switch info.key.status {
-//        case .inactive:
-//            contentNode.deactivate()
-//        case .new:
-//            state = .prompt
-//            contentNode.prompt()
-//            recorder = Recorder(key: info.key.identifier!,
-//                                descriptor: info.descriptor!,
-//                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
-//                                image: nil)
-//        case .used:
-//            state = .load
-//            contentNode.load()
-//            downloadAndSetContent(info.key.identifier!)
-//            recorder = Recorder(key: info.key.identifier!,
-//                                descriptor: info.descriptor!,
-//                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
-//                                image: nil)
-//        }
         
         /// MARK:-  Geometry update
         let geometryObservable = geometryPublisher.asObservable().observeOn(MainScheduler.instance).share()
@@ -187,7 +166,7 @@ final class PostNode: SCNNode {
         recorder.post = image
     }
     
-    func downloadAndSetContent(_ key: String) {
+    func downloadAndSetContent(_ key: String, cache: NSCache<NSString, UIImage>) {
         state = .load
         // Download post and set content
         let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
@@ -195,6 +174,7 @@ final class PostNode: SCNNode {
             .subscribe(onNext: { [weak self] (image) in
                 if self == nil { return }
                 self!.setContent(image)
+                cache.setObject(image, forKey: key as NSString)
                 
                 // increment
                 // This is getting called multiple times before picture actually gets showned

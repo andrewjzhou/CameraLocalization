@@ -79,6 +79,9 @@ extension ViewController {
             // Add created image to current post node
             postNode.setContent(createButton.post!)
             
+            // cache image
+            imageCache.setObject(createButton.post!, forKey: postNode.recorder.key! as NSString)
+            
             // Exist posting mode
             createButton.sendActions(for: .touchUpInside)
             
