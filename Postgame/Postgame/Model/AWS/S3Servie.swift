@@ -79,21 +79,23 @@ struct S3Service {
             })
         }
         
-        transferUtility.uploadData(data,
-                                   key: key,
-                                   contentType: "text/plain",
-                                   expression: expression,
-                                   completionHandler: completionHandler).continueWith {
-                                    (task) -> AnyObject! in
-                                    if let error = task.error {
-                                        print("Error: \(error.localizedDescription)")
-                                    }
-                                    
-                                    if let _ = task.result {
-                                        // Do something with uploadTask.
+        DispatchQueue.global(qos: .background).async {
+            self.transferUtility.uploadData(data,
+                                       key: key,
+                                       contentType: "text/plain",
+                                       expression: expression,
+                                       completionHandler: completionHandler).continueWith {
+                                        (task) -> AnyObject! in
+                                        if let error = task.error {
+                                            print("Error: \(error.localizedDescription)")
+                                        }
                                         
-                                    }
-                                    return nil;
+                                        if let _ = task.result {
+                                            // Do something with uploadTask.
+                                            
+                                        }
+                                        return nil
+            }
         }
         
     }
@@ -104,8 +106,7 @@ struct S3Service {
     func downloadDescriptor(_ key: String) -> Observable<Descriptor?> {
         let prefix = "public/descriptor/"
         let downloadKey = prefix + key
-        return Observable.create({ (observer) in
-            print("downloadDescriptor() using key: \(key) ")
+        return Observable.create({ [transferUtility] (observer) in
             
             // Track progress
             let expression = AWSS3TransferUtilityDownloadExpression()
@@ -136,20 +137,22 @@ struct S3Service {
             }
             
             // Download task
-            self.transferUtility.downloadData(
-                forKey: downloadKey,
-                expression: expression,
-                completionHandler: completionHandler
-                ).continueWith {
-                    (task) -> AnyObject! in if let error = task.error {
-                        print("Error: \(error.localizedDescription)")
-                    }
-                    
-                    if let _ = task.result {
-                        // Do something with downloadTask.
+            DispatchQueue.global(qos: .userInitiated).async {
+                transferUtility.downloadData(
+                    forKey: downloadKey,
+                    expression: expression,
+                    completionHandler: completionHandler
+                    ).continueWith {
+                        (task) -> AnyObject! in if let error = task.error {
+                            print("Error: \(error.localizedDescription)")
+                        }
                         
-                    }
-                    return nil
+                        if let _ = task.result {
+                            // Do something with downloadTask.
+                            
+                        }
+                        return nil
+                }
             }
             
             return Disposables.create()
@@ -163,7 +166,7 @@ struct S3Service {
     func downloadPost(_ key: String) -> Observable<UIImage> {
         let prefix = "public/post/"
         let downloadKey = prefix + key
-        return Observable.create({ (observer) in
+        return Observable.create({ [transferUtility] (observer) in
             // Track progress
             let expression = AWSS3TransferUtilityDownloadExpression()
             expression.progressBlock = {(task, progress) in DispatchQueue.main.async(execute: {
@@ -194,21 +197,22 @@ struct S3Service {
             }
             
             // Download task
-            let transferUtility = AWSS3TransferUtility.default()
-            transferUtility.downloadData(
-                forKey: downloadKey,
-                expression: expression,
-                completionHandler: completionHandler
-                ).continueWith {
-                    (task) -> AnyObject! in if let error = task.error {
-                        print("Error: \(error.localizedDescription)")
-                    }
-                    
-                    if let _ = task.result {
-                        // Do something with downloadTask.
+            DispatchQueue.global(qos: .userInitiated).async {
+                transferUtility.downloadData(
+                    forKey: downloadKey,
+                    expression: expression,
+                    completionHandler: completionHandler
+                    ).continueWith {
+                        (task) -> AnyObject! in if let error = task.error {
+                            print("Error: \(error.localizedDescription)")
+                        }
                         
-                    }
-                    return nil
+                        if let _ = task.result {
+                            // Do something with downloadTask.
+                            
+                        }
+                        return nil
+                }
             }
             
             return Disposables.create()

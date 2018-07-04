@@ -40,7 +40,6 @@ final class DescriptorCache {
             .flatMap { Observable.from($0) }
             .map { converToString($0) } // String representation of location coordinates
             .flatMap { DynamoDBService.sharedInstance.locationQuery($0)} // Download keys from dynamoDB
-            .flatMap { Observable.from($0) }
             .flatMap { S3Service.sharedInstance.downloadDescriptor($0) } // Download descriptors from S3
             .filter {$0 != nil}
             .subscribe(onNext: { [weak self] (descriptor) in

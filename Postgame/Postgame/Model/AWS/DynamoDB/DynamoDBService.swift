@@ -40,45 +40,43 @@ struct DynamoDBService {
         }
     }
     
-    func locationQuery(_ locationString: String) -> Observable<[String]> {
-        print("Querying using \(locationString)")
-        let keyPublisher = PublishSubject<[String]>()
-        
-        // 1) Configure the query
-        let queryExpression = AWSDynamoDBQueryExpression()
-        queryExpression.indexName = "location"
-        queryExpression.keyConditionExpression = "#_location = :_location"
-        
-        queryExpression.expressionAttributeNames = [
-            "#_location": "location",
-        ]
-        queryExpression.expressionAttributeValues = [
-            ":_location": locationString,
-        ]
-        
-
-        // 2) Make the query
-        dynamoDbObjectMapper.query(Posts.self, expression: queryExpression) { (output: AWSDynamoDBPaginatedOutput?, error: Error?) in
-            if error != nil {
-                print("The request failed. Error: \(String(describing: error))")
-                keyPublisher.onCompleted()
-            }
+    func locationQuery(_ locationString: String) -> Observable<String> {
+        return Observable.create({ [dynamoDbObjectMapper] observer in
+            // 1) Configure the query
+            let queryExpression = AWSDynamoDBQueryExpression()
+            queryExpression.indexName = "location"
+            queryExpression.keyConditionExpression = "#_location = :_location"
             
-            if output != nil {
-                var keySet = [String]()
-                for item in output!.items {
-                    let post = item as? Posts
-                    if let key = post?._key {
-                        keySet.append(key)
+            queryExpression.expressionAttributeNames = [
+                "#_location": "location",
+            ]
+            queryExpression.expressionAttributeValues = [
+                ":_location": locationString,
+            ]
+            
+            
+            // 2) Make the query
+            DispatchQueue.global(qos: .userInitiated).async {
+                dynamoDbObjectMapper.query(Posts.self, expression: queryExpression) { (output: AWSDynamoDBPaginatedOutput?, error: Error?) in
+                    if error != nil {
+                        print("The request failed. Error: \(String(describing: error))")
+                        observer.onCompleted()
                     }
+                    
+                    if output != nil {
+                        for item in output!.items {
+                            let post = item as? Posts
+                            if let key = post?._key {
+                                observer.onNext(key)
+                            }
+                        }
+                    }
+                    observer.onCompleted()
+                    
                 }
-                keyPublisher.onNext(keySet)
-                keyPublisher.onCompleted()
-            } else {
-                keyPublisher.onCompleted()
             }
-        }
-        return keyPublisher.asObservable()
+            return Disposables.create()
+        })
     }
     
     func usernameQuery(_ username: String) -> Observable<[Posts]> {
