@@ -19,11 +19,13 @@ final class PostNode: SCNNode {
     private var contentNode: ContentNode
     
     // state changes. control display
-    enum PostNodeState { case active, inactive, load, prompt }
-    private(set) var state: PostNodeState = .inactive {
+    enum PostNodeState { case initialize, active, inactive, load, prompt }
+    private(set) var state: PostNodeState = .initialize {
         willSet { previousState = state }
         didSet {
             switch state {
+            case .initialize:
+                isHidden = true
             case .active:
                 contentNode.activate()
             case .inactive:
@@ -33,9 +35,10 @@ final class PostNode: SCNNode {
             case .prompt:
                 contentNode.prompt()
             }
+            if state != .initialize { isHidden = false }
         }
     }
-    private var previousState: PostNodeState = .inactive
+    private(set) var previousState: PostNodeState = .initialize
     
     // geometry updates
     private(set) var geometryUpdater: GeometryUpdater {
@@ -63,21 +66,23 @@ final class PostNode: SCNNode {
             }
         }
     }
+    private(set) var confirmObservable: Observable<PostNode?> // notify view controller when geometry is confirmed
     
     // recorder: record updates and upload to AWS
-    private(set) var recorder: Recorder?
+    var recorder: Recorder
     struct Recorder {
-        let key: String
-        let descriptor: [Double]
         let username: String
-        var image: UIImage?
+        let realImage: UIImage
+        var key: String?
+        var descriptor: [Double]?
+        var post: UIImage?
         
         func record() {
-            guard let image = image else { return }
+            guard let key = key, let post = post, let descriptor = descriptor else { return }
             // S3
             let s3 = S3Service.sharedInstance
             s3.uploadDescriptor(descriptor, key: key)
-            s3.uploadPost(image, key: key)
+            s3.uploadPost(post, key: key)
             // DynamoDB
             let db = DynamoDBService.sharedInstance
             db.create(key: key, username: username)
@@ -87,6 +92,17 @@ final class PostNode: SCNNode {
     init(_ info: RectInfo) {
         // initialize Geometry Updater
         geometryUpdater = GeometryUpdater(currGeometry: info.geometry, status: .stage1)
+        
+        // set confirm observable
+        let confirmPublisher = PublishSubject<PostNode?>()
+        confirmObservable = confirmPublisher.asObservable()
+        
+        // initialize recorder
+        let pool = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool()
+        let username = pool.currentUser()!.username!
+        recorder = Recorder(username: username,
+                            realImage: info.realImage,
+                            key: nil, descriptor: nil, post: nil)
         
         // set size and initialize Content Node
         contentNode = ContentNode(size: CGSize(width: info.geometry.width,
@@ -105,25 +121,26 @@ final class PostNode: SCNNode {
         eulerAngles.y = info.geometry.orientation
         
         // set initial state and recorder
-        switch info.key.status {
-        case .inactive:
-            contentNode.deactivate()
-        case .new:
-            state = .prompt
-            contentNode.prompt()
-            recorder = Recorder(key: info.key.identifier!,
-                                descriptor: info.descriptor!,
-                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
-                                image: nil)
-        case .used:
-            state = .load
-            contentNode.load()
-            downloadAndSetContent(info.key.identifier!)
-            recorder = Recorder(key: info.key.identifier!,
-                                descriptor: info.descriptor!,
-                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
-                                image: nil)
-        }
+        contentNode.deactivate()
+//        switch info.key.status {
+//        case .inactive:
+//            contentNode.deactivate()
+//        case .new:
+//            state = .prompt
+//            contentNode.prompt()
+//            recorder = Recorder(key: info.key.identifier!,
+//                                descriptor: info.descriptor!,
+//                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
+//                                image: nil)
+//        case .used:
+//            state = .load
+//            contentNode.load()
+//            downloadAndSetContent(info.key.identifier!)
+//            recorder = Recorder(key: info.key.identifier!,
+//                                descriptor: info.descriptor!,
+//                                username: AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!,
+//                                image: nil)
+//        }
         
         /// MARK:-  Geometry update
         let geometryObservable = geometryPublisher.asObservable().observeOn(MainScheduler.instance).share()
@@ -141,6 +158,12 @@ final class PostNode: SCNNode {
                     self!.geometryUpdater.upgradeStatus()
                 }
                 self!.geometryUpdater.currGeometry = newGeometry
+                // check if confirmed
+                if self!.geometryUpdater.status == .confirmed {
+                    confirmPublisher.onNext(self!)
+                    confirmPublisher.onCompleted()
+                    
+                }
                 
             }).disposed(by: disposeBag)
 
@@ -161,10 +184,11 @@ final class PostNode: SCNNode {
     func setContent(_ image: UIImage) {
         contentNode.content = image.convertToScene()
         state = .active
-        if var recorder = recorder { recorder.image = image }
+        recorder.post = image
     }
     
     func downloadAndSetContent(_ key: String) {
+        state = .load
         // Download post and set content
         let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
         postDownloadObservable.observeOn(MainScheduler.instance)
@@ -187,6 +211,9 @@ final class PostNode: SCNNode {
     
     // Cancel prompt screen
     func optOutPrompt() { state = (previousState == .active) ? .active : .inactive }
+    
+    // deactivate
+    func deactivate() { state = .inactive }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

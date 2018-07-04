@@ -13,16 +13,10 @@ struct RectInfo {
     let geometry: RectGeometry
     let realImage: UIImage
     let anchorNode: SCNNode
-    var key: AWSKey
     
     var descriptor: [Double]?
     var post: UIImage?
     
-    struct AWSKey {
-        var identifier: String?
-        var status: AWSKeyStatus
-        enum AWSKeyStatus { case new, used, inactive }
-    }
     
     init? (for observation: VNRectangleObservation, in sceneView: ARSCNView) {
     
@@ -148,10 +142,6 @@ struct RectInfo {
 //        let rect = expandRect(convertedRect, extent: currImage.extent)
         let croppedImage = currImage.cropped(to: convertedRect)
         realImage = resizeAndOrient(ciImage: croppedImage)!
-        
-        
-        /// MARK:- initialize key to inactive
-        key = AWSKey(identifier: nil, status: .inactive)
     }
     
     

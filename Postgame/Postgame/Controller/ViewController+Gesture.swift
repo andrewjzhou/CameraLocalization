@@ -55,24 +55,27 @@ extension ViewController {
     
     // Use tap to interact with post nodes
     func setupPostNodeInteractions() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        let tap = UITapGestureRecognizer(target: self,
+                                         action: #selector(handleTap(sender:)))
         sceneView.addGestureRecognizer(tap)
     }
     
     @objc func handleTap (sender: UILongPressGestureRecognizer) {
         // Select post node that is tapped
         let point = sender.location(in: sceneView)
-        print("Tapped location: \(point)")
         let scnHitTestResults = sceneView.hitTest(point, options: nil)
         guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
         
-        // testing
-        print("PostNode touched. State: \(postNode.state)")
-        
         
         if postNode.state == .prompt && createButton.post != nil { // Adding / Updating
-            
             // Do NOT switch function orders inside scope without purpose
+            // Update cache if necessary
+            if postNode.previousState == .initialize {
+                let descriptorToCache = Descriptor(key: postNode.recorder.key!,
+                                                   value: postNode.recorder.descriptor!)
+                descriptorCache.update(descriptorToCache)
+            }
+            
             // Add created image to current post node
             postNode.setContent(createButton.post!)
             
@@ -80,17 +83,13 @@ extension ViewController {
             createButton.sendActions(for: .touchUpInside)
             
             // upload descriptor and post to S3
-            if let recorder = postNode.recorder {
-                recorder.record()
-            }
+            postNode.recorder.record()
             
         } else if postNode.state == .prompt && createButton.post == nil { // Cancelling
-            
             // Exit prompt state
             postNode.optOutPrompt()
             
         } else if postNode.state == .active && createButton.post != nil { // Choosing
-            
             // Enter prompt state
             postNode.prompt()
             

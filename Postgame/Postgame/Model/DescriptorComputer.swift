@@ -24,10 +24,10 @@ final class DescriptorComputer {
     
     init() {}
     
-    func compute(info: RectInfo) -> Observable<RectInfo?> {
-        var info = info
-        let orientation = CGImagePropertyOrientation(rawValue: UInt32(info.realImage.imageOrientation.rawValue))
-        guard let ciImage = CIImage(image: info.realImage) else { fatalError("Unable to create \(CIImage.self) from \(info.realImage).") }
+    func compute(node: PostNode) -> Observable<PostNode?> {
+        let realImage = node.recorder.realImage
+        let orientation = CGImagePropertyOrientation(rawValue: UInt32(realImage.imageOrientation.rawValue))
+        guard let ciImage = CIImage(image: realImage) else { fatalError("Unable to create \(CIImage.self) from \(realImage).") }
     
         return Observable.create({ observer in
      
@@ -50,9 +50,9 @@ final class DescriptorComputer {
                     return
                 }
                 
-                info.descriptor = descriptor
+                node.recorder.descriptor = descriptor
                 
-                observer.onNext(info)
+                observer.onNext(node)
                 observer.onCompleted()
                 
             })
@@ -62,7 +62,6 @@ final class DescriptorComputer {
             // Perform request
             let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation!)
             DispatchQueue.global(qos: .userInteractive).async {
-                print("DescriptorComputer: 5")
                 try? handler.perform([request])
             }
             return Disposables.create()

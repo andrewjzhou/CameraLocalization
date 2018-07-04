@@ -48,9 +48,9 @@ final class TTL {
     // create and subscribe to timer. send complete signal when timer reaches 0.
     // Note: defer timter until after the object that owns TTL initiates?
     private func setTimer(_ count: Int) -> Disposable {
-        return createTimer(count).subscribe(onNext: { (number) in
+        return createTimer(count).subscribe(onNext: { [completePublisher](number) in
             if number == 0 {
-                self.completePublisher.onCompleted()
+                completePublisher.onCompleted()
             }
         })
     }

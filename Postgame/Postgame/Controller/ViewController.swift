@@ -285,10 +285,10 @@ extension ViewController {
         /// 3. Compute geometric information and descriptor for each vertical rectangle observered previously
         let geometryObservable =
             rectObservable.asObservable()
-                .map({ (observation) -> RectInfo? in
-                    var info = RectInfo(for: observation, in: self.sceneView) // Compute geometric information
+                .map({ [createButton, sceneView] (observation) -> RectInfo? in
+                    var info = RectInfo(for: observation, in: sceneView) // Compute geometric information
                     if let _ = info {
-                        info!.post = self.createButton.post
+                        info!.post = createButton.post
                     }
                     return info
                 })
@@ -305,42 +305,97 @@ extension ViewController {
                     return true
                 })
         
-        /// 4. Compute and match descriptor
+        /// 4. Generate Post Node
+        let nodeObservable =
+            geometryObservable.observeOn(MainScheduler.instance)
+                .flatMap{ PostNode($0!).confirmObservable }
+                .filter{ $0 != nil }
+        
+        
+//                .debug("Confirmation: confirmObservable")
+//                .drive(onCompleted: {
+//                    print("Confirmation: listened")
+//                })
+//
+        /// 5. Render
         let descriptorComputer = DescriptorComputer()
-        let infoObservable =
-            geometryObservable
-                .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
-                .filter { $0 != nil }
-                .map { [weak self](info) -> RectInfo? in
-                    if self == nil { return nil }
-                    var info = info!
-                    let match = self!.descriptorCache.findMatch(info.descriptor!)
-                    if match != nil {
-                        info.key.status = .used
-                        info.key.identifier = match!
-                    } else if info.post != nil {
-                        info.key.status = .new
-                        guard let key = self!.getKey() else { return nil }
-                        info.key.identifier = key
-                        
-                        let descriptorToCache = Descriptor(key: key, value: info.descriptor!)
-                        self!.descriptorCache.update(descriptorToCache)
-                    } else {
-                        info.key.status = .inactive
-                    }
-                    return info
+        let _ =
+        nodeObservable
+            .flatMap { descriptorComputer.compute(node: $0!) }
+            .filter{ $0 != nil }
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (node) in
+                if self == nil { return }
+                let match = self!.descriptorCache.findMatch(node!.recorder.descriptor!)
+                if match != nil {
+                    node!.recorder.key = match!
+                    node!.downloadAndSetContent(match!)
+                } else if self!.createButton.post != nil {
+                    node!.recorder.key = self!.getKey()
+                    node!.prompt()
+                } else {
+                    node!.deactivate()
                 }
-                .filter { $0 != nil }
+            })
+            .disposed(by: disposeBag)
+//            .map { [weak self](node) -> RectInfo? in
+//                if self == nil { return nil }
+//                var descriptor = no
+//                let match = self!.descriptorCache.findMatch(info.descriptor!)
+//                if match != nil {
+//                    info.key.status = .used
+//                    info.key.identifier = match!
+//                } else if info.post != nil {
+//                    info.key.status = .new
+//                    guard let key = self!.getKey() else { return nil }
+//                    info.key.identifier = key
+//
+//                    let descriptorToCache = Descriptor(key: key, value: info.descriptor!)
+//                    self!.descriptorCache.update(descriptorToCache)
+//                } else {
+//                    info.key.status = .inactive
+//                }
+//                return info
+//        }
+
+        
+        
+        /// 4. Compute and match descriptor
+//        let descriptorComputer = DescriptorComputer()
+//        let infoObservable =
+//            geometryObservable
+//                .flatMap { descriptorComputer.compute(info: $0!) } // Compute descriptor
+//                .filter { $0 != nil }
+//                .map { [weak self](info) -> RectInfo? in
+//                    if self == nil { return nil }
+//                    var info = info!
+//                    let match = self!.descriptorCache.findMatch(info.descriptor!)
+//                    if match != nil {
+//                        info.key.status = .used
+//                        info.key.identifier = match!
+//                    } else if info.post != nil {
+//                        info.key.status = .new
+//                        guard let key = self!.getKey() else { return nil }
+//                        info.key.identifier = key
+//
+//                        let descriptorToCache = Descriptor(key: key, value: info.descriptor!)
+//                        self!.descriptorCache.update(descriptorToCache)
+//                    } else {
+//                        info.key.status = .inactive
+//                    }
+//                    return info
+//                }
+//                .filter { $0 != nil }
         
 
         /// 5. Generate PostNode
-        let _ =
-            infoObservable
-                .observeOn(MainScheduler.instance) // Return to main queue
-                .subscribe(onNext: { (info) in
-                    let _ = PostNode(info!)
-                })
-                .disposed(by: disposeBag)
+//        let _ =
+//            infoObservable
+//                .observeOn(MainScheduler.instance) // Return to main queue
+//                .subscribe(onNext: { (info) in
+//                    let _ = PostNode(info!)
+//                })
+//                .disposed(by: disposeBag)
         
     }
     
