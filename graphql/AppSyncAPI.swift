@@ -5,8 +5,8 @@ import AWSAppSync
 public struct CreatePostInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID, location: LocationInput, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String) {
-    graphQLMap = ["id": id, "location": location, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor]
+  public init(id: GraphQLID, location: LocationInput, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, image: S3ObjectInput) {
+    graphQLMap = ["id": id, "location": location, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image]
   }
 
   public var id: GraphQLID {
@@ -71,6 +71,15 @@ public struct CreatePostInput: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "descriptor")
     }
   }
+
+  public var image: S3ObjectInput {
+    get {
+      return graphQLMap["image"] as! S3ObjectInput
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "image")
+    }
+  }
 }
 
 public struct LocationInput: GraphQLMapConvertible {
@@ -122,6 +131,50 @@ public struct LocationInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "verAcc")
+    }
+  }
+}
+
+public struct S3ObjectInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(bucket: String, key: String, region: String, content: Optional<String?> = nil) {
+    graphQLMap = ["bucket": bucket, "key": key, "region": region, "content": content]
+  }
+
+  public var bucket: String {
+    get {
+      return graphQLMap["bucket"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "bucket")
+    }
+  }
+
+  public var key: String {
+    get {
+      return graphQLMap["key"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "key")
+    }
+  }
+
+  public var region: String {
+    get {
+      return graphQLMap["region"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "region")
+    }
+  }
+
+  public var content: Optional<String?> {
+    get {
+      return graphQLMap["content"] as! Optional<String?>
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "content")
     }
   }
 }
@@ -207,7 +260,9 @@ public struct DeletePostInput: GraphQLMapConvertible {
 
 public final class GetPostQuery: GraphQLQuery {
   public static let operationString =
-    "query GetPost($id: ID!) {\n  getPost(id: $id) {\n    __typename\n    id\n    location {\n      __typename\n      lat\n      long\n      altitude\n      verAcc\n      horAcc\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n  }\n}"
+    "query GetPost($id: ID!) {\n  getPost(id: $id) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString) }
 
   public var id: GraphQLID
 
@@ -346,6 +401,7 @@ public final class GetPostQuery: GraphQLQuery {
 
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("long", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
@@ -416,6 +472,28 @@ public final class GetPostQuery: GraphQLQuery {
             snapshot.updateValue(newValue, forKey: "horAcc")
           }
         }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
       }
     }
   }
@@ -423,7 +501,9 @@ public final class GetPostQuery: GraphQLQuery {
 
 public final class CreatePostMutation: GraphQLMutation {
   public static let operationString =
-    "mutation createPost($input: CreatePostInput!) {\n  createPost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      lat\n      long\n      altitude\n      verAcc\n      horAcc\n    }\n    active\n    timestamp\n    username\n  }\n}"
+    "mutation createPost($input: CreatePostInput!) {\n  createPost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString) }
 
   public var input: CreatePostInput
 
@@ -542,6 +622,7 @@ public final class CreatePostMutation: GraphQLMutation {
 
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("long", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
@@ -612,6 +693,28 @@ public final class CreatePostMutation: GraphQLMutation {
             snapshot.updateValue(newValue, forKey: "horAcc")
           }
         }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
       }
     }
   }
@@ -619,7 +722,9 @@ public final class CreatePostMutation: GraphQLMutation {
 
 public final class UpdatePostMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdatePost($input: UpdatePostInput!) {\n  updatePost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      lat\n      long\n      altitude\n      verAcc\n      horAcc\n    }\n    active\n    timestamp\n    username\n  }\n}"
+    "mutation UpdatePost($input: UpdatePostInput!) {\n  updatePost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString) }
 
   public var input: UpdatePostInput
 
@@ -738,6 +843,7 @@ public final class UpdatePostMutation: GraphQLMutation {
 
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("long", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
@@ -808,6 +914,28 @@ public final class UpdatePostMutation: GraphQLMutation {
             snapshot.updateValue(newValue, forKey: "horAcc")
           }
         }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
       }
     }
   }
@@ -815,7 +943,9 @@ public final class UpdatePostMutation: GraphQLMutation {
 
 public final class DeletePostMutation: GraphQLMutation {
   public static let operationString =
-    "mutation DeletePost($input: DeletePostInput!) {\n  deletePost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      lat\n      long\n      altitude\n      verAcc\n      horAcc\n    }\n    active\n    timestamp\n    username\n  }\n}"
+    "mutation DeletePost($input: DeletePostInput!) {\n  deletePost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString) }
 
   public var input: DeletePostInput
 
@@ -934,6 +1064,7 @@ public final class DeletePostMutation: GraphQLMutation {
 
         public static let selections: [GraphQLSelection] = [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("long", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
@@ -1004,7 +1135,109 @@ public final class DeletePostMutation: GraphQLMutation {
             snapshot.updateValue(newValue, forKey: "horAcc")
           }
         }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
       }
+    }
+  }
+}
+
+public struct Location: GraphQLFragment {
+  public static let fragmentString =
+    "fragment Location on Location {\n  __typename\n  lat\n  long\n  altitude\n  verAcc\n  horAcc\n}"
+
+  public static let possibleTypes = ["Location"]
+
+  public static let selections: [GraphQLSelection] = [
+    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+    GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
+    GraphQLField("long", type: .nonNull(.scalar(Double.self))),
+    GraphQLField("altitude", type: .scalar(Double.self)),
+    GraphQLField("verAcc", type: .scalar(Double.self)),
+    GraphQLField("horAcc", type: .scalar(Double.self)),
+  ]
+
+  public var snapshot: Snapshot
+
+  public init(snapshot: Snapshot) {
+    self.snapshot = snapshot
+  }
+
+  public init(lat: Double, long: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+    self.init(snapshot: ["__typename": "Location", "lat": lat, "long": long, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+  }
+
+  public var __typename: String {
+    get {
+      return snapshot["__typename"]! as! String
+    }
+    set {
+      snapshot.updateValue(newValue, forKey: "__typename")
+    }
+  }
+
+  public var lat: Double {
+    get {
+      return snapshot["lat"]! as! Double
+    }
+    set {
+      snapshot.updateValue(newValue, forKey: "lat")
+    }
+  }
+
+  public var long: Double {
+    get {
+      return snapshot["long"]! as! Double
+    }
+    set {
+      snapshot.updateValue(newValue, forKey: "long")
+    }
+  }
+
+  public var altitude: Double? {
+    get {
+      return snapshot["altitude"] as? Double
+    }
+    set {
+      snapshot.updateValue(newValue, forKey: "altitude")
+    }
+  }
+
+  public var verAcc: Double? {
+    get {
+      return snapshot["verAcc"] as? Double
+    }
+    set {
+      snapshot.updateValue(newValue, forKey: "verAcc")
+    }
+  }
+
+  public var horAcc: Double? {
+    get {
+      return snapshot["horAcc"] as? Double
+    }
+    set {
+      snapshot.updateValue(newValue, forKey: "horAcc")
     }
   }
 }

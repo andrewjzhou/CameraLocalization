@@ -2,11 +2,7 @@ query GetPost($id:ID!) {
   getPost(id:$id) {
     id
     location {
-        lat
-        long
-        altitude
-        verAcc
-        horAcc
+        ...Location
     }
     active
     timestamp
@@ -16,16 +12,20 @@ query GetPost($id:ID!) {
   }
 }
 
+fragment Location on Location {
+    lat
+    long
+    altitude
+    verAcc
+    horAcc
+}
+
 
 mutation createPost($input: CreatePostInput!) {
   createPost(input: $input) {
     id
     location {
-        lat
-        long
-        altitude
-        verAcc
-        horAcc
+        ...Location
     }
     active
     timestamp
@@ -37,11 +37,7 @@ mutation UpdatePost($input: UpdatePostInput!) {
  updatePost(input: $input) {
     id
     location {
-        lat
-        long
-        altitude
-        verAcc
-        horAcc
+        ...Location
     }
     active
     timestamp
@@ -53,11 +49,7 @@ mutation DeletePost($input: DeletePostInput!) {
  deletePost(input: $input){
     id
     location {
-        lat
-        long
-        altitude
-        verAcc
-        horAcc
+        ...Location
     }
     active
     timestamp
