@@ -1,0 +1,87 @@
+﻿type Location {
+  altitude: Float
+  horAcc: Float
+  lat: Float!
+  long: Float!
+  verAcc: Float
+}
+
+type Mutation {
+  createPost(input: CreatePostInput!): Post
+  deletePost(input: DeletePostInput!): Post
+  updatePost(input: UpdatePostInput!): Post
+}
+
+type Post {
+  #  location: Location!
+  active: Boolean!
+  descriptor: String!
+  id: ID!
+  timestamp: String!
+  username: String!
+  viewCount: Int!
+}
+
+type PostConnection {
+  items: [Post]
+  nextToken: String
+}
+
+type Query {
+  getPost(id: ID!): Post
+  listPosts(after: String, first: Int): PostConnection
+  queryPostsByUsernameTimestampIndex(after: String, first: Int, username: String!): PostConnection
+  queryPostsByUsernameViewCountIndex(after: String, first: Int, username: String!): PostConnection
+}
+
+type S3Object {
+  bucket: String!
+  key: String!
+  region: String!
+}
+
+type Subscription {
+  onCreatePost(active: Boolean, id: ID, timestamp: String, username: String, viewCount: Int): Post
+    @aws_subscribe(mutations:["createPost"])
+  onDeletePost(active: Boolean, id: ID, timestamp: String, username: String, viewCount: Int): Post
+    @aws_subscribe(mutations:["deletePost"])
+  onUpdatePost(active: Boolean, id: ID, timestamp: String, username: String, viewCount: Int): Post
+    @aws_subscribe(mutations:["updatePost"])
+}
+
+input CreatePostInput {
+  active: Boolean!
+  descriptor: String!
+  id: ID!
+  location: LocationInput!
+  timestamp: String!
+  username: String!
+  viewCount: Int!
+}
+
+input DeletePostInput {
+  id: ID!
+}
+
+input LocationInput {
+  altitude: Float
+  horAcc: Float
+  lat: Float!
+  long: Float!
+  verAcc: Float
+}
+
+input S3ObjectInput {
+  bucket: String!
+  key: String!
+  region: String!
+}
+
+input UpdatePostInput {
+  active: Boolean
+  descriptor: String
+  id: ID!
+  timestamp: String
+  username: String
+  viewCount: Int
+}
