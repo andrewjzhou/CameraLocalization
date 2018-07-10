@@ -22,27 +22,50 @@ fragment Location on Location {
 
 
 mutation createPost($input: CreatePostInput!) {
-  createPost(input: $input) {
-    id
-    location {
-        ...Location
+    createPost(input: $input) {
+        id
+        location {
+            ...Location
+        }
+        active
+        timestamp
+        username
+        viewCount
+        descriptor
+        image  {
+            ...S3Object
+        }
     }
-    active
-    timestamp
-    username
- }
+}
+
+fragment S3Object on S3Object {
+    bucket
+    key
+    region
 }
 
 mutation UpdatePost($input: UpdatePostInput!) {
- updatePost(input: $input) {
-    id
-    location {
-        ...Location
+    updatePost(input: $input) {
+        id
+        location {
+            ...Location
+        }
+        active
+        timestamp
+        username
+        viewCount
+        descriptor
+        image  {
+            ...S3Object
+        }
     }
-    active
-    timestamp
-    username
- }
+}
+
+mutation IncrementViewCount($id:ID!) {
+    incrementViewCount(id:$id) {
+        id
+        viewCount
+    }
 }
 
 mutation DeletePost($input: DeletePostInput!) {
