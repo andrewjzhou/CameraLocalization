@@ -9,15 +9,69 @@ query GetPost($id:ID!) {
     username
     viewCount
     descriptor
+    altitude
+    verAcc
+    horAcc
+    image {
+        ...S3Object
+    }
   }
+}
+
+query ListPostsByLocation($lat: Float!, $lon: Float!, $distance: String!) {
+    listPostsByLocation(lat: $lat, lon: $lon, distance: $distance) {
+        id
+        location {
+            ...Location
+        }
+        active
+        timestamp
+        username
+        viewCount
+        descriptor
+        altitude
+        verAcc
+        horAcc
+        image {
+            ...S3Object
+        }
+    }
+}
+
+query QueryMostRecentByUsername($username: String!, $size: Int!) {
+    queryMostRecentByUsername(username: $username, size: $size) {
+        id
+        location {
+            ...Location
+        }
+        timestamp
+        image {
+            ...S3Object
+        }
+    }
+}
+
+query QueryMostViewedByUsername($username: String!, $size: Int!) {
+    queryMostViewedByUsername(username: $username, size: $size) {
+        id
+        location {
+            ...Location
+        }  
+        timestamp
+        image {
+            ...S3Object
+        }
+    }
+}
+
+
+query QueryTotalViewsByUsername($username: String!) {
+    queryTotalViewsByUsername(username: $username)
 }
 
 fragment Location on Location {
     lat
     lon
-    altitude
-    verAcc
-    horAcc
 }
 
 
@@ -35,6 +89,9 @@ mutation createPost($input: CreatePostInput!) {
         image  {
             ...S3Object
         }
+        altitude
+        verAcc
+        horAcc
     }
 }
 
@@ -58,6 +115,9 @@ mutation UpdatePost($input: UpdatePostInput!) {
         image  {
             ...S3Object
         }
+        altitude
+        verAcc
+        horAcc
     }
 }
 
@@ -78,5 +138,23 @@ mutation DeletePost($input: DeletePostInput!) {
     timestamp
     username
  }
+}
+
+type Query {
+    getPost(id: ID!): Post
+    listPosts(first: Int, after: String): PostConnection
+    queryPostsByUsernameTimestampIndex(username: String!, first: Int, after: String): PostConnection
+    queryPostsByUsernameViewCountIndex(username: String!, first: Int, after: String): PostConnection
+    listPostsByLocation(lat: Float!, lon: Float!, distance: String!): [Post]
+    queryMostRecentByUsername(username: String!, size: Int!): [Post]
+    queryMostViewedByUsername(username: String!, size: Int!): [Post]
+    queryTotalViewsByUsername(username: String!): Int
+}
+
+type Mutation {
+    createPost(input: CreatePostInput!): Post
+    updatePost(input: UpdatePostInput!): Post
+    deletePost(input: DeletePostInput!): Post
+    incrementViewCount(id: ID!): Post
 }
 

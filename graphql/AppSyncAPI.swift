@@ -5,8 +5,8 @@ import AWSAppSync
 public struct CreatePostInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID, location: LocationInput, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, image: S3ObjectInput) {
-    graphQLMap = ["id": id, "location": location, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image]
+  public init(id: GraphQLID, location: LocationInput, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, image: S3ObjectInput, altitude: Optional<Double?> = nil, horAcc: Optional<Double?> = nil, verAcc: Optional<Double?> = nil) {
+    graphQLMap = ["id": id, "location": location, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image, "altitude": altitude, "horAcc": horAcc, "verAcc": verAcc]
   }
 
   public var id: GraphQLID {
@@ -80,32 +80,6 @@ public struct CreatePostInput: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "image")
     }
   }
-}
-
-public struct LocationInput: GraphQLMapConvertible {
-  public var graphQLMap: GraphQLMap
-
-  public init(lat: Double, lon: Double, altitude: Optional<Double?> = nil, horAcc: Optional<Double?> = nil, verAcc: Optional<Double?> = nil) {
-    graphQLMap = ["lat": lat, "lon": lon, "altitude": altitude, "horAcc": horAcc, "verAcc": verAcc]
-  }
-
-  public var lat: Double {
-    get {
-      return graphQLMap["lat"] as! Double
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "lat")
-    }
-  }
-
-  public var lon: Double {
-    get {
-      return graphQLMap["lon"] as! Double
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "lon")
-    }
-  }
 
   public var altitude: Optional<Double?> {
     get {
@@ -135,10 +109,36 @@ public struct LocationInput: GraphQLMapConvertible {
   }
 }
 
+public struct LocationInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  public init(lat: Double, lon: Double) {
+    graphQLMap = ["lat": lat, "lon": lon]
+  }
+
+  public var lat: Double {
+    get {
+      return graphQLMap["lat"] as! Double
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "lat")
+    }
+  }
+
+  public var lon: Double {
+    get {
+      return graphQLMap["lon"] as! Double
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "lon")
+    }
+  }
+}
+
 public struct S3ObjectInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(bucket: String, key: String, region: String, localUri: String, mimeType: String) {
+  public init(bucket: String, key: String, region: String, localUri: Optional<String?> = nil, mimeType: Optional<String?> = nil) {
     graphQLMap = ["bucket": bucket, "key": key, "region": region, "localUri": localUri, "mimeType": mimeType]
   }
 
@@ -169,18 +169,18 @@ public struct S3ObjectInput: GraphQLMapConvertible {
     }
   }
 
-  public var localUri: String {
+  public var localUri: Optional<String?> {
     get {
-      return graphQLMap["localUri"] as! String
+      return graphQLMap["localUri"] as! Optional<String?>
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "localUri")
     }
   }
 
-  public var mimeType: String {
+  public var mimeType: Optional<String?> {
     get {
-      return graphQLMap["mimeType"] as! String
+      return graphQLMap["mimeType"] as! Optional<String?>
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "mimeType")
@@ -191,8 +191,8 @@ public struct S3ObjectInput: GraphQLMapConvertible {
 public struct UpdatePostInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(id: GraphQLID, active: Optional<Bool?> = nil, timestamp: Optional<String?> = nil, username: Optional<String?> = nil, viewCount: Optional<Int?> = nil, descriptor: Optional<String?> = nil) {
-    graphQLMap = ["id": id, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor]
+  public init(id: GraphQLID, location: Optional<LocationInput?> = nil, active: Optional<Bool?> = nil, timestamp: Optional<String?> = nil, username: Optional<String?> = nil, viewCount: Optional<Int?> = nil, descriptor: Optional<String?> = nil, image: Optional<S3ObjectInput?> = nil, altitude: Optional<Double?> = nil, horAcc: Optional<Double?> = nil, verAcc: Optional<Double?> = nil) {
+    graphQLMap = ["id": id, "location": location, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image, "altitude": altitude, "horAcc": horAcc, "verAcc": verAcc]
   }
 
   public var id: GraphQLID {
@@ -201,6 +201,15 @@ public struct UpdatePostInput: GraphQLMapConvertible {
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  public var location: Optional<LocationInput?> {
+    get {
+      return graphQLMap["location"] as! Optional<LocationInput?>
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "location")
     }
   }
 
@@ -248,6 +257,42 @@ public struct UpdatePostInput: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "descriptor")
     }
   }
+
+  public var image: Optional<S3ObjectInput?> {
+    get {
+      return graphQLMap["image"] as! Optional<S3ObjectInput?>
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "image")
+    }
+  }
+
+  public var altitude: Optional<Double?> {
+    get {
+      return graphQLMap["altitude"] as! Optional<Double?>
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "altitude")
+    }
+  }
+
+  public var horAcc: Optional<Double?> {
+    get {
+      return graphQLMap["horAcc"] as! Optional<Double?>
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "horAcc")
+    }
+  }
+
+  public var verAcc: Optional<Double?> {
+    get {
+      return graphQLMap["verAcc"] as! Optional<Double?>
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "verAcc")
+    }
+  }
 }
 
 public struct DeletePostInput: GraphQLMapConvertible {
@@ -269,9 +314,9 @@ public struct DeletePostInput: GraphQLMapConvertible {
 
 public final class GetPostQuery: GraphQLQuery {
   public static let operationString =
-    "query GetPost($id: ID!) {\n  getPost(id: $id) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n  }\n}"
+    "query GetPost($id: ID!) {\n  getPost(id: $id) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n    altitude\n    verAcc\n    horAcc\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
 
-  public static var requestString: String { return operationString.appending(Location.fragmentString) }
+  public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
 
   public var id: GraphQLID
 
@@ -321,6 +366,10 @@ public final class GetPostQuery: GraphQLQuery {
         GraphQLField("username", type: .nonNull(.scalar(String.self))),
         GraphQLField("viewCount", type: .nonNull(.scalar(Int.self))),
         GraphQLField("descriptor", type: .nonNull(.scalar(String.self))),
+        GraphQLField("altitude", type: .scalar(Double.self)),
+        GraphQLField("verAcc", type: .scalar(Double.self)),
+        GraphQLField("horAcc", type: .scalar(Double.self)),
+        GraphQLField("image", type: .nonNull(.object(Image.selections))),
       ]
 
       public var snapshot: Snapshot
@@ -329,8 +378,8 @@ public final class GetPostQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, location: Location, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor])
+      public init(id: GraphQLID, location: Location, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil, image: Image) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc, "image": image.snapshot])
       }
 
       public var __typename: String {
@@ -405,6 +454,42 @@ public final class GetPostQuery: GraphQLQuery {
         }
       }
 
+      public var altitude: Double? {
+        get {
+          return snapshot["altitude"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "altitude")
+        }
+      }
+
+      public var verAcc: Double? {
+        get {
+          return snapshot["verAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "verAcc")
+        }
+      }
+
+      public var horAcc: Double? {
+        get {
+          return snapshot["horAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "horAcc")
+        }
+      }
+
+      public var image: Image {
+        get {
+          return Image(snapshot: snapshot["image"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "image")
+        }
+      }
+
       public struct Location: GraphQLSelectionSet {
         public static let possibleTypes = ["Location"]
 
@@ -413,9 +498,6 @@ public final class GetPostQuery: GraphQLQuery {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("altitude", type: .scalar(Double.self)),
-          GraphQLField("verAcc", type: .scalar(Double.self)),
-          GraphQLField("horAcc", type: .scalar(Double.self)),
         ]
 
         public var snapshot: Snapshot
@@ -424,8 +506,8 @@ public final class GetPostQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
         }
 
         public var __typename: String {
@@ -455,30 +537,338 @@ public final class GetPostQuery: GraphQLQuery {
           }
         }
 
-        public var altitude: Double? {
+        public var fragments: Fragments {
           get {
-            return snapshot["altitude"] as? Double
+            return Fragments(snapshot: snapshot)
           }
           set {
-            snapshot.updateValue(newValue, forKey: "altitude")
+            snapshot += newValue.snapshot
           }
         }
 
-        public var verAcc: Double? {
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+
+      public struct Image: GraphQLSelectionSet {
+        public static let possibleTypes = ["S3Object"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
+          GraphQLField("key", type: .nonNull(.scalar(String.self))),
+          GraphQLField("region", type: .nonNull(.scalar(String.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(bucket: String, key: String, region: String) {
+          self.init(snapshot: ["__typename": "S3Object", "bucket": bucket, "key": key, "region": region])
+        }
+
+        public var __typename: String {
           get {
-            return snapshot["verAcc"] as? Double
+            return snapshot["__typename"]! as! String
           }
           set {
-            snapshot.updateValue(newValue, forKey: "verAcc")
+            snapshot.updateValue(newValue, forKey: "__typename")
           }
         }
 
-        public var horAcc: Double? {
+        public var bucket: String {
           get {
-            return snapshot["horAcc"] as? Double
+            return snapshot["bucket"]! as! String
           }
           set {
-            snapshot.updateValue(newValue, forKey: "horAcc")
+            snapshot.updateValue(newValue, forKey: "bucket")
+          }
+        }
+
+        public var key: String {
+          get {
+            return snapshot["key"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "key")
+          }
+        }
+
+        public var region: String {
+          get {
+            return snapshot["region"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "region")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var s3Object: S3Object {
+            get {
+              return S3Object(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class ListPostsByLocationQuery: GraphQLQuery {
+  public static let operationString =
+    "query ListPostsByLocation($lat: Float!, $lon: Float!, $distance: String!) {\n  listPostsByLocation(lat: $lat, lon: $lon, distance: $distance) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n    altitude\n    verAcc\n    horAcc\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
+
+  public var lat: Double
+  public var lon: Double
+  public var distance: String
+
+  public init(lat: Double, lon: Double, distance: String) {
+    self.lat = lat
+    self.lon = lon
+    self.distance = distance
+  }
+
+  public var variables: GraphQLMap? {
+    return ["lat": lat, "lon": lon, "distance": distance]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("listPostsByLocation", arguments: ["lat": GraphQLVariable("lat"), "lon": GraphQLVariable("lon"), "distance": GraphQLVariable("distance")], type: .list(.object(ListPostsByLocation.selections))),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(listPostsByLocation: [ListPostsByLocation?]? = nil) {
+      self.init(snapshot: ["__typename": "Query", "listPostsByLocation": listPostsByLocation.flatMap { $0.map { $0.flatMap { $0.snapshot } } }])
+    }
+
+    public var listPostsByLocation: [ListPostsByLocation?]? {
+      get {
+        return (snapshot["listPostsByLocation"] as? [Snapshot?]).flatMap { $0.map { $0.flatMap { ListPostsByLocation(snapshot: $0) } } }
+      }
+      set {
+        snapshot.updateValue(newValue.flatMap { $0.map { $0.flatMap { $0.snapshot } } }, forKey: "listPostsByLocation")
+      }
+    }
+
+    public struct ListPostsByLocation: GraphQLSelectionSet {
+      public static let possibleTypes = ["Post"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("location", type: .nonNull(.object(Location.selections))),
+        GraphQLField("active", type: .nonNull(.scalar(Bool.self))),
+        GraphQLField("timestamp", type: .nonNull(.scalar(String.self))),
+        GraphQLField("username", type: .nonNull(.scalar(String.self))),
+        GraphQLField("viewCount", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("descriptor", type: .nonNull(.scalar(String.self))),
+        GraphQLField("altitude", type: .scalar(Double.self)),
+        GraphQLField("verAcc", type: .scalar(Double.self)),
+        GraphQLField("horAcc", type: .scalar(Double.self)),
+        GraphQLField("image", type: .nonNull(.object(Image.selections))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, location: Location, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil, image: Image) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc, "image": image.snapshot])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var location: Location {
+        get {
+          return Location(snapshot: snapshot["location"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "location")
+        }
+      }
+
+      public var active: Bool {
+        get {
+          return snapshot["active"]! as! Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "active")
+        }
+      }
+
+      public var timestamp: String {
+        get {
+          return snapshot["timestamp"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "timestamp")
+        }
+      }
+
+      public var username: String {
+        get {
+          return snapshot["username"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "username")
+        }
+      }
+
+      public var viewCount: Int {
+        get {
+          return snapshot["viewCount"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "viewCount")
+        }
+      }
+
+      public var descriptor: String {
+        get {
+          return snapshot["descriptor"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "descriptor")
+        }
+      }
+
+      public var altitude: Double? {
+        get {
+          return snapshot["altitude"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "altitude")
+        }
+      }
+
+      public var verAcc: Double? {
+        get {
+          return snapshot["verAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "verAcc")
+        }
+      }
+
+      public var horAcc: Double? {
+        get {
+          return snapshot["horAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "horAcc")
+        }
+      }
+
+      public var image: Image {
+        get {
+          return Image(snapshot: snapshot["image"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "image")
+        }
+      }
+
+      public struct Location: GraphQLSelectionSet {
+        public static let possibleTypes = ["Location"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var lat: Double {
+          get {
+            return snapshot["lat"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lat")
+          }
+        }
+
+        public var lon: Double {
+          get {
+            return snapshot["lon"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lon")
           }
         }
 
@@ -504,13 +894,661 @@ public final class GetPostQuery: GraphQLQuery {
           }
         }
       }
+
+      public struct Image: GraphQLSelectionSet {
+        public static let possibleTypes = ["S3Object"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
+          GraphQLField("key", type: .nonNull(.scalar(String.self))),
+          GraphQLField("region", type: .nonNull(.scalar(String.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(bucket: String, key: String, region: String) {
+          self.init(snapshot: ["__typename": "S3Object", "bucket": bucket, "key": key, "region": region])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var bucket: String {
+          get {
+            return snapshot["bucket"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "bucket")
+          }
+        }
+
+        public var key: String {
+          get {
+            return snapshot["key"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "key")
+          }
+        }
+
+        public var region: String {
+          get {
+            return snapshot["region"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "region")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var s3Object: S3Object {
+            get {
+              return S3Object(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class QueryMostRecentByUsernameQuery: GraphQLQuery {
+  public static let operationString =
+    "query QueryMostRecentByUsername($username: String!, $size: Int!) {\n  queryMostRecentByUsername(username: $username, size: $size) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
+
+  public var username: String
+  public var size: Int
+
+  public init(username: String, size: Int) {
+    self.username = username
+    self.size = size
+  }
+
+  public var variables: GraphQLMap? {
+    return ["username": username, "size": size]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("queryMostRecentByUsername", arguments: ["username": GraphQLVariable("username"), "size": GraphQLVariable("size")], type: .list(.object(QueryMostRecentByUsername.selections))),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(queryMostRecentByUsername: [QueryMostRecentByUsername?]? = nil) {
+      self.init(snapshot: ["__typename": "Query", "queryMostRecentByUsername": queryMostRecentByUsername.flatMap { $0.map { $0.flatMap { $0.snapshot } } }])
+    }
+
+    public var queryMostRecentByUsername: [QueryMostRecentByUsername?]? {
+      get {
+        return (snapshot["queryMostRecentByUsername"] as? [Snapshot?]).flatMap { $0.map { $0.flatMap { QueryMostRecentByUsername(snapshot: $0) } } }
+      }
+      set {
+        snapshot.updateValue(newValue.flatMap { $0.map { $0.flatMap { $0.snapshot } } }, forKey: "queryMostRecentByUsername")
+      }
+    }
+
+    public struct QueryMostRecentByUsername: GraphQLSelectionSet {
+      public static let possibleTypes = ["Post"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("location", type: .nonNull(.object(Location.selections))),
+        GraphQLField("timestamp", type: .nonNull(.scalar(String.self))),
+        GraphQLField("image", type: .nonNull(.object(Image.selections))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, location: Location, timestamp: String, image: Image) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "timestamp": timestamp, "image": image.snapshot])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var location: Location {
+        get {
+          return Location(snapshot: snapshot["location"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "location")
+        }
+      }
+
+      public var timestamp: String {
+        get {
+          return snapshot["timestamp"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "timestamp")
+        }
+      }
+
+      public var image: Image {
+        get {
+          return Image(snapshot: snapshot["image"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "image")
+        }
+      }
+
+      public struct Location: GraphQLSelectionSet {
+        public static let possibleTypes = ["Location"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var lat: Double {
+          get {
+            return snapshot["lat"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lat")
+          }
+        }
+
+        public var lon: Double {
+          get {
+            return snapshot["lon"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lon")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+
+      public struct Image: GraphQLSelectionSet {
+        public static let possibleTypes = ["S3Object"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
+          GraphQLField("key", type: .nonNull(.scalar(String.self))),
+          GraphQLField("region", type: .nonNull(.scalar(String.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(bucket: String, key: String, region: String) {
+          self.init(snapshot: ["__typename": "S3Object", "bucket": bucket, "key": key, "region": region])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var bucket: String {
+          get {
+            return snapshot["bucket"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "bucket")
+          }
+        }
+
+        public var key: String {
+          get {
+            return snapshot["key"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "key")
+          }
+        }
+
+        public var region: String {
+          get {
+            return snapshot["region"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "region")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var s3Object: S3Object {
+            get {
+              return S3Object(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class QueryMostViewedByUsernameQuery: GraphQLQuery {
+  public static let operationString =
+    "query QueryMostViewedByUsername($username: String!, $size: Int!) {\n  queryMostViewedByUsername(username: $username, size: $size) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
+
+  public var username: String
+  public var size: Int
+
+  public init(username: String, size: Int) {
+    self.username = username
+    self.size = size
+  }
+
+  public var variables: GraphQLMap? {
+    return ["username": username, "size": size]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("queryMostViewedByUsername", arguments: ["username": GraphQLVariable("username"), "size": GraphQLVariable("size")], type: .list(.object(QueryMostViewedByUsername.selections))),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(queryMostViewedByUsername: [QueryMostViewedByUsername?]? = nil) {
+      self.init(snapshot: ["__typename": "Query", "queryMostViewedByUsername": queryMostViewedByUsername.flatMap { $0.map { $0.flatMap { $0.snapshot } } }])
+    }
+
+    public var queryMostViewedByUsername: [QueryMostViewedByUsername?]? {
+      get {
+        return (snapshot["queryMostViewedByUsername"] as? [Snapshot?]).flatMap { $0.map { $0.flatMap { QueryMostViewedByUsername(snapshot: $0) } } }
+      }
+      set {
+        snapshot.updateValue(newValue.flatMap { $0.map { $0.flatMap { $0.snapshot } } }, forKey: "queryMostViewedByUsername")
+      }
+    }
+
+    public struct QueryMostViewedByUsername: GraphQLSelectionSet {
+      public static let possibleTypes = ["Post"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("location", type: .nonNull(.object(Location.selections))),
+        GraphQLField("timestamp", type: .nonNull(.scalar(String.self))),
+        GraphQLField("image", type: .nonNull(.object(Image.selections))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, location: Location, timestamp: String, image: Image) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "timestamp": timestamp, "image": image.snapshot])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var location: Location {
+        get {
+          return Location(snapshot: snapshot["location"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "location")
+        }
+      }
+
+      public var timestamp: String {
+        get {
+          return snapshot["timestamp"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "timestamp")
+        }
+      }
+
+      public var image: Image {
+        get {
+          return Image(snapshot: snapshot["image"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "image")
+        }
+      }
+
+      public struct Location: GraphQLSelectionSet {
+        public static let possibleTypes = ["Location"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var lat: Double {
+          get {
+            return snapshot["lat"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lat")
+          }
+        }
+
+        public var lon: Double {
+          get {
+            return snapshot["lon"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lon")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+
+      public struct Image: GraphQLSelectionSet {
+        public static let possibleTypes = ["S3Object"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("bucket", type: .nonNull(.scalar(String.self))),
+          GraphQLField("key", type: .nonNull(.scalar(String.self))),
+          GraphQLField("region", type: .nonNull(.scalar(String.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(bucket: String, key: String, region: String) {
+          self.init(snapshot: ["__typename": "S3Object", "bucket": bucket, "key": key, "region": region])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var bucket: String {
+          get {
+            return snapshot["bucket"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "bucket")
+          }
+        }
+
+        public var key: String {
+          get {
+            return snapshot["key"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "key")
+          }
+        }
+
+        public var region: String {
+          get {
+            return snapshot["region"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "region")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var s3Object: S3Object {
+            get {
+              return S3Object(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class QueryTotalViewsByUsernameQuery: GraphQLQuery {
+  public static let operationString =
+    "query QueryTotalViewsByUsername($username: String!) {\n  queryTotalViewsByUsername(username: $username)\n}"
+
+  public var username: String
+
+  public init(username: String) {
+    self.username = username
+  }
+
+  public var variables: GraphQLMap? {
+    return ["username": username]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("queryTotalViewsByUsername", arguments: ["username": GraphQLVariable("username")], type: .scalar(Int.self)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(queryTotalViewsByUsername: Int? = nil) {
+      self.init(snapshot: ["__typename": "Query", "queryTotalViewsByUsername": queryTotalViewsByUsername])
+    }
+
+    public var queryTotalViewsByUsername: Int? {
+      get {
+        return snapshot["queryTotalViewsByUsername"] as? Int
+      }
+      set {
+        snapshot.updateValue(newValue, forKey: "queryTotalViewsByUsername")
+      }
     }
   }
 }
 
 public final class CreatePostMutation: GraphQLMutation {
   public static let operationString =
-    "mutation createPost($input: CreatePostInput!) {\n  createPost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
+    "mutation createPost($input: CreatePostInput!) {\n  createPost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n    image {\n      __typename\n      ...S3Object\n    }\n    altitude\n    verAcc\n    horAcc\n  }\n}"
 
   public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
 
@@ -563,6 +1601,9 @@ public final class CreatePostMutation: GraphQLMutation {
         GraphQLField("viewCount", type: .nonNull(.scalar(Int.self))),
         GraphQLField("descriptor", type: .nonNull(.scalar(String.self))),
         GraphQLField("image", type: .nonNull(.object(Image.selections))),
+        GraphQLField("altitude", type: .scalar(Double.self)),
+        GraphQLField("verAcc", type: .scalar(Double.self)),
+        GraphQLField("horAcc", type: .scalar(Double.self)),
       ]
 
       public var snapshot: Snapshot
@@ -571,8 +1612,8 @@ public final class CreatePostMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, location: Location, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, image: Image) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image.snapshot])
+      public init(id: GraphQLID, location: Location, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, image: Image, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image.snapshot, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
       }
 
       public var __typename: String {
@@ -656,6 +1697,33 @@ public final class CreatePostMutation: GraphQLMutation {
         }
       }
 
+      public var altitude: Double? {
+        get {
+          return snapshot["altitude"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "altitude")
+        }
+      }
+
+      public var verAcc: Double? {
+        get {
+          return snapshot["verAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "verAcc")
+        }
+      }
+
+      public var horAcc: Double? {
+        get {
+          return snapshot["horAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "horAcc")
+        }
+      }
+
       public struct Location: GraphQLSelectionSet {
         public static let possibleTypes = ["Location"]
 
@@ -664,9 +1732,6 @@ public final class CreatePostMutation: GraphQLMutation {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("altitude", type: .scalar(Double.self)),
-          GraphQLField("verAcc", type: .scalar(Double.self)),
-          GraphQLField("horAcc", type: .scalar(Double.self)),
         ]
 
         public var snapshot: Snapshot
@@ -675,8 +1740,8 @@ public final class CreatePostMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
         }
 
         public var __typename: String {
@@ -703,33 +1768,6 @@ public final class CreatePostMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "lon")
-          }
-        }
-
-        public var altitude: Double? {
-          get {
-            return snapshot["altitude"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "altitude")
-          }
-        }
-
-        public var verAcc: Double? {
-          get {
-            return snapshot["verAcc"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "verAcc")
-          }
-        }
-
-        public var horAcc: Double? {
-          get {
-            return snapshot["horAcc"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "horAcc")
           }
         }
 
@@ -841,7 +1879,7 @@ public final class CreatePostMutation: GraphQLMutation {
 
 public final class UpdatePostMutation: GraphQLMutation {
   public static let operationString =
-    "mutation UpdatePost($input: UpdatePostInput!) {\n  updatePost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
+    "mutation UpdatePost($input: UpdatePostInput!) {\n  updatePost(input: $input) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n    image {\n      __typename\n      ...S3Object\n    }\n    altitude\n    verAcc\n    horAcc\n  }\n}"
 
   public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
 
@@ -894,6 +1932,9 @@ public final class UpdatePostMutation: GraphQLMutation {
         GraphQLField("viewCount", type: .nonNull(.scalar(Int.self))),
         GraphQLField("descriptor", type: .nonNull(.scalar(String.self))),
         GraphQLField("image", type: .nonNull(.object(Image.selections))),
+        GraphQLField("altitude", type: .scalar(Double.self)),
+        GraphQLField("verAcc", type: .scalar(Double.self)),
+        GraphQLField("horAcc", type: .scalar(Double.self)),
       ]
 
       public var snapshot: Snapshot
@@ -902,8 +1943,8 @@ public final class UpdatePostMutation: GraphQLMutation {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, location: Location, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, image: Image) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image.snapshot])
+      public init(id: GraphQLID, location: Location, active: Bool, timestamp: String, username: String, viewCount: Int, descriptor: String, image: Image, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "active": active, "timestamp": timestamp, "username": username, "viewCount": viewCount, "descriptor": descriptor, "image": image.snapshot, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
       }
 
       public var __typename: String {
@@ -987,6 +2028,33 @@ public final class UpdatePostMutation: GraphQLMutation {
         }
       }
 
+      public var altitude: Double? {
+        get {
+          return snapshot["altitude"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "altitude")
+        }
+      }
+
+      public var verAcc: Double? {
+        get {
+          return snapshot["verAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "verAcc")
+        }
+      }
+
+      public var horAcc: Double? {
+        get {
+          return snapshot["horAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "horAcc")
+        }
+      }
+
       public struct Location: GraphQLSelectionSet {
         public static let possibleTypes = ["Location"]
 
@@ -995,9 +2063,6 @@ public final class UpdatePostMutation: GraphQLMutation {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("altitude", type: .scalar(Double.self)),
-          GraphQLField("verAcc", type: .scalar(Double.self)),
-          GraphQLField("horAcc", type: .scalar(Double.self)),
         ]
 
         public var snapshot: Snapshot
@@ -1006,8 +2071,8 @@ public final class UpdatePostMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
         }
 
         public var __typename: String {
@@ -1034,33 +2099,6 @@ public final class UpdatePostMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "lon")
-          }
-        }
-
-        public var altitude: Double? {
-          get {
-            return snapshot["altitude"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "altitude")
-          }
-        }
-
-        public var verAcc: Double? {
-          get {
-            return snapshot["verAcc"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "verAcc")
-          }
-        }
-
-        public var horAcc: Double? {
-          get {
-            return snapshot["horAcc"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "horAcc")
           }
         }
 
@@ -1385,9 +2423,6 @@ public final class DeletePostMutation: GraphQLMutation {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
           GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("altitude", type: .scalar(Double.self)),
-          GraphQLField("verAcc", type: .scalar(Double.self)),
-          GraphQLField("horAcc", type: .scalar(Double.self)),
         ]
 
         public var snapshot: Snapshot
@@ -1396,8 +2431,8 @@ public final class DeletePostMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
         }
 
         public var __typename: String {
@@ -1424,33 +2459,6 @@ public final class DeletePostMutation: GraphQLMutation {
           }
           set {
             snapshot.updateValue(newValue, forKey: "lon")
-          }
-        }
-
-        public var altitude: Double? {
-          get {
-            return snapshot["altitude"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "altitude")
-          }
-        }
-
-        public var verAcc: Double? {
-          get {
-            return snapshot["verAcc"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "verAcc")
-          }
-        }
-
-        public var horAcc: Double? {
-          get {
-            return snapshot["horAcc"] as? Double
-          }
-          set {
-            snapshot.updateValue(newValue, forKey: "horAcc")
           }
         }
 
@@ -1482,7 +2490,7 @@ public final class DeletePostMutation: GraphQLMutation {
 
 public struct Location: GraphQLFragment {
   public static let fragmentString =
-    "fragment Location on Location {\n  __typename\n  lat\n  lon\n  altitude\n  verAcc\n  horAcc\n}"
+    "fragment Location on Location {\n  __typename\n  lat\n  lon\n}"
 
   public static let possibleTypes = ["Location"]
 
@@ -1490,9 +2498,6 @@ public struct Location: GraphQLFragment {
     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
     GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
     GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
-    GraphQLField("altitude", type: .scalar(Double.self)),
-    GraphQLField("verAcc", type: .scalar(Double.self)),
-    GraphQLField("horAcc", type: .scalar(Double.self)),
   ]
 
   public var snapshot: Snapshot
@@ -1501,8 +2506,8 @@ public struct Location: GraphQLFragment {
     self.snapshot = snapshot
   }
 
-  public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-    self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+  public init(lat: Double, lon: Double) {
+    self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
   }
 
   public var __typename: String {
@@ -1529,33 +2534,6 @@ public struct Location: GraphQLFragment {
     }
     set {
       snapshot.updateValue(newValue, forKey: "lon")
-    }
-  }
-
-  public var altitude: Double? {
-    get {
-      return snapshot["altitude"] as? Double
-    }
-    set {
-      snapshot.updateValue(newValue, forKey: "altitude")
-    }
-  }
-
-  public var verAcc: Double? {
-    get {
-      return snapshot["verAcc"] as? Double
-    }
-    set {
-      snapshot.updateValue(newValue, forKey: "verAcc")
-    }
-  }
-
-  public var horAcc: Double? {
-    get {
-      return snapshot["horAcc"] as? Double
-    }
-    set {
-      snapshot.updateValue(newValue, forKey: "horAcc")
     }
   }
 }
@@ -1617,89 +2595,5 @@ public struct S3Object: GraphQLFragment {
     set {
       snapshot.updateValue(newValue, forKey: "region")
     }
-  }
-}
-
-
-
-extension S3Object: AWSS3ObjectProtocol {
-  public func getBucketName() -> String {
-      return bucket
-  }
-
-  public func getKeyName() -> String {
-      return key
-  }
-
-  public func getRegion() -> String {
-      return region
-  }
-}
-
-extension S3ObjectInput: AWSS3ObjectProtocol, AWSS3InputObjectProtocol {
-  public func getLocalSourceFileURL() -> URL? {
-      return URL(string: self.localUri)
-  }
-
-  public func getMimeType() -> String {
-      return self.mimeType
-  }
-
-  public func getBucketName() -> String {
-      return self.bucket
-  }
-
-  public func getKeyName() -> String {
-      return self.key
-  }
-
-  public func getRegion() -> String {
-      return self.region
-  }
-
-}
-
-import AWSS3
-extension AWSS3PreSignedURLBuilder: AWSS3ObjectPresignedURLGenerator  {
-  public func getPresignedURL(s3Object: AWSS3ObjectProtocol) -> URL? {
-      let request = AWSS3GetPreSignedURLRequest()
-      request.bucket = s3Object.getBucketName()
-      request.key = s3Object.getKeyName()
-      var url : URL?
-      self.getPreSignedURL(request).continueWith { (task) -> Any? in
-          url = task.result as URL?
-          }.waitUntilFinished()
-      return url
-  }
-}
-
-extension AWSS3TransferUtility: AWSS3ObjectManager {
-
-  public func download(s3Object: AWSS3ObjectProtocol, toURL: URL, completion: @escaping ((Bool, Error?) -> Void)) {
-
-      let completionBlock: AWSS3TransferUtilityDownloadCompletionHandlerBlock = { task, url, data, error  -> Void in
-          if let _ = error {
-              completion(false, error)
-          } else {
-              completion(true, nil)
-          }
-      }
-      let _ = self.download(to: toURL, bucket: s3Object.getBucketName(), key: s3Object.getKeyName(), expression: nil, completionHandler: completionBlock)
-  }
-
-  public func upload(s3Object: AWSS3ObjectProtocol & AWSS3InputObjectProtocol, completion: @escaping ((_ success: Bool, _ error: Error?) -> Void)) {
-      let completionBlock : AWSS3TransferUtilityUploadCompletionHandlerBlock = { task, error  -> Void in
-          if let _ = error {
-              completion(false, error)
-          } else {
-              completion(true, nil)
-          }
-      }
-      let _ = self.uploadFile(s3Object.getLocalSourceFileURL()!, bucket: s3Object.getBucketName(), key: s3Object.getKeyName(), contentType: s3Object.getMimeType(), expression: nil, completionHandler: completionBlock).continueWith { (task) -> Any? in
-          if let err = task.error {
-              completion(false, err)
-          }
-          return nil
-      }
   }
 }
