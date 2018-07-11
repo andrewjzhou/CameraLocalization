@@ -54,9 +54,6 @@ final class GeolocationService {
             .flatMap {
                 return $0.last.map(Driver.just) ?? Driver.empty()
             }
-            .do(onNext: { (location) in
-                print("horizontal accuracy: \(location.horizontalAccuracy). altitude: \(location.altitude).  vertical accuracy: \(location.verticalAccuracy).  floor: \(location.floor)")
-            })
             .map { $0.coordinate }
             .map{ // Convert CLLocation coordinates to 4 decimal places
                 (roundToDecimal4($0.latitude as Double), roundToDecimal4($0.longitude as Double))

@@ -1,0 +1,308 @@
+curl -X POST 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/_close'
+
+
+curl -X GET 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/posttable_type/_mapping' | json_pp 
+
+
+### ------------------------------------------ Search Requests -----------------------------------------------
+curl -X GET "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/_search" -H 'Content-Type: application/json' -d'
+{	
+    "query": {
+        "bool" : {
+            "must" : { "match" : { "username" : "Mr.Clean" }}
+        }
+    },
+    "size": 0,
+    "aggs" : {
+    	"total_view" : {
+    		"sum" : {
+    			"field" : "viewCount"
+    		}
+    	}
+    }
+}
+' | json_pp
+
+curl -X GET "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/_search" -H 'Content-Type: application/json' -d'
+{
+	"from" : 0, "size" : 2,
+    "query" : {
+        "bool" : {
+            "must" : { "match" : { "username" : "Mr.Clean" }}
+        }
+    },
+    "sort": { "viewCount": { "order": "desc" }}
+}
+' | json_pp
+
+
+
+### ---------------------------------------------- Multi-Search  -------------------------------------------------
+
+## Multi Search Request
+## Function:  queryMostRecentMostViewedTotalViewsByUsername(username: String!, recentSize: Int!, viewedSize: Int!)
+
+curl -X GET "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/_msearch" -H 'Content-Type: application/json' -d'
+{"index" : "posttable"}
+{"query": {"bool" : {"must" : { "match" : { "username" : "Mr.Clean" }}}}, "from":0, "size": 5, "sort": { "viewCount": { "order": "desc" }},  "aggs" : {"total_view" : {"sum" : {"field" : "viewCount"}}}}
+{"index" : "posttable"}
+{"query": {"bool" : {"must" : { "match" : { "username" : "Mr.Clean" }}}}, "from":0, "size": 5, "sort": { "timestamp": { "order": "desc" }}}
+' | json_pp
+
+### ------------------------------------------ Delete Index (Danger!) ---------------------------------------
+
+curl -X DELETE 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable'
+
+
+### ------------------------------------------ Create Index -----------------------------------------------
+curl -X PUT "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable" -H 'Content-Type: application/json' -d'
+{
+    "settings" : {
+        "index" : {
+            "number_of_shards" : 5, 
+            "number_of_replicas" : 1
+        }
+    }
+}
+'
+
+### ------------------------------------------ Set Mappings -----------------------------------------------
+
+curl -X PUT "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/_mapping/posttable_type" -H 'Content-Type: application/json' -d'
+{
+  "properties" : {
+               "viewCount" : {
+                  "type" : "integer"
+               },
+               "@SequenceNumber" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               },
+               "@timestamp" : {
+                  "type" : "date"
+               },
+               "username" : {
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  },
+                  "type" : "text"
+               },
+               "descriptor" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               },
+               "active" : {
+                  "type" : "boolean"
+               },
+               "timestamp" : {
+                  "type" : "date"
+               },
+               "id" : {
+                  "type" : "text",
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  }
+               },
+               "location" : {
+                  "type" : "geo_point"
+               },
+               "verAcc" : {
+				  "type" : "float"
+               },
+               "horAcc" : {
+				  "type" : "float"
+               },
+               "altitude" : {
+               	  "type" : "float"
+               },
+               "image" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               }
+            }
+}
+'
+
+
+### --------------------------------------------------------------------------------------------------------
+
+
+curl -X PUT 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable' -d \
+'{
+      "mappings" : {
+         "posttable_type" : {
+            "properties" : {
+               "viewCount" : {
+                  "type" : "float"
+               },
+               "@SequenceNumber" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               },
+               "@timestamp" : {
+                  "type" : "date"
+               },
+               "username" : {
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  },
+                  "type" : "text"
+               },
+               "descriptor" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               },
+               "active" : {
+                  "type" : "boolean"
+               },
+               "timestamp" : {
+                  "type" : "text",
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  }
+               },
+               "id" : {
+                  "type" : "text",
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  }
+               },
+               "location" : {
+                  "type" : "geo_point"
+               },
+               "image" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               }
+            }
+         }
+      }
+   }'
+
+
+
+
+### --------------------------------------------------------------------------------------------------------
+{
+   "posttable" : {
+      "mappings" : {
+         "posttable_type" : {
+            "properties" : {
+               "viewCount" : {
+                  "type" : "float"
+               },
+               "@SequenceNumber" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               },
+               "@timestamp" : {
+                  "type" : "date"
+               },
+               "username" : {
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  },
+                  "type" : "text"
+               },
+               "descriptor" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               },
+               "active" : {
+                  "type" : "boolean"
+               },
+               "timestamp" : {
+                  "type" : "text",
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  }
+               },
+               "id" : {
+                  "type" : "text",
+                  "fields" : {
+                     "keyword" : {
+                        "ignore_above" : 256,
+                        "type" : "keyword"
+                     }
+                  }
+               },
+               "location" : {
+                  "type" : "geo_point"
+               },
+               "image" : {
+                  "fields" : {
+                     "keyword" : {
+                        "type" : "keyword",
+                        "ignore_above" : 256
+                     }
+                  },
+                  "type" : "text"
+               }
+            }
+         }
+      }
+   }
+}
+
+### --------------------------------------------------------------------------------------------------------

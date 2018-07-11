@@ -14,7 +14,7 @@ query GetPost($id:ID!) {
 
 fragment Location on Location {
     lat
-    long
+    lon
     altitude
     verAcc
     horAcc

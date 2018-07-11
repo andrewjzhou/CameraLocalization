@@ -347,7 +347,7 @@
                             "deprecationReason": null
                         },
                         {
-                            "name": "long",
+                            "name": "lon",
                             "description": null,
                             "args": [],
                             "type": {
@@ -805,7 +805,7 @@
                             "defaultValue": null
                         },
                         {
-                            "name": "long",
+                            "name": "lon",
                             "description": null,
                             "type": {
                                 "kind": "NON_NULL",

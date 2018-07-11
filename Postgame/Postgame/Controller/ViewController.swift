@@ -77,6 +77,17 @@ class ViewController: UIViewController {
         handleGeolocationService()
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // Testing
+        for i in 0..<5 {
+            AppSyncService.sharedInstance.createNewPost()
+        }
+        //        AppSyncService.sharedInstance.updatePost()
+//        AppSyncService.sharedInstance.incrementViewCount()
+        //        S3Service.sharedInstance.uploadFile()
     }
     
     func handleGeolocationService() {
@@ -409,19 +420,11 @@ extension ViewController {
     func getKey() -> String? {
         guard let location = lastLocation else { return nil }
         let locationString = location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
-        let date = recordDate()
+        let date = timestamp()
         let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
         let key = locationString + "/" + date + "/" + username
         
         return key
-    }
-    
-    func recordDate() -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US")
-        
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        return dateFormatter.string(from: Date())
     }
 
 

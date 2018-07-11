@@ -44,11 +44,10 @@ func vibrate(_ style: UIImpactFeedbackStyle) {
     generator.impactOccurred()
 }
 
-func recordDate() -> String {
+func timestamp() -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.locale = Locale(identifier: "en_US")
     
     dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     return dateFormatter.string(from: Date())
 }
-

@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		342C81AF448FA8D9BBE2BF86 /* Pods_Postgame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9079E5E578EF2222B8112 /* Pods_Postgame.framework */; };
 		6A1B548B20CF354300870DC2 /* CaffenetExtractor.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B548A20CF354300870DC2 /* CaffenetExtractor.mlmodel */; };
-		6A1B548D20CF408900870DC2 /* PostNode_Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B548C20CF408900870DC2 /* PostNode_Deprecated.swift */; };
-		6A1B548F20D0036400870DC2 /* VerticalRectInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B548E20D0036400870DC2 /* VerticalRectInfo.swift */; };
 		6A1B549120D00D1F00870DC2 /* utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549020D00D1F00870DC2 /* utility.swift */; };
 		6A1B549520D019E500870DC2 /* DescriptorComputer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549420D019E500870DC2 /* DescriptorComputer.swift */; };
 		6A1B549F20D01A8700870DC2 /* Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549720D01A8700870DC2 /* Math.swift */; };
@@ -22,7 +20,6 @@
 		6A1B54A520D01A8700870DC2 /* NonMaxSuppression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549D20D01A8700870DC2 /* NonMaxSuppression.swift */; };
 		6A1B54A620D01A8700870DC2 /* MLMultiArray+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B549E20D01A8700870DC2 /* MLMultiArray+Image.swift */; };
 		6A1B54AA20D0764C00870DC2 /* DescriptorCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54A920D0764C00870DC2 /* DescriptorCache.swift */; };
-		6A1B54AC20D17F2B00870DC2 /* Lifespan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */; };
 		6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */; };
 		6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B120D1BD9A00870DC2 /* Posts.swift */; };
 		6A1B54B920D2D15900870DC2 /* CreateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1B54B820D2D15900870DC2 /* CreateButton.swift */; };
@@ -46,6 +43,9 @@
 		6AC6C8E120E4316A00126391 /* DueDate.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6AC6C8E020E4316A00126391 /* DueDate.ttf */; };
 		6AC6C8E320E45C3900126391 /* NotificationCenter+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C8E220E45C3900126391 /* NotificationCenter+Rx.swift */; };
 		6AC6C8E620E811C800126391 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */; };
+		6AC6C8FB20F3A73300126391 /* AppSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C8FA20F3A73300126391 /* AppSyncService.swift */; };
+		6AC6C8FD20F3A87000126391 /* AWSConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C8FC20F3A87000126391 /* AWSConstants.swift */; };
+		6AC6C90D20F511C700126391 /* AppSyncAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C90C20F511C600126391 /* AppSyncAPI.swift */; };
 		6AEBAB5620CDF3AE00741EB0 /* S3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
@@ -109,8 +109,6 @@
 		6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostgameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67F9079E5E578EF2222B8112 /* Pods_Postgame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Postgame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A1B548A20CF354300870DC2 /* CaffenetExtractor.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = CaffenetExtractor.mlmodel; sourceTree = "<group>"; };
-		6A1B548C20CF408900870DC2 /* PostNode_Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNode_Deprecated.swift; sourceTree = "<group>"; };
-		6A1B548E20D0036400870DC2 /* VerticalRectInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalRectInfo.swift; sourceTree = "<group>"; };
 		6A1B549020D00D1F00870DC2 /* utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = utility.swift; sourceTree = "<group>"; };
 		6A1B549420D019E500870DC2 /* DescriptorComputer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptorComputer.swift; sourceTree = "<group>"; };
 		6A1B549720D01A8700870DC2 /* Math.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Math.swift; sourceTree = "<group>"; };
@@ -122,7 +120,6 @@
 		6A1B549D20D01A8700870DC2 /* NonMaxSuppression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NonMaxSuppression.swift; sourceTree = "<group>"; };
 		6A1B549E20D01A8700870DC2 /* MLMultiArray+Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MLMultiArray+Image.swift"; sourceTree = "<group>"; };
 		6A1B54A920D0764C00870DC2 /* DescriptorCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptorCache.swift; sourceTree = "<group>"; };
-		6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lifespan.swift; sourceTree = "<group>"; };
 		6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNodeExtent.swift; sourceTree = "<group>"; };
 		6A1B54B120D1BD9A00870DC2 /* Posts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Posts.swift; sourceTree = "<group>"; };
 		6A1B54B820D2D15900870DC2 /* CreateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateButton.swift; sourceTree = "<group>"; };
@@ -148,6 +145,9 @@
 		6AC6C8E220E45C3900126391 /* NotificationCenter+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter+Rx.swift"; sourceTree = "<group>"; };
 		6AC6C8E420E80F6700126391 /* CP.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = CP.ttf; sourceTree = "<group>"; };
 		6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		6AC6C8FA20F3A73300126391 /* AppSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSyncService.swift; sourceTree = "<group>"; };
+		6AC6C8FC20F3A87000126391 /* AWSConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSConstants.swift; sourceTree = "<group>"; };
+		6AC6C90C20F511C600126391 /* AppSyncAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppSyncAPI.swift; path = ../../graphql/AppSyncAPI.swift; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
@@ -269,6 +269,7 @@
 				6A1B54D320D81EF000870DC2 /* DynamoDB */,
 				6A1B54BF20D4326700870DC2 /* APIGateway */,
 				6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */,
+				6AC6C8FA20F3A73300126391 /* AppSyncService.swift */,
 			);
 			path = AWS;
 			sourceTree = "<group>";
@@ -303,7 +304,6 @@
 			children = (
 				6A1B54D620D83D4200870DC2 /* ContentNode.swift */,
 				6A1B54BA20D3012700870DC2 /* ContentScene.swift */,
-				6A1B548C20CF408900870DC2 /* PostNode_Deprecated.swift */,
 				6AFDC43520EAFF57009ED7E5 /* PostNode.swift */,
 			);
 			path = Node;
@@ -384,6 +384,7 @@
 		6AEC1A6D2085BF06008E0FF8 /* Postgame */ = {
 			isa = PBXGroup;
 			children = (
+				6AC6C90C20F511C600126391 /* AppSyncAPI.swift */,
 				6AEC1A6E2085BF06008E0FF8 /* AppDelegate.swift */,
 				6A8EA74520E16D9800B178C1 /* awsconfiguration.json */,
 				6AEC1A9E20879941008E0FF8 /* Controller */,
@@ -437,6 +438,7 @@
 				6AEBAB5A20CEE24A00741EB0 /* RxARSession */,
 				6AEBAB5920CEE20300741EB0 /* RxCLLocation */,
 				6AC6C8E220E45C3900126391 /* NotificationCenter+Rx.swift */,
+				6AC6C8FC20F3A87000126391 /* AWSConstants.swift */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
@@ -493,9 +495,7 @@
 				6A1B549420D019E500870DC2 /* DescriptorComputer.swift */,
 				6AEBAB6020CEEEAC00741EB0 /* RectDetector.swift */,
 				6AF5277F208AC3E80039363B /* GeolocationService.swift */,
-				6A1B54AB20D17F2B00870DC2 /* Lifespan.swift */,
 				6A1B54AD20D1A90B00870DC2 /* PostNodeExtent.swift */,
-				6A1B548E20D0036400870DC2 /* VerticalRectInfo.swift */,
 				6AFDC42D20EA88B9009ED7E5 /* RectInfo.swift */,
 				6AFDC42F20EA8ACE009ED7E5 /* RectGeometry.swift */,
 				6AFDC43120EACA25009ED7E5 /* TTL.swift */,
@@ -666,6 +666,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Postgame/Pods-Postgame-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AWSAPIGateway/AWSAPIGateway.framework",
+				"${BUILT_PRODUCTS_DIR}/AWSAppSync/AWSAppSync.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSAuthCore/AWSAuthCore.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSAuthUI/AWSAuthUI.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSCognito/AWSCognito.framework",
@@ -677,13 +678,16 @@
 				"${BUILT_PRODUCTS_DIR}/AWSS3/AWSS3.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSUserPoolsSignIn/AWSUserPoolsSignIn.framework",
 				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 				"${BUILT_PRODUCTS_DIR}/Spring/Spring.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAPIGateway.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAppSync.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAuthCore.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSAuthUI.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSCognito.framework",
@@ -695,8 +699,10 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSS3.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSUserPoolsSignIn.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Spring.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -853,7 +859,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A1B548D20CF408900870DC2 /* PostNode_Deprecated.swift in Sources */,
+				6AC6C90D20F511C700126391 /* AppSyncAPI.swift in Sources */,
 				6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */,
 				6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */,
 				6AF52782208AC4190039363B /* CLLocation+Rx.swift in Sources */,
@@ -867,6 +873,7 @@
 				6A1B54CB20D4350400870DC2 /* APIGatewayService.swift in Sources */,
 				6AF67C0320DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_RequestSchema.m in Sources */,
 				6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */,
+				6AC6C8FB20F3A73300126391 /* AppSyncService.swift in Sources */,
 				6A8EA73D20E1254600B178C1 /* TopView.swift in Sources */,
 				6A1B54A520D01A8700870DC2 /* NonMaxSuppression.swift in Sources */,
 				6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */,
@@ -874,6 +881,7 @@
 				6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */,
 				6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */,
 				6AFDC43620EAFF57009ED7E5 /* PostNode.swift in Sources */,
+				6AC6C8FD20F3A87000126391 /* AWSConstants.swift in Sources */,
 				6AFDC43020EA8ACE009ED7E5 /* RectGeometry.swift in Sources */,
 				6A1B54AA20D0764C00870DC2 /* DescriptorCache.swift in Sources */,
 				6AF67C0120DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_ResponseSchema.m in Sources */,
@@ -883,13 +891,11 @@
 				6A1B549520D019E500870DC2 /* DescriptorComputer.swift in Sources */,
 				6A1B54A320D01A8700870DC2 /* MultiArray.swift in Sources */,
 				6A93257820D85A8000E0C9B4 /* UserView.swift in Sources */,
-				6A1B548F20D0036400870DC2 /* VerticalRectInfo.swift in Sources */,
 				6AF67C0220DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */,
 				6A8EA73F20E1255200B178C1 /* TotalView.swift in Sources */,
 				6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */,
 				6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */,
 				6AFDC43220EACA25009ED7E5 /* TTL.swift in Sources */,
-				6A1B54AC20D17F2B00870DC2 /* Lifespan.swift in Sources */,
 				6AF52788208BBFEC0039363B /* SignInViewController.swift in Sources */,
 				6A1B549F20D01A8700870DC2 /* Math.swift in Sources */,
 				6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */,

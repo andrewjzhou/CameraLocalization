@@ -85,8 +85,8 @@ public struct CreatePostInput: GraphQLMapConvertible {
 public struct LocationInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
-  public init(lat: Double, long: Double, altitude: Optional<Double?> = nil, horAcc: Optional<Double?> = nil, verAcc: Optional<Double?> = nil) {
-    graphQLMap = ["lat": lat, "long": long, "altitude": altitude, "horAcc": horAcc, "verAcc": verAcc]
+  public init(lat: Double, lon: Double, altitude: Optional<Double?> = nil, horAcc: Optional<Double?> = nil, verAcc: Optional<Double?> = nil) {
+    graphQLMap = ["lat": lat, "lon": lon, "altitude": altitude, "horAcc": horAcc, "verAcc": verAcc]
   }
 
   public var lat: Double {
@@ -98,12 +98,12 @@ public struct LocationInput: GraphQLMapConvertible {
     }
   }
 
-  public var long: Double {
+  public var lon: Double {
     get {
-      return graphQLMap["long"] as! Double
+      return graphQLMap["lon"] as! Double
     }
     set {
-      graphQLMap.updateValue(newValue, forKey: "long")
+      graphQLMap.updateValue(newValue, forKey: "lon")
     }
   }
 
@@ -412,7 +412,7 @@ public final class GetPostQuery: GraphQLQuery {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("long", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
           GraphQLField("verAcc", type: .scalar(Double.self)),
           GraphQLField("horAcc", type: .scalar(Double.self)),
@@ -424,8 +424,8 @@ public final class GetPostQuery: GraphQLQuery {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, long: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "long": long, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
         }
 
         public var __typename: String {
@@ -446,12 +446,12 @@ public final class GetPostQuery: GraphQLQuery {
           }
         }
 
-        public var long: Double {
+        public var lon: Double {
           get {
-            return snapshot["long"]! as! Double
+            return snapshot["lon"]! as! Double
           }
           set {
-            snapshot.updateValue(newValue, forKey: "long")
+            snapshot.updateValue(newValue, forKey: "lon")
           }
         }
 
@@ -663,7 +663,7 @@ public final class CreatePostMutation: GraphQLMutation {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("long", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
           GraphQLField("verAcc", type: .scalar(Double.self)),
           GraphQLField("horAcc", type: .scalar(Double.self)),
@@ -675,8 +675,8 @@ public final class CreatePostMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, long: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "long": long, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
         }
 
         public var __typename: String {
@@ -697,12 +697,12 @@ public final class CreatePostMutation: GraphQLMutation {
           }
         }
 
-        public var long: Double {
+        public var lon: Double {
           get {
-            return snapshot["long"]! as! Double
+            return snapshot["lon"]! as! Double
           }
           set {
-            snapshot.updateValue(newValue, forKey: "long")
+            snapshot.updateValue(newValue, forKey: "lon")
           }
         }
 
@@ -994,7 +994,7 @@ public final class UpdatePostMutation: GraphQLMutation {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("long", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
           GraphQLField("verAcc", type: .scalar(Double.self)),
           GraphQLField("horAcc", type: .scalar(Double.self)),
@@ -1006,8 +1006,8 @@ public final class UpdatePostMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, long: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "long": long, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
         }
 
         public var __typename: String {
@@ -1028,12 +1028,12 @@ public final class UpdatePostMutation: GraphQLMutation {
           }
         }
 
-        public var long: Double {
+        public var lon: Double {
           get {
-            return snapshot["long"]! as! Double
+            return snapshot["lon"]! as! Double
           }
           set {
-            snapshot.updateValue(newValue, forKey: "long")
+            snapshot.updateValue(newValue, forKey: "lon")
           }
         }
 
@@ -1384,7 +1384,7 @@ public final class DeletePostMutation: GraphQLMutation {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
-          GraphQLField("long", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
           GraphQLField("altitude", type: .scalar(Double.self)),
           GraphQLField("verAcc", type: .scalar(Double.self)),
           GraphQLField("horAcc", type: .scalar(Double.self)),
@@ -1396,8 +1396,8 @@ public final class DeletePostMutation: GraphQLMutation {
           self.snapshot = snapshot
         }
 
-        public init(lat: Double, long: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-          self.init(snapshot: ["__typename": "Location", "lat": lat, "long": long, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+        public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
         }
 
         public var __typename: String {
@@ -1418,12 +1418,12 @@ public final class DeletePostMutation: GraphQLMutation {
           }
         }
 
-        public var long: Double {
+        public var lon: Double {
           get {
-            return snapshot["long"]! as! Double
+            return snapshot["lon"]! as! Double
           }
           set {
-            snapshot.updateValue(newValue, forKey: "long")
+            snapshot.updateValue(newValue, forKey: "lon")
           }
         }
 
@@ -1482,14 +1482,14 @@ public final class DeletePostMutation: GraphQLMutation {
 
 public struct Location: GraphQLFragment {
   public static let fragmentString =
-    "fragment Location on Location {\n  __typename\n  lat\n  long\n  altitude\n  verAcc\n  horAcc\n}"
+    "fragment Location on Location {\n  __typename\n  lat\n  lon\n  altitude\n  verAcc\n  horAcc\n}"
 
   public static let possibleTypes = ["Location"]
 
   public static let selections: [GraphQLSelection] = [
     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
     GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
-    GraphQLField("long", type: .nonNull(.scalar(Double.self))),
+    GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
     GraphQLField("altitude", type: .scalar(Double.self)),
     GraphQLField("verAcc", type: .scalar(Double.self)),
     GraphQLField("horAcc", type: .scalar(Double.self)),
@@ -1501,8 +1501,8 @@ public struct Location: GraphQLFragment {
     self.snapshot = snapshot
   }
 
-  public init(lat: Double, long: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
-    self.init(snapshot: ["__typename": "Location", "lat": lat, "long": long, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+  public init(lat: Double, lon: Double, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+    self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
   }
 
   public var __typename: String {
@@ -1523,12 +1523,12 @@ public struct Location: GraphQLFragment {
     }
   }
 
-  public var long: Double {
+  public var lon: Double {
     get {
-      return snapshot["long"]! as! Double
+      return snapshot["lon"]! as! Double
     }
     set {
-      snapshot.updateValue(newValue, forKey: "long")
+      snapshot.updateValue(newValue, forKey: "lon")
     }
   }
 

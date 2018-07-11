@@ -33,6 +33,56 @@ struct S3Service {
         transferUtility = AWSS3TransferUtility.default()
     }
     
+    func uploadFile() {
+        // MARK: Store image at url
+        let image = UIImage.from(color: .red)
+        // url
+        let imageName = "redColor" // your image name here
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imageName).png"
+        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+        // store
+        try? UIImagePNGRepresentation(image)?.write(to: imageUrl)
+        print("Image URL: \(imageUrl), absolute string: \(imageUrl.absoluteString), relative path: \(imageUrl.relativePath)")
+        //---
+        let expression = AWSS3TransferUtilityUploadExpression()
+        expression.progressBlock = {(task, progress) in
+            DispatchQueue.main.async(execute: {
+                // Do something e.g. Update a progress bar.
+            })
+        }
+        
+        
+        var completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?
+        completionHandler = { (task, error) -> Void in
+            DispatchQueue.main.async(execute: {
+                // Do something e.g. Alert a user for transfer completion.
+                // On failed uploads, `error` contains the error object.
+                
+            })
+        }
+        
+        DispatchQueue.global(qos: .background).async {
+            self.transferUtility.uploadFile(imageUrl,
+                                            key: "public/testing/123",
+                                            contentType: "png",
+                                            expression: expression,
+                                            completionHandler: completionHandler).continueWith {
+                                                (task) -> AnyObject! in
+                                                if let error = task.error {
+                                                    print("Error: \(error.localizedDescription)")
+                                                }
+                                                
+                                                if let _ = task.result {
+                                                    // Do something with uploadTask.
+                                                    
+                                                }
+                                                return nil
+            }
+
+        }
+        
+    }
+    
     /**
      Upload descriptor from S3 using key.
      */

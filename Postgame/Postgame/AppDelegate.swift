@@ -12,6 +12,7 @@ import Fabric
 import Crashlytics
 import AWSUserPoolsSignIn
 import AWSCognitoIdentityProvider
+import AWSAppSync
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -47,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // AWS User Pool
         let pool = AWSCognitoIdentityUserPool.default()
         pool.delegate = self
+
         
         window = UIWindow(frame: UIScreen.main.bounds)
         window!.rootViewController = ViewController()
@@ -66,8 +68,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Crashlytics.sharedInstance().setUserName(username)
         }
     }
-
-    
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -129,7 +129,6 @@ extension AppDelegate: AWSCognitoIdentityInteractiveAuthenticationDelegate {
 }
 
 // MARK:- AWSCognitoIdentityRememberDevice protocol delegate
-
 extension AppDelegate: AWSCognitoIdentityRememberDevice {
     
     func getRememberDevice(_ rememberDeviceCompletionSource: AWSTaskCompletionSource<NSNumber>) {
@@ -170,3 +169,6 @@ extension AppDelegate: AWSCognitoIdentityRememberDevice {
         }
     }
 }
+
+
+
