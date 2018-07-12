@@ -42,9 +42,43 @@ final class AppSyncService {
             print("Error initializing appsync client. \(error)")
         }
         
+//        let subscription = OnDeactivatedPostSubscription(id: "30.268669305397445/-97.74071767003996/984F76D8-3296-4217-93E1-52F652E5ECB4")
+//        do {
+//            _ = try appSyncClient?.subscribe(subscription: subscription,
+//                                             resultHandler: { (result, transaction, error) in
+//
+//        if let result = result {
+//                                                    print("Subscription: Post was deactivated!")
+//
+////                                                    // Store a reference to the new object
+////                                                    let newPost = result.data!.onCreatePost!
+////                                                    // Create a new object for the desired query, where the new object content should reside
+////                                                    let postToAdd = AllPostsQuery.Data.ListPost.Item(id: newPost.id,
+////                                                                                                     title: newPost.title!,
+////                                                                                                     author: newPost.author,
+////                                                                                                     content: newPost.content!,
+////                                                                                                     version: 1)
+////                                                    do {
+////                                                        // Update the local store with the newly received data
+////                                                        try transaction?.update(query: AllPostsQuery(), { (data: inout AllPostsQuery.Data) in
+////                                                            data.listPosts?.items?.append(postToAdd)
+////                                                        })
+////                                                        self.loadAllPostsFromCache()
+////                                                    } catch {
+////                                                        print("Error updating store")
+////                                                    }
+//                                                } else if let error = error {
+//                                                    print(error.localizedDescription)
+//                                                }
+//            })
+//        } catch {
+//            print("Error starting subscription.")
+//
+//        }
+        
     }
     
-    func observeDescriptorsByLocation(_ location: CLLocation) -> Observable<Descriptor>{
+    func observeDescriptorsByLocation(_ location: CLLocation) -> Observable<[Descriptor]>{
         // user coordinates
         let lat = Double(location.coordinate.latitude)
         let lon = Double(location.coordinate.longitude)
@@ -58,8 +92,7 @@ final class AppSyncService {
         let query = ListPostsByLocationQuery(lat: lat, lon: lon, distance: distString)
         return Observable.create { [appSyncClient] (observer) -> Disposable in
             appSyncClient?.fetch(query: query,
-                                 cachePolicy: .returnCacheDataAndFetch,
-                                 queue: DispatchQueue.global(qos: .userInteractive),
+                                 cachePolicy: .fetchIgnoringCacheData,
                                  resultHandler: { (result, error) in
                                     if error != nil {
                                         print(error?.localizedDescription ?? "")
@@ -68,8 +101,10 @@ final class AppSyncService {
                                     }
                                     
                                     if let posts = result?.data?.listPostsByLocation {
+                                        var descriptorArr = [Descriptor]()
                                         for post in posts {
                                             guard let post = post else { continue }
+                                        
                                             let descriptor = Descriptor(id: post.id,
                                                                         value: post.descriptor.base64DecodeIntoDoubleArr(),
                                                                         location: CLLocation(latitude: post.location.lat,
@@ -77,9 +112,10 @@ final class AppSyncService {
                                                                         S3Key: post.image.key,
                                                                         username: post.username,
                                                                         timestamp: post.timestamp)
-                                            observer.onNext(descriptor)
+                                            descriptorArr.append(descriptor)
                                             
                                         }
+                                        observer.onNext(descriptorArr)
                                         observer.onCompleted()
                                     } else {
                                         observer.onCompleted()
@@ -109,6 +145,7 @@ final class AppSyncService {
                                             altitude: Double(location.altitude),
                                             horAcc: Double(location.horizontalAccuracy),
                                             verAcc: Double(location.verticalAccuracy))
+        
 
         let mutation = CreatePostMutation(input: mutationInput)
         appSyncClient?.perform(mutation: mutation, optimisticUpdate: { (transaction) in
@@ -147,7 +184,6 @@ final class AppSyncService {
                                             active: false)
         let mutation = UpdatePostMutation(input: mutationInput)
         appSyncClient?.perform(mutation: mutation,
-                              queue: DispatchQueue.global(qos: .background),
                               resultHandler: { (result, error) in
                                 if let error = error as? AWSAppSyncClientError {
                                     print("Error occurred: \(error.localizedDescription )")
@@ -160,7 +196,6 @@ final class AppSyncService {
     func incrementViewCount(id: String) {
         let mutation = IncrementViewCountMutation(id: id)
         appSyncClient?.perform(mutation: mutation,
-                               queue: DispatchQueue.global(qos: .background),
                                resultHandler: { (result, error) in
                                 if let error = error as? AWSAppSyncClientError {
                                     print("Error occurred: \(error.localizedDescription )")

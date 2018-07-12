@@ -16,4 +16,4 @@ let database_name = "PostTable"
 let S3Bucket = "postgame-userfiles-mobilehub-1951513639"
 
 // MARK:- CLLocation
-let BaseLocationUncertainty = 20.0
+let BaseLocationUncertainty = 50.0

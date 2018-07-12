@@ -1272,16 +1272,6 @@
                                     "defaultValue": null
                                 },
                                 {
-                                    "name": "active",
-                                    "description": null,
-                                    "type": {
-                                        "kind": "SCALAR",
-                                        "name": "Boolean",
-                                        "ofType": null
-                                    },
-                                    "defaultValue": null
-                                },
-                                {
                                     "name": "timestamp",
                                     "description": null,
                                     "type": {
@@ -1302,11 +1292,11 @@
                                     "defaultValue": null
                                 },
                                 {
-                                    "name": "viewCount",
+                                    "name": "location",
                                     "description": null,
                                     "type": {
-                                        "kind": "SCALAR",
-                                        "name": "Int",
+                                        "kind": "INPUT_OBJECT",
+                                        "name": "LocationInput",
                                         "ofType": null
                                     },
                                     "defaultValue": null
@@ -2363,25 +2353,6 @@
                     "onField": false
                 },
                 {
-                    "name": "deprecated",
-                    "description": null,
-                    "args": [
-                        {
-                            "name": "reason",
-                            "description": null,
-                            "type": {
-                                "kind": "SCALAR",
-                                "name": "String",
-                                "ofType": null
-                            },
-                            "defaultValue": "\"No longer supported\""
-                        }
-                    ],
-                    "onOperation": false,
-                    "onFragment": false,
-                    "onField": false
-                },
-                {
                     "name": "aws_auth",
                     "description": "Directs the schema to enforce authorization on a field",
                     "args": [
@@ -2398,6 +2369,25 @@
                                 }
                             },
                             "defaultValue": null
+                        }
+                    ],
+                    "onOperation": false,
+                    "onFragment": false,
+                    "onField": false
+                },
+                {
+                    "name": "deprecated",
+                    "description": null,
+                    "args": [
+                        {
+                            "name": "reason",
+                            "description": null,
+                            "type": {
+                                "kind": "SCALAR",
+                                "name": "String",
+                                "ofType": null
+                            },
+                            "defaultValue": "\"No longer supported\""
                         }
                     ],
                     "onOperation": false,

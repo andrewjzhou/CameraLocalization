@@ -20,13 +20,13 @@ final class DescriptorCache {
     let threshold = 0.75
     var lastLocation: CLLocation?
     
-    private(set) var cache = [String : Descriptor]() {
+    var cache = [String : Descriptor]() {
         didSet{ countSubject.onNext(cache.count) }
     }
     
     // IndicatorButton in main View Controller uses counter to disploy number of posts nearby
     private let countSubject = BehaviorSubject<Int>(value: 0)
-    private(set) lazy var counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0)
+    private(set) lazy var counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0).debounce(0.05)
     
     // Every observered event downloads descriptor to cache
     private let queryPublisher = PublishSubject<CLLocation>()
@@ -36,8 +36,11 @@ final class DescriptorCache {
         queryPublisher.asObservable()
             .debounce(1, scheduler: MainScheduler.instance)
             .flatMap { AppSyncService.sharedInstance.observeDescriptorsByLocation($0) }
-            .subscribe(onNext: { [weak self] (descriptor) in
-                self?.cache.updateValue(descriptor, forKey: descriptor.id)
+            .subscribe(onNext: { [weak self] (descriptors) in
+                self?.cache.removeAll()
+                for descriptor in descriptors {
+                    self?.cache.updateValue(descriptor, forKey: descriptor.id)
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -51,16 +54,19 @@ final class DescriptorCache {
     // Reload cache
     func refresh() {
         if let location = lastLocation {
-            // Refresh cache. Remove descriptors that are not inside user region
-            cache = cache.filter({ (_, value: Descriptor) -> Bool in
-                let dist = value.location.distance(from: location)
-                return dist < (location.horizontalAccuracy + BaseLocationUncertainty)
-            })
+//            // Refresh cache. Remove descriptors that are not inside user region
+//            cache = cache.filter({ (_, value: Descriptor) -> Bool in
+//                let dist = value.location.distance(from: location)
+//                return dist < (location.horizontalAccuracy + BaseLocationUncertainty)
+//            })
             
             // Download nearby descriptors
              queryPublisher.onNext(location)
         }
     }
+    
+    // Remove descriptor
+    func remove(id: String) { cache.removeValue(forKey: id) }
     
     
     // Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
@@ -69,6 +75,7 @@ final class DescriptorCache {
         
         for (_, descriptor) in cache {
             let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
+            print("Similarity: \(similarity)")
 
             if similarity > threshold {
                 if bestMatchSimilarity == nil { // Found first best match

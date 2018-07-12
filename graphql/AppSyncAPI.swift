@@ -643,6 +643,95 @@ public final class GetPostQuery: GraphQLQuery {
   }
 }
 
+public final class OnDeactivatedPostSubscription: GraphQLSubscription {
+  public static let operationString =
+    "subscription OnDeactivatedPost($id: ID!) {\n  onUpdatePost(id: $id) {\n    __typename\n    id\n    active\n  }\n}"
+
+  public var id: GraphQLID
+
+  public init(id: GraphQLID) {
+    self.id = id
+  }
+
+  public var variables: GraphQLMap? {
+    return ["id": id]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Subscription"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("onUpdatePost", arguments: ["id": GraphQLVariable("id")], type: .object(OnUpdatePost.selections)),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(onUpdatePost: OnUpdatePost? = nil) {
+      self.init(snapshot: ["__typename": "Subscription", "onUpdatePost": onUpdatePost.flatMap { $0.snapshot }])
+    }
+
+    public var onUpdatePost: OnUpdatePost? {
+      get {
+        return (snapshot["onUpdatePost"] as? Snapshot).flatMap { OnUpdatePost(snapshot: $0) }
+      }
+      set {
+        snapshot.updateValue(newValue?.snapshot, forKey: "onUpdatePost")
+      }
+    }
+
+    public struct OnUpdatePost: GraphQLSelectionSet {
+      public static let possibleTypes = ["Post"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("active", type: .nonNull(.scalar(Bool.self))),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, active: Bool) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "active": active])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var active: Bool {
+        get {
+          return snapshot["active"]! as! Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "active")
+        }
+      }
+    }
+  }
+}
+
 public final class ListPostsByLocationQuery: GraphQLQuery {
   public static let operationString =
     "query ListPostsByLocation($lat: Float!, $lon: Float!, $distance: String!) {\n  listPostsByLocation(lat: $lat, lon: $lon, distance: $distance) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    active\n    timestamp\n    username\n    viewCount\n    descriptor\n    altitude\n    verAcc\n    horAcc\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"

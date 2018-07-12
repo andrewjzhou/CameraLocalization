@@ -78,6 +78,7 @@ class ViewController: UIViewController {
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
         
+     
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -164,7 +165,7 @@ extension ViewController {
             .filter({ _ -> Bool in
                 return self.createButton.post == nil
             })
-            .subscribe(onNext: {_ in
+            .subscribe(onNext: {[descriptorCache] _ in
                 // Create new CreationView
                 let creationView = CreationView()
                 self.view.addSubview(creationView) // sets layout inside didMoveToSuperview()
@@ -190,6 +191,8 @@ extension ViewController {
                             self.createButton.animation = "zoomIn"
                             self.createButton.duration = 0.3
                             self.createButton.animate()
+                            
+                            descriptorCache.refresh()
                         }
                     })
                     .disposed(by: self.disposeBag)
@@ -230,8 +233,8 @@ extension ViewController {
         
         // Refresh descriptor cache
         
-        indicatorButton.rx.tap.subscribe(onNext: { _ in
-            self.descriptorCache.refresh()
+        indicatorButton.rx.tap.subscribe(onNext: {[descriptorCache] _ in
+            descriptorCache.refresh()
         }).disposed(by: disposeBag)
         
     }
@@ -259,7 +262,7 @@ extension ViewController {
         let _ =
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
-                .throttle(0.05, scheduler:  MainScheduler.instance)
+                .throttle(0.05, scheduler:  MainScheduler.asyncInstance)
                 .filter { _ in
                     return AWSCognitoUserPoolsSignInProvider.sharedInstance().isLoggedIn()
                 } // quick fix.
@@ -344,11 +347,11 @@ extension ViewController {
                     if let image = self!.imageCache.object(forKey: match!.parentPostInfo.s3Key as NSString) {
                         node!.setContent(image)
                     } else {
-                        node!.downloadAndSetContent(match!.parentPostInfo.s3Key, cache: self!.imageCache)
+                        node!.downloadAndSetContent(match!.parentPostInfo.s3Key, imageCacheToUpdate: self!.imageCache)
+                        
+                        // increment viewCount
+                        AppSyncService.sharedInstance.incrementViewCount(id: match!.id)
                     }
-                    
-                    // increment viewCount
-                    AppSyncService.sharedInstance.incrementViewCount(id: match!.id)
                 } else if self!.createButton.post != nil { // Post to be added
                     node!.prompt()
                 } else { // Placeholder

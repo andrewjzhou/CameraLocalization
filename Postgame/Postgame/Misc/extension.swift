@@ -207,7 +207,10 @@ extension String {
     }
     
     func base64DecodeIntoDoubleArr() -> [Double] {
-        return self.split(separator: ",").map { Double($0) ?? 0.0 }
+        let decodedData = Data(base64Encoded: self)!
+        let decodedString = String(data: decodedData, encoding: .utf8)
+        let decodedArr = decodedString?.split(separator: ",").map { Double($0) ?? 0.0 }
+        return decodedArr ?? []
     }
     
 }

@@ -76,6 +76,9 @@ extension ViewController {
             // cache image
             imageCache.setObject(createButton.post!, forKey: postNode.recorder.id! as NSString)
             
+            // refresh descriptor cache
+            descriptorCache.refresh()
+            
             // Exist posting mode
             createButton.sendActions(for: .touchUpInside)
             

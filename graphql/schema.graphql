@@ -18,6 +18,14 @@ query GetPost($id:ID!) {
   }
 }
 
+subscription OnDeactivatedPost($id: ID!) {
+    onUpdatePost(id: $id) {
+        id
+        active
+    }
+}
+
+
 query ListPostsByLocation($lat: Float!, $lon: Float!, $distance: String!) {
     listPostsByLocation(lat: $lat, lon: $lon, distance: $distance) {
         id
@@ -157,4 +165,5 @@ type Mutation {
     deletePost(input: DeletePostInput!): Post
     incrementViewCount(id: ID!): Post
 }
+
 

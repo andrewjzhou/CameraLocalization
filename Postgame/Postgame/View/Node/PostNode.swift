@@ -190,7 +190,7 @@ final class PostNode: SCNNode {
         recorder.post = image
     }
     
-    func downloadAndSetContent(_ key: String, cache: NSCache<NSString, UIImage>) {
+    func downloadAndSetContent(_ key: String, imageCacheToUpdate: NSCache<NSString, UIImage>) {
         state = .load
         // Download post and set content
         let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
@@ -198,7 +198,7 @@ final class PostNode: SCNNode {
             .subscribe(onNext: { [weak self] (image) in
                 if self == nil { return }
                 self!.setContent(image)
-                cache.setObject(image, forKey: key as NSString)
+                imageCacheToUpdate.setObject(image, forKey: key as NSString)
             })
             .disposed(by: disposeBag)
     }
