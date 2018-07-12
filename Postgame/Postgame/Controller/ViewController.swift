@@ -99,19 +99,12 @@ class ViewController: UIViewController {
     
     func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
-            .subscribe(onNext: { [sceneView, disposeBag] _ in
+            .subscribe(onNext: { [weak self] _ in
                 // Run the view's session
-                sceneView.session.run(self.trackingConfiguration)
-                sceneView.showsStatistics = true // For debugging
-                
-                // Reset tracking state when interruption ends
-                let _ =
-                sceneView.session.rx.sessionInterruptionEnded
-                    .subscribe{ (_) in
-                        self.resetSession()
-                    }
-                    .disposed(by: disposeBag)
-                
+                self?.resetSession()
+                self?.sceneView.showsStatistics = true // For debugging
+                self?.descriptorCache.refresh()
+    
                 // Authenticate user
                 AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
             })

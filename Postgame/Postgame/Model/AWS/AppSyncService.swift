@@ -85,7 +85,8 @@ final class AppSyncService {
         
         
         // radius for query in meters, in string format
-        let dist = Double(location.horizontalAccuracy) + BaseLocationUncertainty
+        var dist = Double(location.horizontalAccuracy)
+        if dist < BaseLocationUncertainty { dist = dist * 2 } else { dist += BaseLocationUncertainty }
         let Unit = "m"
         let distString = String(dist) + Unit
         
