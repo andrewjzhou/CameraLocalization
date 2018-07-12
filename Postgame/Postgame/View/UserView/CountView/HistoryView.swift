@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     let imageCache = NSCache<NSString, UIImage>()
     let titleLabel = UILabel()
@@ -25,8 +25,8 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     
     let cellId = "cellId"
     
-    var topInfos: [CellInfo]?
-    var recentInfos: [CellInfo]?
+    var topInfos: [HistoryCellInfo]? { didSet{ collectionView.reloadData()} }
+    var recentInfos: [HistoryCellInfo]? { didSet{ collectionView.reloadData()} }
     
     enum state { case top, recent }
     var currState = state.top {
@@ -53,7 +53,7 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
         titleLabel.text = "Top 5 : "
         
         addSubview(collectionView)
-        collectionView.register(TopViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(HistoryViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.setTopConstraint(equalTo: titleLabel.bottomAnchor, offset: 0)
         collectionView.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
@@ -71,55 +71,6 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     }
     @objc func handleTap (sender: UITapGestureRecognizer) {
         currState = (currState == .top) ? .recent : .top
-        print("This is being tapped: \(currState)")
-    }
-    
-    func setup(_ vc: ViewCount) {
-        topInfos = [CellInfo]()
-        if vc._recent1Key != "nil" {
-            let info = CellInfo(key: vc._top1Key!, date: vc._top1Date!, views: vc._top1Views!.intValue)
-            topInfos!.append(info)
-        }
-        if vc._recent2Key != "nil" {
-            let info = CellInfo(key: vc._top2Key!, date: vc._top2Date!, views: vc._top2Views!.intValue)
-            topInfos!.append(info)
-        }
-        if vc._recent3Key != "nil" {
-            let info = CellInfo(key: vc._top3Key!, date: vc._top3Date!, views: vc._top3Views!.intValue)
-            topInfos!.append(info)
-        }
-        if vc._recent4Key != "nil" {
-            let info = CellInfo(key: vc._top4Key!, date: vc._top4Date!, views: vc._top4Views!.intValue)
-            topInfos!.append(info)
-        }
-        if vc._recent5Key != "nil" {
-            let info = CellInfo(key: vc._top5Key!, date: vc._top5Date!, views: vc._top5Views!.intValue)
-            topInfos!.append(info)
-        }
-        
-        recentInfos = [CellInfo]()
-        if vc._recent1Key != "nil" {
-            let info = CellInfo(key: vc._recent1Key!, date: vc._recent1Date!, views: vc._recent1Views!.intValue)
-            recentInfos!.append(info)
-        }
-        if vc._recent2Key != "nil" {
-            let info = CellInfo(key: vc._recent2Key!, date: vc._recent2Date!, views: vc._recent2Views!.intValue)
-            recentInfos!.append(info)
-        }
-        if vc._recent3Key != "nil" {
-            let info = CellInfo(key: vc._recent3Key!, date: vc._recent3Date!, views: vc._recent3Views!.intValue)
-            recentInfos!.append(info)
-        }
-        if vc._recent4Key != "nil" {
-            let info = CellInfo(key: vc._recent4Key!, date: vc._recent4Date!, views: vc._recent4Views!.intValue)
-            recentInfos!.append(info)
-        }
-        if vc._recent5Key != "nil" {
-            let info = CellInfo(key: vc._recent5Key!, date: vc._recent5Date!, views: vc._recent5Views!.intValue)
-            recentInfos!.append(info)
-        }
-        
-        collectionView.reloadData()
     }
     
 
@@ -130,24 +81,24 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TopViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! HistoryViewCell
         let infos = (currState == .top) ? topInfos : recentInfos
         if infos != nil {
             let info = infos![indexPath.row]
             
             // Format date
-            let date = formatDateForDisplay(info.date)
+            let date = formatDateForDisplay(info.timestamp)
             cell.titleLabel.text = date
-            cell.numberLabel.text = String(info.views)
+            cell.numberLabel.text = String(info.viewCount)
             
-            if let imageToShow = imageCache.object(forKey: info.key as NSString) {
+            if let imageToShow = imageCache.object(forKey: info.s3Key as NSString) {
                 cell.imageView.image = imageToShow
             } else {
-                S3Service.sharedInstance.downloadPost(info.key)
+                S3Service.sharedInstance.downloadPost(info.s3Key)
                     .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
                     .drive(onNext: { (image) in
                         cell.imageView.image  = image
-                        self.imageCache.setObject(image, forKey: info.key as NSString)
+                        self.imageCache.setObject(image, forKey: info.s3Key as NSString)
                     })
                     .disposed(by: cell.disposeBag)
             }
@@ -172,7 +123,7 @@ final class TopView: UIView, UICollectionViewDataSource, UICollectionViewDelegat
     }
 }
 
-final class TopViewCell: BaseCell {
+final class HistoryViewCell: BaseCell {
     let imageView = UIImageView()
     let titleLabel = UILabel()
     let numberLabel = UILabel()
@@ -235,9 +186,9 @@ fileprivate extension Int {
     }
 }
 
-
-struct CellInfo {
-    let key: String
-    let date: String
-    let views: Int
+struct HistoryCellInfo {
+    let timestamp: String
+    let viewCount: Int
+    let active: Bool
+    let s3Key: String
 }

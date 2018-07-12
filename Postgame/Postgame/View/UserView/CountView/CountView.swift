@@ -14,7 +14,7 @@ final class CountView: UIView {
     let disposeBag = DisposeBag()
     
     let totalView = TotalView()
-    let topView = TopView()
+    let historyView = HistoryView()
     var viewCount: ViewCount?
     
     override init(frame: CGRect) {
@@ -26,32 +26,34 @@ final class CountView: UIView {
         totalView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
         totalView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.3).isActive = true
         
-        addSubview(topView)
-        topView.translatesAutoresizingMaskIntoConstraints = false
-        topView.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
-        topView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
-        topView.setTopConstraint(equalTo: totalView.bottomAnchor, offset: 0)
-        topView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
+        addSubview(historyView)
+        historyView.translatesAutoresizingMaskIntoConstraints = false
+        historyView.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
+        historyView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
+        historyView.setTopConstraint(equalTo: totalView.bottomAnchor, offset: 0)
+        historyView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
         
         
     }
     
     func refresh() {
-        guard let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.username else {return}
-        DynamoDBService.sharedInstance.viewCountQuery(username)
-            .drive(onNext: { (vc) in
-                self.viewCount = vc
-                // load data for TotalView
-                if let totalCount = vc?._totalViews {
-                    print("Totalcount is : " , totalCount)
-                    self.totalView.setNumber(Int(totalCount))
-                }
-                
-                // load data for TopView
-                self.topView.setup(vc!)
-                
-            })
-            .disposed(by: disposeBag)
+        // Total Views
+        AppSyncService.sharedInstance.queryTotalViews().asDriver(onErrorJustReturn: 0)
+            .drive(onNext: { [totalView] (viewCount) in
+                totalView.setNumber(viewCount)
+            }).disposed(by: disposeBag)
+        
+        // Top Viewed
+        AppSyncService.sharedInstance.queryMostViewed().asDriver(onErrorJustReturn: [])
+            .drive(onNext: { [historyView] (infoArr) in
+                historyView.topInfos = infoArr
+            }).disposed(by: disposeBag)
+        
+        // Most Recent
+        AppSyncService.sharedInstance.queryMostRecent().asDriver(onErrorJustReturn: [])
+            .drive(onNext: { [historyView] (infoArr) in
+                historyView.recentInfos = infoArr
+            }).disposed(by: disposeBag)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -59,9 +61,4 @@ final class CountView: UIView {
     }
 }
 
-struct HistoryCellInfo {
-    let timestamp: String
-    let viewCount: Int
-    let active: Bool
-    let s3Key: String
-}
+
