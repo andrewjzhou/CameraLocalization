@@ -13,6 +13,7 @@ import AWSUserPoolsSignIn
 import CoreLocation
 import RxSwift
 
+
 final class AppSyncService {
 
     static let sharedInstance = AppSyncService()
@@ -41,40 +42,6 @@ final class AppSyncService {
         } catch {
             print("Error initializing appsync client. \(error)")
         }
-        
-//        let subscription = OnDeactivatedPostSubscription(id: "30.268669305397445/-97.74071767003996/984F76D8-3296-4217-93E1-52F652E5ECB4")
-//        do {
-//            _ = try appSyncClient?.subscribe(subscription: subscription,
-//                                             resultHandler: { (result, transaction, error) in
-//
-//        if let result = result {
-//                                                    print("Subscription: Post was deactivated!")
-//
-////                                                    // Store a reference to the new object
-////                                                    let newPost = result.data!.onCreatePost!
-////                                                    // Create a new object for the desired query, where the new object content should reside
-////                                                    let postToAdd = AllPostsQuery.Data.ListPost.Item(id: newPost.id,
-////                                                                                                     title: newPost.title!,
-////                                                                                                     author: newPost.author,
-////                                                                                                     content: newPost.content!,
-////                                                                                                     version: 1)
-////                                                    do {
-////                                                        // Update the local store with the newly received data
-////                                                        try transaction?.update(query: AllPostsQuery(), { (data: inout AllPostsQuery.Data) in
-////                                                            data.listPosts?.items?.append(postToAdd)
-////                                                        })
-////                                                        self.loadAllPostsFromCache()
-////                                                    } catch {
-////                                                        print("Error updating store")
-////                                                    }
-//                                                } else if let error = error {
-//                                                    print(error.localizedDescription)
-//                                                }
-//            })
-//        } catch {
-//            print("Error starting subscription.")
-//
-//        }
         
     }
     
@@ -214,6 +181,103 @@ final class AppSyncService {
                                 }
         })
     }
+    
+    func queryTotalViews() -> Observable<Int> {
+        return Observable.create { [appSyncClient] (observer) -> Disposable in
+            guard let username = AWSCognitoIdentityUserPool.default().currentUser()?.username else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            let query = QueryTotalViewsByUsernameQuery(username: username)
+            appSyncClient?.fetch(query: query,
+                                 cachePolicy: .returnCacheDataAndFetch,
+                                 queue: DispatchQueue.global(qos: .background),
+                                 resultHandler: { (result, error) in
+                                    if error != nil {
+                                        print(error?.localizedDescription ?? "")
+                                        observer.onCompleted()
+                                        return
+                                    }
+                                    
+                                    if let views = result?.data?.queryTotalViewsByUsername {
+                                        observer.onNext(views)
+                                        observer.onCompleted()
+                                    } else {
+                                        observer.onCompleted()
+                                    }
+            })
+            return Disposables.create()
+        }
+    }
+    
+    func queryMostRecent() -> Observable<[HistoryCellInfo]> {
+        return Observable.create { [appSyncClient] (observer) -> Disposable in
+            guard let username = AWSCognitoIdentityUserPool.default().currentUser()?.username else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            let query = QueryMostRecentByUsernameQuery(username: username, size: 5)
+            appSyncClient?.fetch(query: query,
+                                 cachePolicy: .returnCacheDataAndFetch,
+                                 queue: DispatchQueue.global(qos: .background),
+                                 resultHandler: { (result, error) in
+                                    if error != nil {
+                                        print(error?.localizedDescription ?? "")
+                                        observer.onCompleted()
+                                        return
+                                    }
+                                    
+                                    var infoArr = [HistoryCellInfo]()
+                                    for post in result?.data?.queryMostRecentByUsername ?? [] {
+                                        if post == nil { continue }
+                                        let info = HistoryCellInfo(timestamp: post!.timestamp,
+                                                                   viewCount: post!.viewCount,
+                                                                   active: post!.active,
+                                                                   s3Key: post!.image.key)
+                                        infoArr.append(info)
+                                    }
+                                    observer.onNext(infoArr)
+                                    observer.onCompleted()
+            })
+            return Disposables.create()
+        }
+    }
+        
+    func queryMostViewed() -> Observable<[HistoryCellInfo]> {
+        return Observable.create { [appSyncClient] (observer) -> Disposable in
+            guard let username = AWSCognitoIdentityUserPool.default().currentUser()?.username else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            let query = QueryMostViewedByUsernameQuery(username: username, size: 5)
+            appSyncClient?.fetch(query: query,
+                                 cachePolicy: .returnCacheDataAndFetch,
+                                 queue: DispatchQueue.global(qos: .background),
+                                 resultHandler: { (result, error) in
+                                    if error != nil {
+                                        print(error?.localizedDescription ?? "")
+                                        observer.onCompleted()
+                                        return
+                                    }
+                                    
+                                    var infoArr = [HistoryCellInfo]()
+                                    for post in result?.data?.queryMostViewedByUsername ?? [] {
+                                        if post == nil { continue }
+                                        let info = HistoryCellInfo(timestamp: post!.timestamp,
+                                                                   viewCount: post!.viewCount,
+                                                                   active: post!.active,
+                                                                   s3Key: post!.image.key)
+                                        infoArr.append(info)
+                                    }
+                                    observer.onNext(infoArr)
+                                    observer.onCompleted()
+            })
+            return Disposables.create()
+        }
+    }
+    
 
 }
 

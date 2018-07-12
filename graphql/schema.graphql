@@ -56,6 +56,8 @@ query QueryMostRecentByUsername($username: String!, $size: Int!) {
         image {
             ...S3Object
         }
+        viewCount
+        active
     }
 }
 
@@ -69,6 +71,8 @@ query QueryMostViewedByUsername($username: String!, $size: Int!) {
         image {
             ...S3Object
         }
+        viewCount
+        active
     }
 }
 

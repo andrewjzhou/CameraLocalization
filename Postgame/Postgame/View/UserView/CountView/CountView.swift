@@ -58,3 +58,10 @@ final class CountView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+struct HistoryCellInfo {
+    let timestamp: String
+    let viewCount: Int
+    let active: Bool
+    let s3Key: String
+}

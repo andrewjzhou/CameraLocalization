@@ -1069,7 +1069,7 @@ public final class ListPostsByLocationQuery: GraphQLQuery {
 
 public final class QueryMostRecentByUsernameQuery: GraphQLQuery {
   public static let operationString =
-    "query QueryMostRecentByUsername($username: String!, $size: Int!) {\n  queryMostRecentByUsername(username: $username, size: $size) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
+    "query QueryMostRecentByUsername($username: String!, $size: Int!) {\n  queryMostRecentByUsername(username: $username, size: $size) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    image {\n      __typename\n      ...S3Object\n    }\n    viewCount\n    active\n  }\n}"
 
   public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
 
@@ -1120,6 +1120,8 @@ public final class QueryMostRecentByUsernameQuery: GraphQLQuery {
         GraphQLField("location", type: .nonNull(.object(Location.selections))),
         GraphQLField("timestamp", type: .nonNull(.scalar(String.self))),
         GraphQLField("image", type: .nonNull(.object(Image.selections))),
+        GraphQLField("viewCount", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("active", type: .nonNull(.scalar(Bool.self))),
       ]
 
       public var snapshot: Snapshot
@@ -1128,8 +1130,8 @@ public final class QueryMostRecentByUsernameQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, location: Location, timestamp: String, image: Image) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "timestamp": timestamp, "image": image.snapshot])
+      public init(id: GraphQLID, location: Location, timestamp: String, image: Image, viewCount: Int, active: Bool) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "timestamp": timestamp, "image": image.snapshot, "viewCount": viewCount, "active": active])
       }
 
       public var __typename: String {
@@ -1174,6 +1176,24 @@ public final class QueryMostRecentByUsernameQuery: GraphQLQuery {
         }
         set {
           snapshot.updateValue(newValue.snapshot, forKey: "image")
+        }
+      }
+
+      public var viewCount: Int {
+        get {
+          return snapshot["viewCount"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "viewCount")
+        }
+      }
+
+      public var active: Bool {
+        get {
+          return snapshot["active"]! as! Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "active")
         }
       }
 
@@ -1332,7 +1352,7 @@ public final class QueryMostRecentByUsernameQuery: GraphQLQuery {
 
 public final class QueryMostViewedByUsernameQuery: GraphQLQuery {
   public static let operationString =
-    "query QueryMostViewedByUsername($username: String!, $size: Int!) {\n  queryMostViewedByUsername(username: $username, size: $size) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    image {\n      __typename\n      ...S3Object\n    }\n  }\n}"
+    "query QueryMostViewedByUsername($username: String!, $size: Int!) {\n  queryMostViewedByUsername(username: $username, size: $size) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    image {\n      __typename\n      ...S3Object\n    }\n    viewCount\n    active\n  }\n}"
 
   public static var requestString: String { return operationString.appending(Location.fragmentString).appending(S3Object.fragmentString) }
 
@@ -1383,6 +1403,8 @@ public final class QueryMostViewedByUsernameQuery: GraphQLQuery {
         GraphQLField("location", type: .nonNull(.object(Location.selections))),
         GraphQLField("timestamp", type: .nonNull(.scalar(String.self))),
         GraphQLField("image", type: .nonNull(.object(Image.selections))),
+        GraphQLField("viewCount", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("active", type: .nonNull(.scalar(Bool.self))),
       ]
 
       public var snapshot: Snapshot
@@ -1391,8 +1413,8 @@ public final class QueryMostViewedByUsernameQuery: GraphQLQuery {
         self.snapshot = snapshot
       }
 
-      public init(id: GraphQLID, location: Location, timestamp: String, image: Image) {
-        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "timestamp": timestamp, "image": image.snapshot])
+      public init(id: GraphQLID, location: Location, timestamp: String, image: Image, viewCount: Int, active: Bool) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "timestamp": timestamp, "image": image.snapshot, "viewCount": viewCount, "active": active])
       }
 
       public var __typename: String {
@@ -1437,6 +1459,24 @@ public final class QueryMostViewedByUsernameQuery: GraphQLQuery {
         }
         set {
           snapshot.updateValue(newValue.snapshot, forKey: "image")
+        }
+      }
+
+      public var viewCount: Int {
+        get {
+          return snapshot["viewCount"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "viewCount")
+        }
+      }
+
+      public var active: Bool {
+        get {
+          return snapshot["active"]! as! Bool
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "active")
         }
       }
 

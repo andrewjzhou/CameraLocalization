@@ -78,13 +78,12 @@ class ViewController: UIViewController {
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
         
-     
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
 //        AppSyncService.sharedInstance.createNewPost()
-        // Testing
-        //        AppSyncService.sharedInstance.updatePost()
+        // Testingl
 //        AppSyncService.sharedInstance.incrementViewCount()
         //        S3Service.sharedInstance.uploadFile()
     }
