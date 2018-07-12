@@ -77,7 +77,6 @@ class ViewController: UIViewController {
         handleGeolocationService()
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
-        print(timestamp())
         
     }
     
@@ -103,6 +102,7 @@ class ViewController: UIViewController {
                 self?.resetSession()
                 self?.sceneView.showsStatistics = true // For debugging
                 self?.descriptorCache.refresh()
+                self?.userView.countView.refresh()
     
                 // Authenticate user
                 AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()

@@ -32,6 +32,7 @@ PODS:
   - Crashlytics (3.10.2):
     - Fabric (~> 1.7.7)
   - Fabric (1.7.7)
+  - KeychainSwift (11.0.0)
   - ReachabilitySwift (4.0.0)
   - RxCocoa (4.1.2):
     - RxSwift (~> 4.0)
@@ -54,6 +55,7 @@ DEPENDENCIES:
   - ChameleonFramework/Swift (from `https://github.com/ViccAlexander/Chameleon.git`)
   - Crashlytics
   - Fabric
+  - KeychainSwift (~> 11.0)
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
   - Spring (from `https://github.com/MengTo/Spring.git`)
@@ -88,12 +90,13 @@ SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
+  KeychainSwift: bea6bd9f98af7b8d7ca4aa79fe105c00fab532db
   ReachabilitySwift: e67b2cab4d5386053673d8a7421b5981e5f08259
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
   RxSwift: e49536837d9901277638493ea537394d4b55f570
   Spring: 3c7666eccefdeb87140008dc81043f89f8dbb787
   SQLite.swift: 3e3bee21da701b5b9f87c4a672cb54f233505692
 
-PODFILE CHECKSUM: 8afbb94841f35f39aec7e7a01215671485f9299a
+PODFILE CHECKSUM: 3cecb4ef0b3347192af058348d6d3829660a12ec
 
 COCOAPODS: 1.4.0

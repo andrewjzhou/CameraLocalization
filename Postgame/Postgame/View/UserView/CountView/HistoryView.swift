@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import RxSwift
 
 final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
+    let disposeBag = DisposeBag()
     let imageCache = NSCache<NSString, UIImage>()
     let titleLabel = UILabel()
     lazy var collectionView: UICollectionView = {
@@ -25,17 +26,25 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
     
     let cellId = "cellId"
     
-    var topInfos: [HistoryCellInfo]? { didSet{ collectionView.reloadData()} }
-    var recentInfos: [HistoryCellInfo]? { didSet{ collectionView.reloadData()} }
+    var topInfos: [HistoryCellInfo]? {
+        didSet{
+            for info in topInfos! { downloadImageToCache(info.s3Key) }
+            collectionView.reloadData()
+        }
+        
+    }
+    var recentInfos: [HistoryCellInfo]? {
+        didSet{
+            for info in recentInfos! { downloadImageToCache(info.s3Key) }
+            collectionView.reloadData()
+        }
+    }
     
     enum state { case top, recent }
     var currState = state.top {
         didSet {
-            if currState == .top {
-                self.titleLabel.text = "Top 5 :"
-            } else {
-                self.titleLabel.text = "Recent 5 : "
-            }
+            if currState == .top { self.titleLabel.text = "Top 5 :" }
+            else { self.titleLabel.text = "Recent 5 : " }
             collectionView.reloadData()
         }
     }
@@ -117,6 +126,15 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {}
+    
+    private func downloadImageToCache(_ key: String) {
+        S3Service.sharedInstance.downloadPost(key)
+            .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
+            .drive(onNext: { (image) in
+                self.imageCache.setObject(image, forKey: key as NSString)
+            })
+            .disposed(by: disposeBag)
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

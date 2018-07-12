@@ -25,6 +25,8 @@ target 'Postgame' do
   ## UI
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
   pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chameleon.git'
+  ## Misc
+  pod 'KeychainSwift', '~> 11.0'
 
   target 'PostgameTests' do
     inherit! :search_paths

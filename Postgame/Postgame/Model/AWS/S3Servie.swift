@@ -147,7 +147,6 @@ struct S3Service {
                                         return nil
             }
         }
-        
     }
 //
 //    /**
@@ -214,6 +213,7 @@ struct S3Service {
      Download post from S3 using key.
      */
     func downloadPost(_ key: String) -> Observable<UIImage> {
+        
         let prefix = "public/post/"
         let downloadKey = prefix + key
         return Observable.create({ [transferUtility] (observer) in
@@ -232,6 +232,7 @@ struct S3Service {
                 // On failed downloads, `error` contains the error object.
                 if let error = error {
                     print("Error: \(error)")
+                    observer.onCompleted()
                 }
                 
                 if let _ = data {

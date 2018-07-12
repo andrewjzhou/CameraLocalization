@@ -12,12 +12,13 @@ import AWSS3
 import AWSUserPoolsSignIn
 import CoreLocation
 import RxSwift
-
+import KeychainSwift
 
 final class AppSyncService {
 
     static let sharedInstance = AppSyncService()
-
+    
+    private let keychain = KeychainSwift()
     var appSyncClient: AWSAppSyncClient?
     lazy var appSyncConfig: AWSAppSyncClientConfiguration? = {
         let databaseURL = URL(fileURLWithPath:NSTemporaryDirectory()).appendingPathComponent(database_name)
@@ -144,7 +145,6 @@ final class AppSyncService {
                 
             }
         }
-       
     }
 
     func deactivatePost(id: String) {
@@ -283,9 +283,12 @@ final class AppSyncService {
 
 extension AppSyncService: AWSCognitoUserPoolsAuthProvider {
     func getLatestAuthToken() -> String {
+        let key = "CognitoAuthTokenString"
         let pool = AWSCognitoIdentityUserPool.default()
         let session =  pool.currentUser()?.getSession()
-        return (session?.result?.idToken?.tokenString) ?? ""
+        let tokenString = session?.result?.idToken?.tokenString
+        if tokenString != nil { keychain.set(tokenString!, forKey: key) }
+        return keychain.get(key) ?? ""
     }
 }
 
