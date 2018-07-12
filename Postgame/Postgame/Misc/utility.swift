@@ -46,7 +46,7 @@ func vibrate(_ style: UIImpactFeedbackStyle) {
 
 func timestamp() -> String {
     let dateFormatter = DateFormatter()
-    dateFormatter.locale = Locale(identifier: "en_US")
+    dateFormatter.timeZone = TimeZone(identifier: "UTC")
     
     dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     return dateFormatter.string(from: Date())

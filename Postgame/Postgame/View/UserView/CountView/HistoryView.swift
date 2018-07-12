@@ -166,10 +166,11 @@ final class HistoryViewCell: BaseCell {
 func formatDateForDisplay(_ date: String) -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    dateFormatter.timeZone = TimeZone(identifier: "UTC")
     let date = dateFormatter.date(from: date)
     
     // new format
-    dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+    dateFormatter.timeZone = TimeZone.current
     dateFormatter.dateFormat = "h:mm a 'on' MMMM dd, yyyy"
     dateFormatter.amSymbol = "AM"
     dateFormatter.pmSymbol = "PM"

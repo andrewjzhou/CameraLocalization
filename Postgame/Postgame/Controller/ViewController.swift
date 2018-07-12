@@ -77,7 +77,7 @@ class ViewController: UIViewController {
         handleGeolocationService()
     
 //        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
-        
+        print(timestamp())
         
     }
     

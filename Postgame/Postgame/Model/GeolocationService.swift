@@ -25,7 +25,7 @@ final class GeolocationService {
 
     private init() {
         
-        locationManager.distanceFilter = 40.0
+        locationManager.distanceFilter = 20.0
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
         authorized = Observable.deferred { [weak locationManager] in
