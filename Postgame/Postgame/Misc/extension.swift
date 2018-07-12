@@ -85,9 +85,30 @@ extension CGSize {
     }
 }
 
+extension Data {
+    func base64DecodeIntoDoubleArr() -> [Double] {
+        let decodedString = String(data: self, encoding: .utf8)
+        let decodedArr = decodedString?.split(separator: ",").map { Double($0) ?? 0.0 }
+        return decodedArr ?? []
+    }
+}
+
+
+
 extension Double {
     func format(f: String) -> String {
         return String(format: "%\(f)f", self)
+    }
+}
+
+extension Sequence where Iterator.Element == Double {
+    func base64EncodedString() -> String{
+        let stringRepresentation = self.map{ String($0) }.joined(separator: ",")
+        let encodedString =
+            stringRepresentation
+                .data(using: String.Encoding.utf8)?
+                .base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+        return encodedString ?? ""
     }
 }
 
@@ -184,6 +205,11 @@ extension String {
         }
         return result
     }
+    
+    func base64DecodeIntoDoubleArr() -> [Double] {
+        return self.split(separator: ",").map { Double($0) ?? 0.0 }
+    }
+    
 }
 
 extension UIGestureRecognizerState {

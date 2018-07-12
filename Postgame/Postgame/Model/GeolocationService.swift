@@ -19,7 +19,7 @@ final class GeolocationService {
     
     static let instance = GeolocationService()
     private (set) var authorized: Driver<Bool>
-    private (set) var location: Driver<(Double, Double)>
+    private (set) var location: Driver<CLLocation>
     
     private let locationManager = CLLocationManager()
 
@@ -51,22 +51,10 @@ final class GeolocationService {
         // Observable. Update location and format to 4 decimals
         location = locationManager.rx.didUpdateLocations
             .asDriver(onErrorJustReturn: [])
+            .distinctUntilChanged()
             .flatMap {
                 return $0.last.map(Driver.just) ?? Driver.empty()
             }
-            .map { $0.coordinate }
-            .map{ // Convert CLLocation coordinates to 4 decimal places
-                (roundToDecimal4($0.latitude as Double), roundToDecimal4($0.longitude as Double))
-            }
-            .distinctUntilChanged({ (location1, location2) -> Bool in
-                // Reduce fluctuation
-                let precision = 0.0002
-                if abs(location1.0 - location2.0) < precision && abs(location1.1 - location2.1) < precision {
-                    return true
-                } else {
-                    return false
-                }
-            })
         
         
         locationManager.requestAlwaysAuthorization()

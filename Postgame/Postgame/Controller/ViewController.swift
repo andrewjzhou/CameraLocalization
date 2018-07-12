@@ -31,7 +31,7 @@ class ViewController: UIViewController {
     
     
     let geolocationService = GeolocationService.instance
-    var lastLocation: (Double, Double)?
+    var lastLocation: CLLocation?
     
     lazy var descriptorCache = DescriptorCache()
     var imageCache = NSCache<NSString, UIImage>()
@@ -81,20 +81,18 @@ class ViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+//        AppSyncService.sharedInstance.createNewPost()
         // Testing
-        for i in 0..<5 {
-            AppSyncService.sharedInstance.createNewPost()
-        }
         //        AppSyncService.sharedInstance.updatePost()
 //        AppSyncService.sharedInstance.incrementViewCount()
         //        S3Service.sharedInstance.uploadFile()
     }
     
     func handleGeolocationService() {
-        geolocationService.location.drive(onNext: { [weak self] (coordinates) in
+        geolocationService.location.drive(onNext: { [weak self] (location) in
             if self == nil { return }
-            self!.lastLocation = coordinates
-            self!.descriptorCache.query(coordinates)
+            self!.lastLocation = location
+            self!.descriptorCache.query(location)
         }).disposed(by: disposeBag)
     }
     
@@ -339,15 +337,19 @@ extension ViewController {
                 if self == nil { return }
                 let match = self!.descriptorCache.findMatch(node!.recorder.descriptor!)
                 if match != nil { // Post already exists
-                    node!.recorder.key = match!
-                    if let image = self!.imageCache.object(forKey: match! as NSString) {
+                    // deactivate in future if user updates image
+                    node!.recorder.idToDeactivate = match!.id
+                    
+                    // display image
+                    if let image = self!.imageCache.object(forKey: match!.parentPostInfo.s3Key as NSString) {
                         node!.setContent(image)
-                        DynamoDBService.sharedInstance.incrementViews(match!)
                     } else {
-                        node!.downloadAndSetContent(match!, cache: self!.imageCache)
+                        node!.downloadAndSetContent(match!.parentPostInfo.s3Key, cache: self!.imageCache)
                     }
+                    
+                    // increment viewCount
+                    AppSyncService.sharedInstance.incrementViewCount(id: match!.id)
                 } else if self!.createButton.post != nil { // Post to be added
-                    node!.recorder.key = self!.getKey()
                     node!.prompt()
                 } else { // Placeholder
                     node!.deactivate()
@@ -417,15 +419,15 @@ extension ViewController {
         }
     }
     
-    func getKey() -> String? {
-        guard let location = lastLocation else { return nil }
-        let locationString = location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
-        let date = timestamp()
-        let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
-        let key = locationString + "/" + date + "/" + username
-        
-        return key
-    }
+//    func getKey() -> String? {
+//        guard let location = lastLocation else { return nil }
+//        let locationString = location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
+//        let date = timestamp()
+//        let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
+//        let key = locationString + "/" + date + "/" + username
+//
+//        return key
+//    }
 
 
 }

@@ -33,67 +33,67 @@ struct S3Service {
         transferUtility = AWSS3TransferUtility.default()
     }
     
-    func uploadFile() {
-        // MARK: Store image at url
-        let image = UIImage.from(color: .red)
-        // url
-        let imageName = "redColor" // your image name here
-        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imageName).png"
-        let imageUrl: URL = URL(fileURLWithPath: imagePath)
-        // store
-        try? UIImagePNGRepresentation(image)?.write(to: imageUrl)
-        print("Image URL: \(imageUrl), absolute string: \(imageUrl.absoluteString), relative path: \(imageUrl.relativePath)")
-        //---
-        let expression = AWSS3TransferUtilityUploadExpression()
-        expression.progressBlock = {(task, progress) in
-            DispatchQueue.main.async(execute: {
-                // Do something e.g. Update a progress bar.
-            })
-        }
-        
-        
-        var completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?
-        completionHandler = { (task, error) -> Void in
-            DispatchQueue.main.async(execute: {
-                // Do something e.g. Alert a user for transfer completion.
-                // On failed uploads, `error` contains the error object.
-                
-            })
-        }
-        
-        DispatchQueue.global(qos: .background).async {
-            self.transferUtility.uploadFile(imageUrl,
-                                            key: "public/testing/123",
-                                            contentType: "png",
-                                            expression: expression,
-                                            completionHandler: completionHandler).continueWith {
-                                                (task) -> AnyObject! in
-                                                if let error = task.error {
-                                                    print("Error: \(error.localizedDescription)")
-                                                }
-                                                
-                                                if let _ = task.result {
-                                                    // Do something with uploadTask.
-                                                    
-                                                }
-                                                return nil
-            }
-
-        }
-        
-    }
+//    func uploadFile() {
+//        // MARK: Store image at url
+//        let image = UIImage.from(color: .red)
+//        // url
+//        let imageName = "redColor" // your image name here
+//        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imageName).png"
+//        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+//        // store
+//        try? UIImagePNGRepresentation(image)?.write(to: imageUrl)
+//        print("Image URL: \(imageUrl), absolute string: \(imageUrl.absoluteString), relative path: \(imageUrl.relativePath)")
+//        //---
+//        let expression = AWSS3TransferUtilityUploadExpression()
+//        expression.progressBlock = {(task, progress) in
+//            DispatchQueue.main.async(execute: {
+//                // Do something e.g. Update a progress bar.
+//            })
+//        }
+//
+//
+//        var completionHandler: AWSS3TransferUtilityUploadCompletionHandlerBlock?
+//        completionHandler = { (task, error) -> Void in
+//            DispatchQueue.main.async(execute: {
+//                // Do something e.g. Alert a user for transfer completion.
+//                // On failed uploads, `error` contains the error object.
+//
+//            })
+//        }
+//
+//        DispatchQueue.global(qos: .background).async {
+//            self.transferUtility.uploadFile(imageUrl,
+//                                            key: "public/testing/123",
+//                                            contentType: "png",
+//                                            expression: expression,
+//                                            completionHandler: completionHandler).continueWith {
+//                                                (task) -> AnyObject! in
+//                                                if let error = task.error {
+//                                                    print("Error: \(error.localizedDescription)")
+//                                                }
+//
+//                                                if let _ = task.result {
+//                                                    // Do something with uploadTask.
+//
+//                                                }
+//                                                return nil
+//            }
+//
+//        }
+//
+//    }
     
-    /**
-     Upload descriptor from S3 using key.
-     */
-    func uploadDescriptor(_ descriptor: [Double], key: String) {
-        // generate data
-        let data = encodeDescriptor(descriptor)
-        // generate key
-        let prefix = "public/descriptor/"
-        let _key = prefix + key
-        upload(data: data, key: _key)
-    }
+//    /**
+//     Upload descriptor from S3 using key.
+//     */
+//    func uploadDescriptor(_ descriptor: [Double], key: String) {
+//        // generate data
+//        let data = encodeDescriptor(descriptor)
+//        // generate key
+//        let prefix = "public/descriptor/"
+//        let _key = prefix + key
+//        upload(data: data, key: _key)
+//    }
     
     /**
      Upload post to S3 using key.
@@ -149,67 +149,67 @@ struct S3Service {
         }
         
     }
-    
-    /**
-     Download descriptor from S3 using key.
-     */
-    func downloadDescriptor(_ key: String) -> Observable<Descriptor?> {
-        let prefix = "public/descriptor/"
-        let downloadKey = prefix + key
-        return Observable.create({ [transferUtility] (observer) in
-            
-            // Track progress
-            let expression = AWSS3TransferUtilityDownloadExpression()
-            expression.progressBlock = {(task, progress) in DispatchQueue.main.async(execute: {
-                // Do something e.g. Update a progress bar.
-            })
-            }
-            
-            // Completion
-            var completionHandler: AWSS3TransferUtilityDownloadCompletionHandlerBlock?
-            completionHandler = { (task, URL, data, error) -> Void in
-                
-                // Do something e.g. Alert a user for transfer completion.
-                // On failed downloads, `error` contains the error object.
-                if let error = error {
-                    print("Error: \(error)")
-                }
-                
-                if let _ = data {
-                    
-                    let descriptor = Descriptor(key: key, value: decodeForDescriptor(data!))
-                    
-                    observer.onNext(descriptor)
-                    observer.onCompleted()
-                }
-                
-                
-            }
-            
-            // Download task
-            DispatchQueue.global(qos: .userInitiated).async {
-                transferUtility.downloadData(
-                    forKey: downloadKey,
-                    expression: expression,
-                    completionHandler: completionHandler
-                    ).continueWith {
-                        (task) -> AnyObject! in if let error = task.error {
-                            print("Error: \(error.localizedDescription)")
-                        }
-                        
-                        if let _ = task.result {
-                            // Do something with downloadTask.
-                            
-                        }
-                        return nil
-                }
-            }
-            
-            return Disposables.create()
-        })
-        
-    }
-    
+//
+//    /**
+//     Download descriptor from S3 using key.
+//     */
+//    func downloadDescriptor(_ key: String) -> Observable<Descriptor?> {
+//        let prefix = "public/descriptor/"
+//        let downloadKey = prefix + key
+//        return Observable.create({ [transferUtility] (observer) in
+//
+//            // Track progress
+//            let expression = AWSS3TransferUtilityDownloadExpression()
+//            expression.progressBlock = {(task, progress) in DispatchQueue.main.async(execute: {
+//                // Do something e.g. Update a progress bar.
+//            })
+//            }
+//
+//            // Completion
+//            var completionHandler: AWSS3TransferUtilityDownloadCompletionHandlerBlock?
+//            completionHandler = { (task, URL, data, error) -> Void in
+//
+//                // Do something e.g. Alert a user for transfer completion.
+//                // On failed downloads, `error` contains the error object.
+//                if let error = error {
+//                    print("Error: \(error)")
+//                }
+//
+//                if let _ = data {
+//
+//                    let descriptor = Descriptor(key: key, value: decodeForDescriptor(data!))
+//
+//                    observer.onNext(descriptor)
+//                    observer.onCompleted()
+//                }
+//
+//
+//            }
+//
+//            // Download task
+//            DispatchQueue.global(qos: .userInitiated).async {
+//                transferUtility.downloadData(
+//                    forKey: downloadKey,
+//                    expression: expression,
+//                    completionHandler: completionHandler
+//                    ).continueWith {
+//                        (task) -> AnyObject! in if let error = task.error {
+//                            print("Error: \(error.localizedDescription)")
+//                        }
+//
+//                        if let _ = task.result {
+//                            // Do something with downloadTask.
+//
+//                        }
+//                        return nil
+//                }
+//            }
+//
+//            return Disposables.create()
+//        })
+//
+//    }
+//
     /**
      Download post from S3 using key.
      */
@@ -272,21 +272,21 @@ struct S3Service {
     }
 }
 
-// Convert descriptor array to encoded data
-fileprivate func encodeDescriptor(_ descriptor: [Double]) -> Data {
-    let stringRepresentation = descriptor.map{ String($0) }.joined(separator: ",")
-    let encodedString =
-        stringRepresentation
-            .data(using: String.Encoding.utf8)?
-            .base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
-    let data = Data(base64Encoded: encodedString!)
-    return data!
-}
-
-// Decode data and convert to descriptory array
-fileprivate func decodeForDescriptor(_ data: Data) -> [Double] {
-    let decodedString = String(data: data, encoding: .utf8)
-    return decodedString!.split(separator: ",").map { Double($0)! }
-}
-
+//// Convert descriptor array to encoded data
+//fileprivate func encodeDescriptor(_ descriptor: [Double]) -> Data {
+//    let stringRepresentation = descriptor.map{ String($0) }.joined(separator: ",")
+//    let encodedString =
+//        stringRepresentation
+//            .data(using: String.Encoding.utf8)?
+//            .base64EncodedString(options: NSData.Base64EncodingOptions(rawValue: 0))
+//    let data = Data(base64Encoded: encodedString!)
+//    return data!
+//}
+//
+//// Decode data and convert to descriptory array
+//fileprivate func decodeForDescriptor(_ data: Data) -> [Double] {
+//    let decodedString = String(data: data, encoding: .utf8)
+//    return decodedString!.split(separator: ",").map { Double($0)! }
+//}
+//
 

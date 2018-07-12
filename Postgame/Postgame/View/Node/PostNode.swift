@@ -11,6 +11,7 @@ import Vision
 import SpriteKit
 import RxCocoa
 import RxSwift
+import CoreLocation
 import AWSUserPoolsSignIn
 
 final class PostNode: SCNNode {
@@ -71,21 +72,44 @@ final class PostNode: SCNNode {
     // recorder: record updates and upload to AWS
     var recorder: Recorder
     struct Recorder {
-        let username: String
+        private var firstDiscovery = true // determines if need to deactivate old post before creating new post
+        private let username: String
         let realImage: UIImage
-        var key: String?
+    
+        private(set) var id: String? {
+            willSet {
+                if id != nil { idToDeactivate = id }
+            }
+        }
+        var idToDeactivate: String?
         var descriptor: [Double]?
         var post: UIImage?
+        var location: CLLocation? {
+            didSet {
+                id = generateID(with: location!)
+            }
+        }
         
-        func record() {
-            guard let key = key, let post = post, let descriptor = descriptor else { return }
-            // S3
-            let s3 = S3Service.sharedInstance
-            s3.uploadDescriptor(descriptor, key: key)
-            s3.uploadPost(post, key: key)
-            // DynamoDB
-            let db = DynamoDBService.sharedInstance
-            db.create(key: key, username: username)
+        fileprivate init(username: String, realImage: UIImage) {
+            self.username = username
+            self.realImage = realImage
+        }
+        
+        mutating func record() {
+            guard let id = id, let location = location, let descriptor = descriptor else { return }
+            
+            // 1. deactivate post if necessary
+            if idToDeactivate != nil{ AppSyncService.sharedInstance.deactivatePost(id: idToDeactivate!) }
+            
+            // 2. store info in dynamoDB
+            AppSyncService.sharedInstance.createNewPost(id: id,
+                                                        username: username,
+                                                        location: location,
+                                                        timestamp: timestamp(),
+                                                        descriptor: descriptor.base64EncodedString())
+            
+            // 3. upload image to S3
+            S3Service.sharedInstance.uploadPost(post!, key: id)
         }
     }
     
@@ -100,9 +124,9 @@ final class PostNode: SCNNode {
         // initialize recorder
         let pool = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool()
         let username = pool.currentUser()!.username!
-        recorder = Recorder(username: username,
-                            realImage: info.realImage,
-                            key: nil, descriptor: nil, post: nil)
+        recorder = Recorder(username: username, realImage: info.realImage)
+        
+        
         
         // set size and initialize Content Node
         contentNode = ContentNode(size: CGSize(width: info.geometry.width,
@@ -175,12 +199,14 @@ final class PostNode: SCNNode {
                 if self == nil { return }
                 self!.setContent(image)
                 cache.setObject(image, forKey: key as NSString)
-                
-                // increment
-                // This is getting called multiple times before picture actually gets showned
-                DynamoDBService.sharedInstance.incrementViews(key)
             })
             .disposed(by: disposeBag)
+    }
+    
+    func setContentAndRecord(image: UIImage, location: CLLocation) {
+        setContent(image)
+        recorder.location = location
+        recorder.record()
     }
     
     // Observe a new Rect Geometry update
@@ -198,4 +224,9 @@ final class PostNode: SCNNode {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+}
+
+fileprivate func generateID(with location: CLLocation) -> String {
+    return "\(location.coordinate.latitude)/\(location.coordinate.longitude)/\(UUID().uuidString)"
 }

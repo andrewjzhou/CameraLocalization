@@ -69,24 +69,15 @@ extension ViewController {
         
         if postNode.state == .prompt && createButton.post != nil { // Adding / Updating
             // Do NOT switch function orders inside scope without purpose
-            // Update cache if necessary
-            if postNode.previousState == .initialize {
-                let descriptorToCache = Descriptor(key: postNode.recorder.key!,
-                                                   value: postNode.recorder.descriptor!)
-                descriptorCache.update(descriptorToCache)
-            }
             
             // Add created image to current post node
-            postNode.setContent(createButton.post!)
+            postNode.setContentAndRecord(image: createButton.post!, location: lastLocation!)
             
             // cache image
-            imageCache.setObject(createButton.post!, forKey: postNode.recorder.key! as NSString)
+            imageCache.setObject(createButton.post!, forKey: postNode.recorder.id! as NSString)
             
             // Exist posting mode
             createButton.sendActions(for: .touchUpInside)
-            
-            // upload descriptor and post to S3
-            postNode.recorder.record()
             
         } else if postNode.state == .prompt && createButton.post == nil { // Cancelling
             // Exit prompt state

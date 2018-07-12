@@ -10,6 +10,7 @@
 
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 final class DescriptorCache {
     let disposeBag = DisposeBag()
@@ -17,7 +18,7 @@ final class DescriptorCache {
     // Beware of tradeoff between false postivie and false negative
     // Currently set low to limit duplicate errors (less false negative, more false positive)
     let threshold = 0.75
-    var lastLocation: (Double,Double)?
+    var lastLocation: CLLocation?
     
     private(set) var cache = [String : Descriptor]() {
         didSet{ countSubject.onNext(cache.count) }
@@ -28,72 +29,61 @@ final class DescriptorCache {
     private(set) lazy var counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0)
     
     // Every observered event downloads descriptor to cache
-    private let queryPublisher = PublishSubject<(Double, Double)>()
+    private let queryPublisher = PublishSubject<CLLocation>()
     
     init() {
         // Download descriptors
         queryPublisher.asObservable()
-            .throttle(2, scheduler: MainScheduler.instance)
-            .map({ location -> [(Double,Double)] in
-                generateNeighborCoordinates(location)
-            })
-            .flatMap { Observable.from($0) }
-            .map { converToString($0) } // String representation of location coordinates
-            .flatMap { DynamoDBService.sharedInstance.locationQuery($0)} // Download keys from dynamoDB
-            .flatMap { S3Service.sharedInstance.downloadDescriptor($0) } // Download descriptors from S3
-            .filter {$0 != nil}
+            .debounce(1, scheduler: MainScheduler.instance)
+            .flatMap { AppSyncService.sharedInstance.observeDescriptorsByLocation($0) }
             .subscribe(onNext: { [weak self] (descriptor) in
-                if self == nil { return }
-                self!.update(descriptor!)
+                self?.cache.updateValue(descriptor, forKey: descriptor.id)
             })
             .disposed(by: disposeBag)
     }
     
     // Make new query using location
-    func query(_ location:(Double, Double)) {
-        if lastLocation != nil && lastLocation! == location { return }
-        
+    func query(_ location: CLLocation) {
         lastLocation = location
         refresh()
     }
     
     // Reload cache
     func refresh() {
-        if let location = self.lastLocation {
+        if let location = lastLocation {
             // Refresh cache. Remove descriptors that are not inside user region
-             cache = cache.filter { $0.value.neighbors(location) }
+            cache = cache.filter({ (_, value: Descriptor) -> Bool in
+                let dist = value.location.distance(from: location)
+                return dist < (location.horizontalAccuracy + BaseLocationUncertainty)
+            })
             
             // Download nearby descriptors
              queryPublisher.onNext(location)
         }
     }
     
-    // Append or update descriptor
-    func update(_ descriptor: Descriptor) { cache.updateValue(descriptor, forKey: descriptor.key) }
-    
     
     // Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
-    func findMatch(_ target: [Double]) -> String? {
-        var bestMatchKey: String? = nil, bestMatchSimilarity: Double? = nil
+    func findMatch(_ target: [Double]) -> Descriptor? {
+        var bestMatch: Descriptor? = nil, bestMatchSimilarity: Double? = nil
         
         for (_, descriptor) in cache {
             let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
 
-            print("DescriptorCache: descriptor in cache : \(descriptor.key)")
             if similarity > threshold {
                 if bestMatchSimilarity == nil { // Found first best match
-                    bestMatchKey = descriptor.key
+                    bestMatch = descriptor
                     bestMatchSimilarity = similarity
                 } else if similarity > bestMatchSimilarity! { // Found better match than current best match
-                    bestMatchKey = descriptor.key
+                    bestMatch = descriptor
                     bestMatchSimilarity = similarity
                 }
             }
         }
         
-        if bestMatchKey != nil { print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)") }
+        if bestMatch != nil { print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)") }
         
-        return bestMatchKey
+        return bestMatch
     }
 }
 

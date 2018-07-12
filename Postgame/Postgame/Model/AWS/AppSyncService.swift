@@ -10,6 +10,8 @@ import Foundation
 import AWSAppSync
 import AWSS3
 import AWSUserPoolsSignIn
+import CoreLocation
+import RxSwift
 
 final class AppSyncService {
 
@@ -22,8 +24,7 @@ final class AppSyncService {
             let config = try AWSAppSyncClientConfiguration(url: AppSyncEndpointURL,
                                                    serviceRegion: AppSyncRegion,
                                                    userPoolsAuthProvider: self,
-                                                   databaseURL:databaseURL,
-                                                   s3ObjectManager: AWSS3TransferUtility.default())
+                                                   databaseURL:databaseURL)
             return config
         } catch {
             print("Error initializing appsync client. \(error)")
@@ -42,36 +43,72 @@ final class AppSyncService {
         }
         
     }
+    
+    func observeDescriptorsByLocation(_ location: CLLocation) -> Observable<Descriptor>{
+        // user coordinates
+        let lat = Double(location.coordinate.latitude)
+        let lon = Double(location.coordinate.longitude)
+        
+        
+        // radius for query in meters, in string format
+        let dist = Double(location.horizontalAccuracy) + BaseLocationUncertainty
+        let Unit = "m"
+        let distString = String(dist) + Unit
+        
+        let query = ListPostsByLocationQuery(lat: lat, lon: lon, distance: distString)
+        return Observable.create { [appSyncClient] (observer) -> Disposable in
+            appSyncClient?.fetch(query: query,
+                                 cachePolicy: .returnCacheDataAndFetch,
+                                 queue: DispatchQueue.global(qos: .userInteractive),
+                                 resultHandler: { (result, error) in
+                                    if error != nil {
+                                        print(error?.localizedDescription ?? "")
+                                        observer.onCompleted()
+                                        return
+                                    }
+                                    
+                                    if let posts = result?.data?.listPostsByLocation {
+                                        for post in posts {
+                                            guard let post = post else { continue }
+                                            let descriptor = Descriptor(id: post.id,
+                                                                        value: post.descriptor.base64DecodeIntoDoubleArr(),
+                                                                        location: CLLocation(latitude: post.location.lat,
+                                                                                             longitude: post.location.lon),
+                                                                        S3Key: post.image.key,
+                                                                        username: post.username,
+                                                                        timestamp: post.timestamp)
+                                            observer.onNext(descriptor)
+                                            
+                                        }
+                                        observer.onCompleted()
+                                    } else {
+                                        observer.onCompleted()
+                                    }
+                                    
+            })
+            return Disposables.create()
+        }
+    }
+    
 
-    func createNewPost() {
-        //---
-        let image = UIImage.from(color: .red)
-        // url
-        let imageName = "redColor" // your image name here
-        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imageName).png"
-        let imageUrl: URL = URL(fileURLWithPath: imagePath)
-        // store
-        try? UIImagePNGRepresentation(image)?.write(to: imageUrl)
-   
-        //---
-        let locationInput = LocationInput(lat: 30.268379,
-                                          lon: -97.742396,
-                                          altitude: 60.0,
-                                          horAcc: 23.1,
-                                          verAcc: 50.1)
-        let s3Input = S3ObjectInput(bucket: "postgame-userfiles-mobilehub-1951513639",
-                                    key: "public/testing/246",
-                                    region: "us-east-2",
-                                    localUri: imageUrl.absoluteString,
+    func createNewPost(id: String, username: String, location: CLLocation, timestamp: String, descriptor: String) {
+        let locationInput = LocationInput(lat: Double(location.coordinate.latitude),
+                                          lon: Double(location.coordinate.longitude))
+        let s3Input = S3ObjectInput(bucket: S3Bucket,
+                                    key: id,
+                                    region: CognitoIdentityRegionString,
                                     mimeType: "png")
-        let mutationInput = CreatePostInput(id: UUID().uuidString,
+        let mutationInput = CreatePostInput(id: id,
                                             location: locationInput,
                                             active: true,
-                                            timestamp: timestamp(),
-                                            username: "Mr.Clean",
-                                            viewCount: 1,
-                                            descriptor: "This is the descriptor",
-                                            image: s3Input)
+                                            timestamp: timestamp,
+                                            username: username,
+                                            viewCount: 0,
+                                            descriptor: descriptor,
+                                            image: s3Input,
+                                            altitude: Double(location.altitude),
+                                            horAcc: Double(location.horizontalAccuracy),
+                                            verAcc: Double(location.verticalAccuracy))
 
         let mutation = CreatePostMutation(input: mutationInput)
         appSyncClient?.perform(mutation: mutation, optimisticUpdate: { (transaction) in
@@ -105,8 +142,8 @@ final class AppSyncService {
        
     }
 
-    func updatePost() {
-        let mutationInput = UpdatePostInput(id: "123",
+    func deactivatePost(id: String) {
+        let mutationInput = UpdatePostInput(id: id,
                                             active: false)
         let mutation = UpdatePostMutation(input: mutationInput)
         appSyncClient?.perform(mutation: mutation,
@@ -120,8 +157,8 @@ final class AppSyncService {
         })
     }
     
-    func incrementViewCount() {
-        let mutation = IncrementViewCountMutation(id: "AA3995B3-6525-4EA2-AE45-1BE25FA98400")
+    func incrementViewCount(id: String) {
+        let mutation = IncrementViewCountMutation(id: id)
         appSyncClient?.perform(mutation: mutation,
                                queue: DispatchQueue.global(qos: .background),
                                resultHandler: { (result, error) in

@@ -7,36 +7,28 @@
 //
 
 import Foundation
+import CoreLocation
 
 struct Descriptor: Equatable {
     // consider making this a struct
-    let key: String
+    let id: String
     let value: [Double]
-    let location: (Double, Double)
+    let location: CLLocation
+    let parentPostInfo: ParentPostInfo
+    struct ParentPostInfo { let s3Key: String, username: String, timestamp: String }
     
-    init(key: String, value: [Double]) {
-        self.key = key
+    
+    init(id: String, value: [Double], location: CLLocation, S3Key: String, username: String, timestamp: String) {
+        self.id = id
         self.value = value
-        
-        let keyArr = key.split(separator: "/")
-        let lat = Double(keyArr[0])!
-        let long = Double(keyArr[1])!
-        self.location = (lat, long)
+        self.location = location
+        self.parentPostInfo = ParentPostInfo(s3Key: S3Key, username: username, timestamp: timestamp)
     }
     
     // Descriptors are equal if they have the same key
     static func == (lhs: Descriptor, rhs: Descriptor) -> Bool {
-        return lhs.key == rhs.key
+        return lhs.id == rhs.id
     }
     
 }
 
-extension Descriptor {
-    func neighbors(_ location: (Double, Double)) -> Bool {
-        let precision = 0.0003
-        let lat = self.location.0
-        let long = self.location.1
-        return (abs(lat - location.0) < precision) && (abs(long - location.1) < precision)
-    }
-    
-}
