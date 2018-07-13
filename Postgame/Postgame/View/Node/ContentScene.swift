@@ -39,21 +39,32 @@ final class ContentScene: SKScene {
         // draw border
         drawBorder()
         
+        
         // label
-        let labelNode = SKSpriteNode()
-        labelNode.position = CGPoint(x: 0.8 * sceneSize.width, y: 0.025 * sceneSize.height)
-        labelNode.size = CGSize(width: 0.3 * sceneSize.width, height: 0.05 * sceneSize.height)
-        labelNode.color = UIColor.flatBlack.withAlphaComponent(0.93)
-        addChild(labelNode)
         
         let label = SKLabelNode()
-//        label.position = CGPoint(x: 0.4 * labelNode.frame.width, y: 0)
-        
+        //        label.position = CGPoint(x: 0.4 * labelNode.frame.width, y: 0)
         label.color = .yellow
-        label.text = "@My name is Andrew Zhou"
+        label.text = "@My name is Andrew Zhou "
         label.numberOfLines = 2
-        adjustLabelFontSizeToFitRect(labelNode: label, rect: labelNode.frame)
+        label.horizontalAlignmentMode = .right
+        label.verticalAlignmentMode = .bottom
+        label.position = CGPoint(x: sceneSize.width, y: 0)
+        label.fontSize = 20
+        label.fontName = "Catatan Perjalanan"
+        print("old font size: ", sceneSize.height * 0.1)
+        print("Label width: ", label.frame.width)
+        label.zPosition = 5
         addChild(label)
+        
+        let labelNode = SKSpriteNode()
+        labelNode.size = label.frame.size
+        labelNode.position = CGPoint(x: label.position.x - labelNode.size.width * 0.5,
+                                     y: label.position.y + labelNode.size.height * 0.5)
+        labelNode.color = UIColor.flatBlack.withAlphaComponent(0.93)
+        labelNode.zPosition = 1
+        addChild(labelNode)
+        
     }
     
     fileprivate let darken = SKAction.colorize(with: .black, colorBlendFactor: 0.5, duration: 0)
@@ -106,7 +117,7 @@ final class ContentScene: SKScene {
         shape.strokeColor = .flatBlack
         shape.lineWidth = 20
         addChild(shape)
-        shape.zPosition = 2
+        shape.zPosition = 3
     }
     
     required init?(coder aDecoder: NSCoder) {
