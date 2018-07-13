@@ -257,7 +257,7 @@ extension ViewController {
                 .throttle(0.05, scheduler:  MainScheduler.asyncInstance)
                 .do(onNext: { [userButton, sceneView] (frame) in
                     let fpCount = frame.rawFeaturePoints?.points.count ?? 0
-                    if fpCount > 150 { userButton.publishPerceptionStatus(.highFP) }
+                    if fpCount > 100 { userButton.publishPerceptionStatus(.highFP) }
                     else { userButton.publishPerceptionStatus(.lowFP) }
                     
                     let center = sceneView.center
