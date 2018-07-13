@@ -157,7 +157,7 @@ extension ViewController {
             .filter({ _ -> Bool in
                 return self.createButton.post == nil
             })
-            .subscribe(onNext: {[descriptorCache] _ in
+            .subscribe(onNext: {[disposeBag, descriptorCache] _ in
                 // Create new CreationView
                 let creationView = CreationView()
                 self.view.addSubview(creationView) // sets layout inside didMoveToSuperview()
@@ -171,13 +171,16 @@ extension ViewController {
                     
                         // Remove creationView
                         creationView.removeFromSuperview()
-                        UIView.animate(withDuration: 0.3, animations: {
-                            self.screenshotButton.alpha = 1
-                            self.createButton.alpha = 1
-                            self.resetButton.alpha = 1
-                            self.userButton.alpha = 1
-                            self.indicatorButton.alpha = 1
-                        })
+            
+                        DispatchQueue.main.async {
+                            UIView.animate(withDuration: 0.3, animations: {
+                                self.screenshotButton.alpha = 1
+                                self.createButton.alpha = 1
+                                self.resetButton.alpha = 1
+                                self.userButton.alpha = 1
+                                self.indicatorButton.alpha = 1
+                            })
+                        }
                         
                         if image != nil {
                             self.createButton.animation = "zoomIn"
@@ -187,7 +190,7 @@ extension ViewController {
                             descriptorCache.refresh()
                         }
                     })
-                    .disposed(by: self.disposeBag)
+                    .disposed(by: disposeBag)
                 
                 
                 // Hide main UIButtons
@@ -261,8 +264,10 @@ extension ViewController {
                     else { userButton.publishPerceptionStatus(.lowFP) }
                     
                     let center = sceneView.center
-                    let top = CGPoint(x: center.x, y: center.y + sceneView.frame.size.height * 0.3)
-                    let bottom = CGPoint(x: center.x, y: center.y - sceneView.frame.size.height * 0.3)
+                    let top = CGPoint(x: center.x,
+                                      y: center.y + sceneView.frame.size.height * 0.3)
+                    let bottom = CGPoint(x: center.x,
+                                         y: center.y - sceneView.frame.size.height * 0.3)
                     if sceneView.arePointsOnConfirmed([center,top,bottom], eliminateRest: true) {
                         userButton.publishPerceptionStatus(.node)
                     } else if sceneView.arePointsOnPlane([center,top,bottom]) {
@@ -359,6 +364,8 @@ extension ViewController {
                         // increment viewCount
                         AppSyncService.sharedInstance.incrementViewCount(id: match!.id)
                     }
+                    
+                    DispatchQueue.main.async{ vibrate(.light) }
                 } else if self!.createButton.post != nil { // Post to be added
                     node!.prompt()
                 } else { // Placeholder

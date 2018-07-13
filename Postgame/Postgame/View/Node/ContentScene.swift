@@ -103,7 +103,7 @@ final class ContentScene: SKScene {
         
         let shape = SKShapeNode()
         shape.path = line_path
-        shape.strokeColor = .flatPowderBlueDark
+        shape.strokeColor = .flatBlack
         shape.lineWidth = 20
         addChild(shape)
         shape.zPosition = 2

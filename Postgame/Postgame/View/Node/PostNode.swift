@@ -35,6 +35,7 @@ final class PostNode: SCNNode {
                 contentNode.load()
             case .prompt:
                 contentNode.prompt()
+                DispatchQueue.main.async { vibrate(.medium) }
             }
             if state != .initialize { isHidden = false }
         }
@@ -192,6 +193,7 @@ final class PostNode: SCNNode {
     
     func downloadAndSetContent(_ key: String, imageCacheToUpdate: NSCache<NSString, UIImage>) {
         state = .load
+        
         // Download post and set content
         let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
         postDownloadObservable.observeOn(MainScheduler.instance)
