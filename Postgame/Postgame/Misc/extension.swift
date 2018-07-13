@@ -51,6 +51,13 @@ extension ARSCNView {
         return results.first != nil
     }
     
+    func arePointsOnPlane(_ points: [CGPoint]) -> Bool {
+        for point in points {
+            if isPointOnPlane(point) { return true }
+        }
+        return false
+    }
+    
     // Check if point is on a confirmed post node.
     // If eliminate is true, eliminate unconfirmed nodes if there is a confirmed node
     func isPointOnConfirmed(_ point: CGPoint, eliminateRest: Bool) -> Bool {
@@ -68,6 +75,13 @@ extension ARSCNView {
         }
         
         return found
+    }
+    
+    func arePointsOnConfirmed(_ points: [CGPoint], eliminateRest: Bool) -> Bool {
+        for point in points {
+            if isPointOnConfirmed(point, eliminateRest: eliminateRest) { return true }
+        }
+        return false
     }
 }
 

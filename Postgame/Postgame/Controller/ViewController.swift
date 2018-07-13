@@ -254,16 +254,18 @@ extension ViewController {
         let _ =
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
-                .throttle(0.05, scheduler:  MainScheduler.asyncInstance)
+                .throttle(0.03, scheduler:  MainScheduler.asyncInstance)
                 .do(onNext: { [userButton, sceneView] (frame) in
                     let fpCount = frame.rawFeaturePoints?.points.count ?? 0
                     if fpCount > 100 { userButton.publishPerceptionStatus(.highFP) }
                     else { userButton.publishPerceptionStatus(.lowFP) }
                     
                     let center = sceneView.center
-                    if sceneView.isPointOnConfirmed(center, eliminateRest: true) {
+                    let top = CGPoint(x: center.x, y: center.y + sceneView.frame.size.height * 0.3)
+                    let bottom = CGPoint(x: center.x, y: center.y - sceneView.frame.size.height * 0.3)
+                    if sceneView.arePointsOnConfirmed([center,top,bottom], eliminateRest: true) {
                         userButton.publishPerceptionStatus(.node)
-                    } else if sceneView.isPointOnPlane(center) {
+                    } else if sceneView.arePointsOnPlane([center,top,bottom]) {
                         userButton.publishPerceptionStatus(.plane)
                     }
                 })
@@ -301,7 +303,7 @@ extension ViewController {
                 return false
             })
             .do(onNext: { [userButton] (observation) in
-                self.highlightObservation(observation)
+//                self.highlightObservation(observation)
                 userButton.publishPerceptionStatus(.rect)
             })
         
