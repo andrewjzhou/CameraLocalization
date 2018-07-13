@@ -15,6 +15,9 @@ final class UserButton: UIButton {
     private lazy var perceptionStatusObservable = perceptionStatusPublisher.asObservable()
     enum ScenePerceptionStatus { case lowFP, highFP, plane, rect, node }
     
+    private(set) lazy var colorDriver = colorPublisher.asDriver(onErrorJustReturn: .flatRed)
+    private let colorPublisher = PublishSubject<UIColor>()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -38,6 +41,8 @@ final class UserButton: UIButton {
                 else if planeObservered { self?.backgroundColor = UIColor.flatForestGreen }
                 else if highFPObservered { self?.backgroundColor = UIColor.flatYellow }
                 else { self?.backgroundColor = UIColor.flatRed }
+                
+                self?.colorPublisher.onNext(self?.backgroundColor ?? .flatRed)
             }).disposed(by: disposeBag)
     }
     

@@ -17,6 +17,7 @@ extension ViewController {
         // Long Press Indicator (hide when view loads)
         view.addSubview(longPressIndicator)
         longPressIndicator.isHidden = true
+        longPressIndicator.colorDriver = userButton.colorDriver
         
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(observeLongPress(sender:)))
         view.addGestureRecognizer(longPress)

@@ -7,23 +7,30 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
 final class LongPressIndicator: UIView {
-    
+    private let disposeBag = DisposeBag()
     private var pulsatingLayer = CAShapeLayer()
     private var coreLayer = CAShapeLayer()
     private var shapeLayer = CAShapeLayer()
-
+    
+    var colorDriver: Driver<UIColor>? {
+        didSet {
+            colorDriver!.drive(onNext: { [weak self](color) in
+                self?.coreLayer.strokeColor = color.cgColor
+                self?.pulsatingLayer.fillColor = color.withAlphaComponent(0.4).cgColor
+            }).disposed(by: disposeBag)
+        }
+    }
     
     var isOnPlane: Bool = false {
         didSet{
             if isOnPlane {
                 pulsatingLayer.isHidden = true
-                coreLayer.strokeColor = UIColor.green.cgColor
                 coreLayer.opacity = 0.8
             } else {
-                let coreStrokeColor = UIColor.rgb(r: 201, g: 13, b: 0)
-                coreLayer.strokeColor = coreStrokeColor.cgColor
                 coreLayer.opacity = 0.6
                 pulsatingLayer.isHidden = false
             }
