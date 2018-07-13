@@ -28,11 +28,22 @@ final class ContentScene: SKScene {
         
         super.init(size: sceneSize)
         
-        self.addChild(contentNode)
-        self.addChild(whiteNode)
-        self.addChild(promptNode)
-        self.addChild(loadNode)
+        // initialize child nodes
+        addChild(contentNode)
+        addChild(whiteNode)
+        addChild(promptNode)
+        addChild(loadNode)
         activate()
+        
+        // draw border
+        let bl = CGPoint(x: 0, y: 0)
+        let br = CGPoint(x: sceneSize.width, y: 0)
+        let tl = CGPoint(x: 0, y: sceneSize.height)
+        let tr = CGPoint(x: sceneSize.width, y: sceneSize.height)
+        addChild( lineNode(start: tl, end: tr) )
+        addChild( lineNode(start: tr, end: br) )
+        addChild( lineNode(start: br, end: bl) )
+        addChild( lineNode(start: bl, end: tl) )
     }
     
     fileprivate let darken = SKAction.colorize(with: .black, colorBlendFactor: 0.5, duration: 0)
@@ -72,6 +83,17 @@ final class ContentScene: SKScene {
         contentNode.isHidden = true
     }
     
+    private func lineNode(start: CGPoint, end: CGPoint) -> SKNode{
+        let line_path:CGMutablePath = CGMutablePath()
+        line_path.move(to: start)
+        line_path.addLine(to: end)
+        
+        let shape = SKShapeNode()
+        shape.path = line_path
+        shape.strokeColor = UIColor.flatLime
+        shape.lineWidth = 10
+        return shape
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -89,3 +111,4 @@ fileprivate func createChildNode(image: UIImage, name: String) -> SKSpriteNode{
     
     return imageNode
 }
+
