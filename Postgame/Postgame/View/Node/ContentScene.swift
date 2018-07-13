@@ -7,6 +7,7 @@
 //
 
 import ARKit
+import ChameleonFramework
 
 final class ContentScene: SKScene {
     private let sceneSize = UIScreen.main.bounds.size
@@ -36,14 +37,16 @@ final class ContentScene: SKScene {
         activate()
         
         // draw border
-        let bl = CGPoint(x: 0, y: 0)
-        let br = CGPoint(x: sceneSize.width, y: 0)
-        let tl = CGPoint(x: 0, y: sceneSize.height)
-        let tr = CGPoint(x: sceneSize.width, y: sceneSize.height)
-        addChild( lineNode(start: tl, end: tr) )
-        addChild( lineNode(start: tr, end: br) )
-        addChild( lineNode(start: br, end: bl) )
-        addChild( lineNode(start: bl, end: tl) )
+        drawBorder()
+        
+        // label
+        let label = SKLabelNode()
+        label.position = CGPoint(x: sceneSize.width * 0.97, y: sceneSize.height * 0.02)
+        label.color = .yellow
+        label.text = "@AndrewZhou"
+        label.horizontalAlignmentMode = .right
+        label.fontSize = sceneSize.width * 0.05
+        addChild(label)
     }
     
     fileprivate let darken = SKAction.colorize(with: .black, colorBlendFactor: 0.5, duration: 0)
@@ -83,16 +86,19 @@ final class ContentScene: SKScene {
         contentNode.isHidden = true
     }
     
-    private func lineNode(start: CGPoint, end: CGPoint) -> SKNode{
+    private func drawBorder() {
+        let bl = CGPoint(x: 0, y: 0)
+        let br = CGPoint(x: sceneSize.width, y: 0)
+        let tl = CGPoint(x: 0, y: sceneSize.height)
+        let tr = CGPoint(x: sceneSize.width, y: sceneSize.height)
         let line_path:CGMutablePath = CGMutablePath()
-        line_path.move(to: start)
-        line_path.addLine(to: end)
+        line_path.addLines(between: [bl,br,tr,tl,bl])
         
         let shape = SKShapeNode()
         shape.path = line_path
-        shape.strokeColor = UIColor.flatLime
+        shape.strokeColor = .flatPowderBlueDark
         shape.lineWidth = 10
-        return shape
+        addChild(shape)
     }
     
     required init?(coder aDecoder: NSCoder) {
