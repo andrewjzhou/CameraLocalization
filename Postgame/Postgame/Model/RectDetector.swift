@@ -34,8 +34,9 @@ final class RectDetector {
     init() {
         // findtune request parameters
         request.maximumObservations = 1
-        request.quadratureTolerance = 5
-        request.minimumConfidence   = 0.6
+//        request.quadratureTolerance = 30
+        request.minimumConfidence   = 0.7
+        
         
         // dispose
         publisher.disposed(by: disposeBag)
