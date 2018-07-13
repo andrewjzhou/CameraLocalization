@@ -22,8 +22,9 @@ final class RectDetector {
             let first = observations.first else {
                 return
         }
-        
-        publisher.onNext(first)
+        DispatchQueue.main.sync {
+            publisher.onNext(first)
+        }
         
     })
     
