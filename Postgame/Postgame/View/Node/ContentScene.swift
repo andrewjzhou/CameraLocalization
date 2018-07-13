@@ -40,12 +40,19 @@ final class ContentScene: SKScene {
         drawBorder()
         
         // label
+        let labelNode = SKSpriteNode()
+        labelNode.position = CGPoint(x: 0.8 * sceneSize.width, y: 0.025 * sceneSize.height)
+        labelNode.size = CGSize(width: 0.3 * sceneSize.width, height: 0.05 * sceneSize.height)
+        labelNode.color = UIColor.flatBlack.withAlphaComponent(0.93)
+        addChild(labelNode)
+        
         let label = SKLabelNode()
-        label.position = CGPoint(x: sceneSize.width * 0.97, y: sceneSize.height * 0.02)
+//        label.position = CGPoint(x: 0.4 * labelNode.frame.width, y: 0)
+        
         label.color = .yellow
-        label.text = "@AndrewZhou"
-        label.horizontalAlignmentMode = .right
-        label.fontSize = sceneSize.width * 0.05
+        label.text = "@My name is Andrew Zhou"
+        label.numberOfLines = 2
+        adjustLabelFontSizeToFitRect(labelNode: label, rect: labelNode.frame)
         addChild(label)
     }
     
@@ -97,8 +104,9 @@ final class ContentScene: SKScene {
         let shape = SKShapeNode()
         shape.path = line_path
         shape.strokeColor = .flatPowderBlueDark
-        shape.lineWidth = 10
+        shape.lineWidth = 20
         addChild(shape)
+        shape.zPosition = 2
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -118,3 +126,14 @@ fileprivate func createChildNode(image: UIImage, name: String) -> SKSpriteNode{
     return imageNode
 }
 
+fileprivate func adjustLabelFontSizeToFitRect(labelNode:SKLabelNode, rect:CGRect) {
+    
+    // Determine the font scaling factor that should let the label text fit in the given rectangle.
+    let scalingFactor = min(rect.width / labelNode.frame.width, rect.height / labelNode.frame.height)
+    
+    // Change the fontSize.
+    labelNode.fontSize *= scalingFactor
+    
+    // Optionally move the SKLabelNode to the center of the rectangle.
+    labelNode.position = CGPoint(x: rect.midX, y: rect.midY - labelNode.frame.height / 2.0)
+}

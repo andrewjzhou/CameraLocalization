@@ -41,7 +41,7 @@ class ViewController: UIViewController {
     let screenshotButton = UIButton()
     let createButton = CreateButton()
     let resetButton = UIButton()
-    let userButton = UIButton()
+    let userButton = UserButton()
     let indicatorButton = IndicatorButton()
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     
@@ -255,6 +255,18 @@ extension ViewController {
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
                 .throttle(0.05, scheduler:  MainScheduler.asyncInstance)
+                .do(onNext: { [userButton, sceneView] (frame) in
+                    let fpCount = frame.rawFeaturePoints?.points.count ?? 0
+                    if fpCount > 150 { userButton.publishPerceptionStatus(.highFP) }
+                    else { userButton.publishPerceptionStatus(.lowFP) }
+                    
+                    let center = sceneView.center
+                    if sceneView.isPointOnConfirmed(center, eliminateRest: true) {
+                        userButton.publishPerceptionStatus(.node)
+                    } else if sceneView.isPointOnPlane(center) {
+                        userButton.publishPerceptionStatus(.plane)
+                    }
+                })
                 .filter { _ in
                     return AWSCognitoUserPoolsSignInProvider.sharedInstance().isLoggedIn()
                 } // quick fix.
@@ -288,8 +300,9 @@ extension ViewController {
                 }
                 return false
             })
-            .do(onNext: { (observation) in
+            .do(onNext: { [userButton] (observation) in
                 self.highlightObservation(observation)
+                userButton.publishPerceptionStatus(.rect)
             })
         
         /// 3. Compute geometric information and descriptor for each vertical rectangle observered previously
