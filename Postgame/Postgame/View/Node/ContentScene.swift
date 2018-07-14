@@ -52,8 +52,6 @@ final class ContentScene: SKScene {
         label.position = CGPoint(x: sceneSize.width, y: 0)
         label.fontSize = 20
         label.fontName = "Catatan Perjalanan"
-        print("old font size: ", sceneSize.height * 0.1)
-        print("Label width: ", label.frame.width)
         label.zPosition = 5
         addChild(label)
         

@@ -17,7 +17,7 @@ final class DescriptorCache {
     // Matching threshold.
     // Beware of tradeoff between false postivie and false negative
     // Currently set low to limit duplicate errors (less false negative, more false positive)
-    let threshold = 0.58
+    let threshold = 0.55
     var lastLocation: CLLocation?
     
     var cache = [String : Descriptor]() {
