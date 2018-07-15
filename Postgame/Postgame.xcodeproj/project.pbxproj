@@ -47,6 +47,7 @@
 		6AC6C8FD20F3A87000126391 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C8FC20F3A87000126391 /* Constants.swift */; };
 		6AC6C90D20F511C700126391 /* AppSyncAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C90C20F511C600126391 /* AppSyncAPI.swift */; };
 		6AC6C90F20F90FD600126391 /* UserButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C90E20F90FD600126391 /* UserButton.swift */; };
+		6AC6C91120FBFA2300126391 /* CreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC6C91020FBFA2300126391 /* CreationViewController.swift */; };
 		6AEBAB5620CDF3AE00741EB0 /* S3Servie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */; };
 		6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */; };
 		6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */; };
@@ -59,7 +60,6 @@
 		6AEC1AA0208799B2008E0FF8 /* ViewController+UISetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1A9F208799B2008E0FF8 /* ViewController+UISetup.swift */; };
 		6AEC1AA320879B23008E0FF8 /* extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AA220879B23008E0FF8 /* extension.swift */; };
 		6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AA52087ADC5008E0FF8 /* IndicatorButton.swift */; };
-		6AEC1AA92087C514008E0FF8 /* CreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AA82087C514008E0FF8 /* CreationView.swift */; };
 		6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AAA2088280B008E0FF8 /* DrawView.swift */; };
 		6AEC1AAD20882BB0008E0FF8 /* ColorSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AAC20882BB0008E0FF8 /* ColorSlider.swift */; };
 		6AEC1AAF20885E8C008E0FF8 /* PhotoLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEC1AAE20885E8C008E0FF8 /* PhotoLibraryView.swift */; };
@@ -150,6 +150,7 @@
 		6AC6C8FC20F3A87000126391 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		6AC6C90C20F511C600126391 /* AppSyncAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppSyncAPI.swift; path = ../../graphql/AppSyncAPI.swift; sourceTree = "<group>"; };
 		6AC6C90E20F90FD600126391 /* UserButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserButton.swift; sourceTree = "<group>"; };
+		6AC6C91020FBFA2300126391 /* CreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationViewController.swift; sourceTree = "<group>"; };
 		6AEBAB5520CDF3AE00741EB0 /* S3Servie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3Servie.swift; sourceTree = "<group>"; };
 		6AEBAB5720CEDC9000741EB0 /* RxARSessionDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxARSessionDelegateProxy.swift; sourceTree = "<group>"; };
 		6AEBAB5B20CEE3F000741EB0 /* ARSession+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARSession+Rx.swift"; sourceTree = "<group>"; };
@@ -168,7 +169,6 @@
 		6AEC1A9F208799B2008E0FF8 /* ViewController+UISetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+UISetup.swift"; sourceTree = "<group>"; };
 		6AEC1AA220879B23008E0FF8 /* extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extension.swift; sourceTree = "<group>"; };
 		6AEC1AA52087ADC5008E0FF8 /* IndicatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorButton.swift; sourceTree = "<group>"; };
-		6AEC1AA82087C514008E0FF8 /* CreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreationView.swift; sourceTree = "<group>"; };
 		6AEC1AAA2088280B008E0FF8 /* DrawView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawView.swift; sourceTree = "<group>"; };
 		6AEC1AAC20882BB0008E0FF8 /* ColorSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSlider.swift; sourceTree = "<group>"; };
 		6AEC1AAE20885E8C008E0FF8 /* PhotoLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryView.swift; sourceTree = "<group>"; };
@@ -426,6 +426,7 @@
 				6A1B54CF20D47BEC00870DC2 /* ViewController+Gesture.swift */,
 				6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */,
 				6AF52793208BC2E20039363B /* UserAuthentication */,
+				6AC6C91020FBFA2300126391 /* CreationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -462,7 +463,6 @@
 		6AEC1AA72087C3C9008E0FF8 /* CreationView */ = {
 			isa = PBXGroup;
 			children = (
-				6AEC1AA82087C514008E0FF8 /* CreationView.swift */,
 				6AEC1AAA2088280B008E0FF8 /* DrawView.swift */,
 				6AEC1AAC20882BB0008E0FF8 /* ColorSlider.swift */,
 				6AEC1AB32089A678008E0FF8 /* PhotoPickerView */,
@@ -894,6 +894,7 @@
 				6A1B54D220D47D2E00870DC2 /* LongPressIndicator.swift in Sources */,
 				6AEC1AB12088630C008E0FF8 /* PhotoPickerView.swift in Sources */,
 				6AEBAB6120CEEEAC00741EB0 /* RectDetector.swift in Sources */,
+				6AC6C91120FBFA2300126391 /* CreationViewController.swift in Sources */,
 				6A1B549520D019E500870DC2 /* DescriptorComputer.swift in Sources */,
 				6A1B54A320D01A8700870DC2 /* MultiArray.swift in Sources */,
 				6A93257820D85A8000E0C9B4 /* UserView.swift in Sources */,
@@ -924,7 +925,6 @@
 				6A1B54A220D01A8700870DC2 /* Predictions.swift in Sources */,
 				6A8EA74420E1538100B178C1 /* ViewCount.swift in Sources */,
 				6AEBAB5820CEDC9000741EB0 /* RxARSessionDelegateProxy.swift in Sources */,
-				6AEC1AA92087C514008E0FF8 /* CreationView.swift in Sources */,
 				6A93257620D859D600E0C9B4 /* CountView.swift in Sources */,
 				6AEBAB5620CDF3AE00741EB0 /* S3Servie.swift in Sources */,
 				6A1B54CE20D4616F00870DC2 /* DynamoDBService.swift in Sources */,

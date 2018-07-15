@@ -76,7 +76,7 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
     
-        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
+//        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
     
     }
     
@@ -150,9 +150,7 @@ extension ViewController {
     
     private func setupResetButtonRx() {
         resetButton.rx.tap
-            .bind {
-                self.resetSession()
-            }
+            .bind {  self.resetSession() }
             .disposed(by: disposeBag)
         
     }
@@ -166,37 +164,37 @@ extension ViewController {
                 return self.createButton.post == nil
             })
             .subscribe(onNext: {[weak self, disposeBag] _ in
-                // Create new CreationView
-                let creationView = CreationView()
-                self?.view.addSubview(creationView) // sets layout inside didMoveToSuperview()
+                let creationVC = CreationViewController()
+                creationVC.modalPresentationStyle = .overCurrentContext
+                creationVC.modalTransitionStyle = .crossDissolve
+                self?.present(creationVC, animated: true, completion: nil)
             
                 
                 // Handle exit of creationView - React to createView exitSubject, which returns nil (cancelled) or uiimage (finnished)
-                creationView.exitSubject
+                creationVC.exitSubject
                     .asDriver(onErrorJustReturn: nil)
                     .drive(onNext: { (image) in
                         self?.createButton.post = image
-                    
-                        // Remove creationView
-                        creationView.removeFromSuperview()
-            
-                        DispatchQueue.main.async {
-                            UIView.animate(withDuration: 0.3, animations: {
-                                self?.screenshotButton.alpha = 1
-                                self?.createButton.alpha = 1
-                                self?.resetButton.alpha = 1
-                                self?.userButton.alpha = 1
-                                self?.indicatorButton.alpha = 1
-                            })
-                        }
                         
-                        if image != nil {
-                            self?.createButton.animation = "zoomIn"
-                            self?.createButton.duration = 0.3
-                            self?.createButton.animate()
+                        creationVC.dismiss(animated: true, completion: {
+                            DispatchQueue.main.async {
+                                UIView.animate(withDuration: 0.1, animations: {
+                                    self?.screenshotButton.alpha = 1
+                                    self?.createButton.alpha = 1
+                                    self?.resetButton.alpha = 1
+                                    self?.userButton.alpha = 1
+                                    self?.indicatorButton.alpha = 1
+                                })
+                            }
                             
-                            self?.descriptorCache.refresh()
-                        }
+                            if image != nil {
+                                self?.createButton.animation = "zoomIn"
+                                self?.createButton.duration = 0.1
+                                self?.createButton.animate()
+                                
+                                self?.descriptorCache.refresh()
+                            }
+                        })
                     })
                     .disposed(by: disposeBag)
                 
@@ -444,16 +442,6 @@ extension ViewController {
             return nil
         }
     }
-    
-//    func getKey() -> String? {
-//        guard let location = lastLocation else { return nil }
-//        let locationString = location.0.format(f: "0.4") + "/" + location.1.format(f: "0.4")
-//        let date = timestamp()
-//        let username = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()!.username!
-//        let key = locationString + "/" + date + "/" + username
-//
-//        return key
-//    }
 
     func checkLocationAuthorizationStatus() {
         switch CLLocationManager.authorizationStatus() {
