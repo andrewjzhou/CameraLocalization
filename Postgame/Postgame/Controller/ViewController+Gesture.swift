@@ -8,6 +8,7 @@
 
 import ARKit
 import RxSwift
+import CoreLocation
 import RxCocoa
 
 extension ViewController {
@@ -24,14 +25,6 @@ extension ViewController {
     }
     
     @objc private func observeLongPress(sender: UILongPressGestureRecognizer) {
-        
-        // Refresh Cache
-        // Consider if this is overdone/expensive
-        // TODO: let cache finish refreshing before continuing to create Post Node. Attempting to create Post Node before reresh completes risks duplicate error
-//        if sender.state == .began && createButton.post != nil {
-//            descriptorCache.refresh()
-//        }
-        
         
         // Animate long press and delete inactive post nodes
         if sender.state.isActive{
@@ -71,14 +64,23 @@ extension ViewController {
         if postNode.state == .prompt && createButton.post != nil { // Adding / Updating
             // Do NOT switch function orders inside scope without purpose
             
-            // Add created image to current post node
-            postNode.setContentAndRecord(image: createButton.post!, location: lastLocation!)
-            
-            // cache image
-            imageCache.setObject(createButton.post!, forKey: postNode.recorder.id! as NSString)
-            
-            // refresh descriptor cache
-            descriptorCache.refresh()
+            if lastLocation != nil  && CLLocationManager.locationServicesEnabled() {
+                // Add created image to current post node
+                postNode.setContentAndRecord(image: createButton.post!, location: lastLocation!)
+                
+                // cache image
+                imageCache.setObject(createButton.post!, forKey: postNode.recorder.id! as NSString)
+                
+                // refresh descriptor cache
+                descriptorCache.refresh()
+                
+            } else {
+                // Check location authorization status
+                checkLocationAuthorizationStatus()
+                
+                // Exit prompt state
+                postNode.optOutPrompt()
+            }
             
             // Exist posting mode
             createButton.sendActions(for: .touchUpInside)

@@ -16,36 +16,16 @@ import RxSwift
 import RxCocoa
 
 final class GeolocationService {
-    
+    private let disposeBag = DisposeBag()
     static let instance = GeolocationService()
-    private (set) var authorized: Driver<Bool>
     private (set) var location: Driver<CLLocation>
     
-    private let locationManager = CLLocationManager()
-
+    let locationManager = CLLocationManager()
+    
     private init() {
         
         locationManager.distanceFilter = 20.0
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        
-        authorized = Observable.deferred { [weak locationManager] in
-            let status = CLLocationManager.authorizationStatus()
-            guard let locationManager = locationManager else {
-                return Observable.just(status)
-            }
-            return locationManager
-                .rx.didChangeAuthorizationStatus
-                .startWith(status)
-            }
-            .asDriver(onErrorJustReturn: CLAuthorizationStatus.notDetermined)
-            .map {
-                switch $0 {
-                case .authorizedAlways:
-                    return true
-                default:
-                    return false
-                }
-        }
         
         
         // Observable. Update location and format to 4 decimals
@@ -55,11 +35,11 @@ final class GeolocationService {
             .flatMap {
                 return $0.last.map(Driver.just) ?? Driver.empty()
             }
-        
-        
-        locationManager.requestAlwaysAuthorization()
+    
+        locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
+    
     
 }
 

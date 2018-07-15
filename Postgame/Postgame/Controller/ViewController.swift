@@ -76,38 +76,46 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
     
-//        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
-        
+        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
+    
     }
     
     override func viewDidAppear(_ animated: Bool) {
-//        AppSyncService.sharedInstance.createNewPost()
-        // Testingl
-//        AppSyncService.sharedInstance.incrementViewCount()
-        //        S3Service.sharedInstance.uploadFile()
+        super.viewDidAppear(animated)
+
+        NotificationCenter.default.post(Notification(name: NSNotification.Name.UIApplicationDidBecomeActive))
+            
     }
     
     func handleGeolocationService() {
         geolocationService.location.drive(onNext: { [weak self] (location) in
             if self == nil { return }
-            self!.lastLocation = location
-            self!.descriptorCache.query(location)
+            self?.lastLocation = location
+            self?.descriptorCache.query(location)
         }).disposed(by: disposeBag)
     }
     
     func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
+            .debounce(0.1, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
-                // Run the view's session
-                self?.resetSession()
-                self?.sceneView.showsStatistics = true // For debugging
-                self?.descriptorCache.refresh()
-                self?.userView.countView.refresh()
-    
                 // Authenticate user
                 AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
+        
+                guard let currUser = AWSCognitoIdentityUserPool.default().currentUser() else {return}
+                if currUser.isSignedIn {
+                    // Run the view's session
+                    self?.resetSession()
+                    self?.sceneView.showsStatistics = true // For debugging
+                    self?.descriptorCache.refresh()
+                    self?.userView.countView.refresh()
+                    
+                    // Location Authoirzation
+                    self?.checkLocationAuthorizationStatus()
+                }
             })
             .disposed(by: disposeBag)
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -157,37 +165,37 @@ extension ViewController {
             .filter({ _ -> Bool in
                 return self.createButton.post == nil
             })
-            .subscribe(onNext: {[disposeBag, descriptorCache] _ in
+            .subscribe(onNext: {[weak self, disposeBag] _ in
                 // Create new CreationView
                 let creationView = CreationView()
-                self.view.addSubview(creationView) // sets layout inside didMoveToSuperview()
+                self?.view.addSubview(creationView) // sets layout inside didMoveToSuperview()
             
                 
                 // Handle exit of creationView - React to createView exitSubject, which returns nil (cancelled) or uiimage (finnished)
                 creationView.exitSubject
                     .asDriver(onErrorJustReturn: nil)
                     .drive(onNext: { (image) in
-                        self.createButton.post = image
+                        self?.createButton.post = image
                     
                         // Remove creationView
                         creationView.removeFromSuperview()
             
                         DispatchQueue.main.async {
                             UIView.animate(withDuration: 0.3, animations: {
-                                self.screenshotButton.alpha = 1
-                                self.createButton.alpha = 1
-                                self.resetButton.alpha = 1
-                                self.userButton.alpha = 1
-                                self.indicatorButton.alpha = 1
+                                self?.screenshotButton.alpha = 1
+                                self?.createButton.alpha = 1
+                                self?.resetButton.alpha = 1
+                                self?.userButton.alpha = 1
+                                self?.indicatorButton.alpha = 1
                             })
                         }
                         
                         if image != nil {
-                            self.createButton.animation = "zoomIn"
-                            self.createButton.duration = 0.3
-                            self.createButton.animate()
+                            self?.createButton.animation = "zoomIn"
+                            self?.createButton.duration = 0.3
+                            self?.createButton.animate()
                             
-                            descriptorCache.refresh()
+                            self?.descriptorCache.refresh()
                         }
                     })
                     .disposed(by: disposeBag)
@@ -196,11 +204,11 @@ extension ViewController {
                 // Hide main UIButtons
                 UIView.animate(withDuration: 0.3, animations: {
                     // Hide UI Buttons
-                    self.screenshotButton.alpha = 0
-                    self.createButton.alpha = 0
-                    self.resetButton.alpha = 0
-                    self.userButton.alpha = 0
-                    self.indicatorButton.alpha = 0
+                    self?.screenshotButton.alpha = 0
+                    self?.createButton.alpha = 0
+                    self?.resetButton.alpha = 0
+                    self?.userButton.alpha = 0
+                    self?.indicatorButton.alpha = 0
                 })
             })
             .disposed(by: disposeBag)
@@ -228,8 +236,9 @@ extension ViewController {
         
         // Refresh descriptor cache
         
-        indicatorButton.rx.tap.subscribe(onNext: {[descriptorCache] _ in
-            descriptorCache.refresh()
+        indicatorButton.rx.tap.subscribe(onNext: {[weak self] _ in
+            self?.checkLocationAuthorizationStatus()
+            self?.descriptorCache.refresh()
         }).disposed(by: disposeBag)
         
     }
@@ -446,6 +455,34 @@ extension ViewController {
 //        return key
 //    }
 
-
+    func checkLocationAuthorizationStatus() {
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedWhenInUse:
+            geolocationService.locationManager.requestAlwaysAuthorization()
+        case .authorizedAlways:
+            break
+        case .denied, .restricted:
+            let alertController = UIAlertController(title: "Location Service",
+                                                    message: "Monocle needs you to authoirze location services to work!",
+                                                    preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+            alertController.addAction(cancelAction)
+            let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
+                guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                    return
+                }
+                
+                if UIApplication.shared.canOpenURL(settingsUrl) {
+                    UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                        print("Settings opened: \(success)") // Prints true
+                    })
+                }
+            }
+            alertController.addAction(settingsAction)
+            self.present(alertController, animated: true, completion: nil)
+        default:
+            geolocationService.locationManager.requestWhenInUseAuthorization()
+        }
+    }
 }
 
