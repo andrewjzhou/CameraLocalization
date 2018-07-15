@@ -191,16 +191,15 @@ final class PostNode: SCNNode {
         recorder.post = image
     }
     
-    func downloadAndSetContent(_ key: String, imageCacheToUpdate: NSCache<NSString, UIImage>) {
+    func downloadAndSetContent(_ key: String) {
         state = .load
         
         // Download post and set content
         let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
         postDownloadObservable.observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (image) in
-                if self == nil { return }
-                self!.setContent(image)
-                imageCacheToUpdate.setObject(image, forKey: key as NSString)
+                self?.setContent(image)
+                ImageCache.shared[key] = image
             })
             .disposed(by: disposeBag)
     }

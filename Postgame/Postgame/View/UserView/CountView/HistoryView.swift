@@ -11,7 +11,7 @@ import RxSwift
 
 final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     let disposeBag = DisposeBag()
-    let imageCache = NSCache<NSString, UIImage>()
+    
     let titleLabel = UILabel()
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -100,14 +100,14 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
             cell.titleLabel.text = date
             cell.numberLabel.text = String(info.viewCount)
             
-            if let imageToShow = imageCache.object(forKey: info.s3Key as NSString) {
+            if let imageToShow = ImageCache.shared[info.s3Key] {
                 cell.imageView.image = imageToShow
             } else {
                 S3Service.sharedInstance.downloadPost(info.s3Key)
                     .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
                     .drive(onNext: { (image) in
                         cell.imageView.image  = image
-                        self.imageCache.setObject(image, forKey: info.s3Key as NSString)
+                        ImageCache.shared[info.s3Key] = image
                     })
                     .disposed(by: cell.disposeBag)
             }
@@ -131,7 +131,7 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         S3Service.sharedInstance.downloadPost(key)
             .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
             .drive(onNext: { (image) in
-                self.imageCache.setObject(image, forKey: key as NSString)
+                ImageCache.shared[key] = image
             })
             .disposed(by: disposeBag)
     }

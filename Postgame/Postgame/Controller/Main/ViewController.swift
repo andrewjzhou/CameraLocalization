@@ -34,7 +34,6 @@ class ViewController: UIViewController {
     var lastLocation: CLLocation?
     
     lazy var descriptorCache = DescriptorCache()
-    var imageCache = NSCache<NSString, UIImage>()
 
     // UI Elements
     let sceneView = ARSCNView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
@@ -45,7 +44,6 @@ class ViewController: UIViewController {
     let indicatorButton = IndicatorButton()
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     
-    let userView = UserView()
 
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
@@ -108,7 +106,6 @@ class ViewController: UIViewController {
                     self?.resetSession()
                     self?.sceneView.showsStatistics = true // For debugging
                     self?.descriptorCache.refresh()
-                    self?.userView.countView.refresh()
                     
                     // Location Authoirzation
                     self?.checkLocationAuthorizationStatus()
@@ -152,7 +149,6 @@ extension ViewController {
         resetButton.rx.tap
             .bind {  self.resetSession() }
             .disposed(by: disposeBag)
-        
     }
     
     private func setupCreateButtonRx() {
@@ -245,11 +241,10 @@ extension ViewController {
         // Show userview
         userButton.rx.tap
             .subscribe(onNext: { (_) in
-                self.userView.alpha = 1
-                UIView.animate(withDuration: 0.5) {
-                    self.userView.transform = .identity
-                    self.userView.countView.refresh()
-                }
+                let userVC = UserViewController()
+                userVC.modalPresentationStyle = .overCurrentContext
+                userVC.modalTransitionStyle = .crossDissolve
+                self.present(userVC, animated: true, completion: nil)
             })
             .disposed(by: disposeBag)
         
@@ -363,10 +358,10 @@ extension ViewController {
                     node!.recorder.idToDeactivate = match!.id
                     
                     // display image
-                    if let image = self!.imageCache.object(forKey: match!.parentPostInfo.s3Key as NSString) {
+                    if let image = ImageCache.shared[match!.parentPostInfo.s3Key] {
                         node!.setContent(image)
                     } else {
-                        node!.downloadAndSetContent(match!.parentPostInfo.s3Key, imageCacheToUpdate: self!.imageCache)
+                        node!.downloadAndSetContent(match!.parentPostInfo.s3Key)
                         
                         // increment viewCount
                         AppSyncService.sharedInstance.incrementViewCount(id: match!.id)
