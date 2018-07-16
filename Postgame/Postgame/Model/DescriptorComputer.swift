@@ -26,9 +26,9 @@ final class DescriptorComputer {
     
     func computeDescriptors(node: PostNode, count: Int) -> Observable<PostNode> {
         let imageArr = node.recorder.realImages
-        var count = count - 1 // 0 included by default
-        if count > (imageArr.count-1) { count = imageArr.count-1 }
-        let interval = Int( floor( Double(imageArr.count-1) / Double(count) ) )
+        var jumps = count - 1
+        if jumps > (imageArr.count-1) { jumps = imageArr.count-1 }
+        let interval = Int( floor( Double(imageArr.count-1) / Double(jumps) ) )
         
         // get images to process
         var imagesToProcess = [UIImage]()
