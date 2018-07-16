@@ -74,7 +74,7 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
     
-//        AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool().currentUser()?.signOut()
+        
     
     }
     
@@ -103,7 +103,7 @@ class ViewController: UIViewController {
                 guard let currUser = AWSCognitoIdentityUserPool.default().currentUser() else {return}
                 if currUser.isSignedIn {
                     // Run the view's session
-                    self?.resetSession()
+                    self?.resetSessiogn()
                     self?.sceneView.showsStatistics = true // For debugging
                     self?.descriptorCache.refresh()
                     
@@ -140,6 +140,7 @@ extension ViewController {
 
     private func setupScreenshoButtonRx() {
         screenshotButton.rx.tap
+            .throttle(0.1, scheduler: MainScheduler.instance)
             .bind {
                 // Take screenshot and save to photo album
                 let screenshot = self.sceneView.snapshot()
@@ -150,7 +151,8 @@ extension ViewController {
     
     private func setupResetButtonRx() {
         resetButton.rx.tap
-            .bind {  self.resetSession() }
+            .throttle(1, scheduler: MainScheduler.instance)
+            .bind { self.resetSession() }
             .disposed(by: disposeBag)
     }
     
