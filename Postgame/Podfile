@@ -27,6 +27,7 @@ target 'Postgame' do
   pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chameleon.git'
   ## Misc
   pod 'KeychainSwift', '~> 11.0'
+  pod 'PhoneNumberKit'
 
   target 'PostgameTests' do
     inherit! :search_paths

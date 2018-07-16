@@ -13,7 +13,22 @@ import RxCocoa
 class SignUpBaseViewController: UIViewController {
     let disposeBag = DisposeBag()
     let label = UILabel()
-    let textField = UITextField()
+    var textField = UITextField() {
+        willSet {
+            textField.removeFromSuperview()
+        }
+        didSet {
+            view.addSubview(textField)
+            textField.translatesAutoresizingMaskIntoConstraints = false
+            textField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
+            textField.setTopConstraint(equalTo: label.bottomAnchor,
+                                       offset: UIScreen.main.bounds.height * 0.025)
+            textField.setTrailingConstraint(equalTo: view.trailingAnchor,
+                                            offset: -UIScreen.main.bounds.width * 0.25)
+            textField.contentVerticalAlignment = .bottom
+            addUnderline(for: textField)
+        }
+    }
     let button = UIButton()
     
     var introVC: IntroViewController?
