@@ -405,7 +405,7 @@ extension ViewController {
                 
                 self?.testImageView1.image = node.recorder.realImages[0]
                 self?.testImageView2.image = node.recorder.realImages[7]
-                self?.testImageView3.image = node.recorder.realImages[13]
+//                self?.testImageView3.image = node.recorder.realImages[13]
             })
             .disposed(by: disposeBag)
         

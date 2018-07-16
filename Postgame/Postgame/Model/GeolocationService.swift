@@ -18,7 +18,9 @@ import RxCocoa
 final class GeolocationService {
     private let disposeBag = DisposeBag()
     static let instance = GeolocationService()
-    private (set) var location: Driver<CLLocation>
+    private(set) var location: Driver<CLLocation>
+    
+    private(set) var lastLocation: CLLocationCoordinate2D?
     
     let locationManager = CLLocationManager()
     

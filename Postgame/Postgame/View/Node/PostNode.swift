@@ -211,6 +211,9 @@ final class PostNode: SCNNode {
         setContent(image)
         recorder.location = location
         recorder.record()
+        
+        // cache image
+        ImageCache.shared[recorder.id!] = recorder.post!
     }
     
     // Observe a new Rect Geometry update

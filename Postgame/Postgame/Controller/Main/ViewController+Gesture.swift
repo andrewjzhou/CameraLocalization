@@ -68,9 +68,6 @@ extension ViewController {
                 // Add created image to current post node
                 postNode.setContentAndRecord(image: createButton.post!, location: lastLocation!)
                 
-                // cache image
-                ImageCache.shared[postNode.recorder.id!] = createButton.post!
-                
                 // refresh descriptor cache
                 descriptorCache.refresh()
                 
