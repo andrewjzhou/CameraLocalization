@@ -107,8 +107,11 @@ class ViewController: UIViewController {
                     self?.sceneView.showsStatistics = true // For debugging
                     self?.descriptorCache.refresh()
                     
-                    // Location Authoirzation
-                    self?.checkLocationAuthorizationStatus()
+                    // First check AV Authoirzation then check Location Authorization
+                    guard let avAuth = self?.checkAVAuthoirzied() else { return }
+                    if avAuth {
+                        self?.checkLocationAuthorizationStatus()
+                    }
                 }
             })
             .disposed(by: disposeBag)
@@ -466,6 +469,38 @@ extension ViewController {
         default:
             geolocationService.locationManager.requestWhenInUseAuthorization()
         }
+    }
+    
+    func checkAVAuthoirzied() -> Bool {
+        if AVCaptureDevice.authorizationStatus(for: .video) != AVAuthorizationStatus.authorized {
+            AVCaptureDevice.requestAccess(for: .video) { (authorized) in
+                if !authorized {
+                    let alertController = UIAlertController(title: "Camera",
+                                                            message: "Monocle needs you to authoirze camera to work!",
+                                                            preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+                    alertController.addAction(cancelAction)
+                    let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
+                        guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                            return
+                        }
+                        
+                        if UIApplication.shared.canOpenURL(settingsUrl) {
+                            UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                                print("Settings opened: \(success)") // Prints true
+                            })
+                        }
+                    }
+                    alertController.addAction(settingsAction)
+                    self.present(alertController, animated: true, completion: nil)
+                }
+            }
+            
+            return false
+        } else {
+            return true
+        }
+        
     }
 }
 

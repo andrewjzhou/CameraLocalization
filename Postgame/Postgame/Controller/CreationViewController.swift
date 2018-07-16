@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Photos
 import RxSwift
 import RxCocoa
 
@@ -256,6 +257,33 @@ extension CreationViewController {
          Show PhotoPicker - React to photoPickerButton tap gesture
          */
         photoPickerButton.rx.tap
+            .do(onNext: { (_) in
+                if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
+                    PHPhotoLibrary.requestAuthorization({ (status) in
+                        if status != PHAuthorizationStatus.authorized {
+                            let alertController = UIAlertController(title: "Photos",
+                                                                    message: "Require permssion to add photos from library",
+                                                                    preferredStyle: .alert)
+                            let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+                            alertController.addAction(cancelAction)
+                            let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
+                                guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                                    return
+                                }
+                                
+                                if UIApplication.shared.canOpenURL(settingsUrl) {
+                                    UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                                        print("Settings opened: \(success)") // Prints true
+                                    })
+                                }
+                            }
+                            alertController.addAction(settingsAction)
+                            self.present(alertController, animated: true, completion: nil)
+                        }
+                    })
+                }
+            })
+            .filter{ return PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized }
             .subscribe(onNext: { [weak self] (_) in
                 translationBottomConstraint.isActive = false
                 identityBottomConstraint.isActive = true
