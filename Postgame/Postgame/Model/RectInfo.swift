@@ -139,8 +139,8 @@ struct RectInfo {
         guard let currFrame = sceneView.session.currentFrame else { return nil }
         let currImage = CIImage(cvPixelBuffer: currFrame.capturedImage)
         let convertedRect = convertFromCamera(observation.boundingBox, size: currImage.extent.size)
-//        let rect = expandRect(convertedRect, extent: currImage.extent)
-        let croppedImage = currImage.cropped(to: convertedRect)
+        let rect = expandRect(convertedRect, extent: currImage.extent)
+        let croppedImage = currImage.cropped(to: rect)
         realImage = resizeAndOrient(ciImage: croppedImage)!
     }
     
@@ -196,28 +196,31 @@ fileprivate func resizeAndOrient(ciImage: CIImage) -> UIImage? {
 //}
 
 //// expand rectangle region for cropped image for more room for CoreML vision request
-//fileprivate func expandRect(_ rect: CGRect, extent container: CGRect) -> CGRect {
-//    // TODO: play with increment ratio to see how it affect vision request results
-//    let widthIncrement = rect.size.width * 0.1
-//    let heighIncrement = rect.size.height * 0.1
-//
-//    var x = rect.origin.x - widthIncrement / 2.0
-//    if x < container.origin.x {
-//        x = container.origin.x
-//    }
-//
-//    var width = rect.size.width + widthIncrement
-//    if (x + width > container.origin.x + container.size.width) {
-//        width = container.size.width - x
-//    }
-//
-//    var y = rect.origin.y - heighIncrement / 2.0
-//    if y < container.origin.y {
-//        y = container.origin.y
-//    }
-//
-//    var height = rect.size.height + heighIncrement
-//    if (y + height > container.origin.y + container.size.height) {
-//        height = container.size.height - y
-//}
+fileprivate func expandRect(_ rect: CGRect, extent container: CGRect) -> CGRect {
+    // TODO: play with increment ratio to see how it affect vision request results
+    let widthIncrement = rect.size.width * 0.05
+    let heighIncrement = rect.size.height * 0.05
+    
+    var x = rect.origin.x - widthIncrement / 2.0
+    if x < container.origin.x {
+        x = container.origin.x
+    }
+    
+    var width = rect.size.width + widthIncrement
+    if (x + width > container.origin.x + container.size.width) {
+        width = container.size.width - x
+    }
+    
+    var y = rect.origin.y - heighIncrement / 2.0
+    if y < container.origin.y {
+        y = container.origin.y
+    }
+    
+    var height = rect.size.height + heighIncrement
+    if (y + height > container.origin.y + container.size.height) {
+        height = container.size.height - y
+    }
+    
+    return CGRect(x: x, y: y, width: width, height: height)
+}
 

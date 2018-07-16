@@ -48,6 +48,7 @@ class ViewController: UIViewController {
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
+    let testImageView = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,7 +75,13 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
     
-        
+        view.addSubview(testImageView)
+        testImageView.translatesAutoresizingMaskIntoConstraints = false
+        testImageView.setWidthConstraint(100)
+        testImageView.setHeightConstraint(100)
+        testImageView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        testImageView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        view.bringSubview(toFront: testImageView)
     
     }
     
@@ -103,7 +110,7 @@ class ViewController: UIViewController {
                 guard let currUser = AWSCognitoIdentityUserPool.default().currentUser() else {return}
                 if currUser.isSignedIn {
                     // Run the view's session
-                    self?.resetSessiogn()
+                    self?.resetSession()
                     self?.sceneView.showsStatistics = true // For debugging
                     self?.descriptorCache.refresh()
                     
@@ -356,6 +363,9 @@ extension ViewController {
             .filter{ $0 != nil }
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (node) in
+                if let real = node?.recorder.realImage {
+                    self?.testImageView.image = real
+                }
                 if self == nil { return }
                 let match = self!.descriptorCache.findMatch(node!.recorder.descriptor!)
                 if match != nil { // Post already exists
