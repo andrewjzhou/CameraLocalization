@@ -96,7 +96,7 @@ class ViewController: UIViewController {
     
         // ----------------------
 
-//        signOut()
+        signOut()
     
     }
     
