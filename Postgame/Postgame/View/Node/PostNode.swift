@@ -75,7 +75,7 @@ final class PostNode: SCNNode {
     struct Recorder {
         private var firstDiscovery = true // determines if need to deactivate old post before creating new post
         private let username: String
-        let realImage: UIImage
+        var realImages = [UIImage]()
     
         private(set) var id: String? {
             willSet {
@@ -83,7 +83,12 @@ final class PostNode: SCNNode {
             }
         }
         var idToDeactivate: String?
-        var descriptor: [Double]?
+        var descriptors = [[Double]]() {
+            didSet {
+                if descriptors.count > 0 { descriptorToRecord = descriptors[0] }
+            }
+        }
+        var descriptorToRecord: [Double]?
         var post: UIImage?
         var location: CLLocation? {
             didSet {
@@ -91,13 +96,12 @@ final class PostNode: SCNNode {
             }
         }
         
-        fileprivate init(username: String, realImage: UIImage) {
+        fileprivate init(username: String) {
             self.username = username
-            self.realImage = realImage
         }
         
         mutating func record() {
-            guard let id = id, let location = location, let descriptor = descriptor else { return }
+            guard let id = id, let location = location, let descriptor = descriptorToRecord else { return }
             
             // 1. deactivate post if necessary
             if idToDeactivate != nil{ AppSyncService.sharedInstance.deactivatePost(id: idToDeactivate!) }
@@ -125,8 +129,8 @@ final class PostNode: SCNNode {
         // initialize recorder
         let pool = AWSCognitoUserPoolsSignInProvider.sharedInstance().getUserPool()
         let username = pool.currentUser()!.username!
-        recorder = Recorder(username: username, realImage: info.realImage)
-        
+        recorder = Recorder(username: username)
+        recorder.realImages.append(info.realImage)
         
         
         // set size and initialize Content Node
@@ -178,9 +182,8 @@ final class PostNode: SCNNode {
         }).disposed(by: disposeBag)
         
         geometryObservable.take(2).subscribe(onNext: { [weak self] _ in
-            if self == nil { return }
-            self!.ttl.increment()
-            self!.isHidden = (self!.ttl.state == .unlimited) ? false : true
+            self?.ttl.increment()
+            self?.isHidden = (self!.ttl.state == .unlimited) ? false : true
         }).disposed(by: disposeBag)
     }
     

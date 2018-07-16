@@ -24,10 +24,38 @@ final class DescriptorComputer {
     
     init() {}
     
-    func compute(node: PostNode) -> Observable<PostNode?> {
-        let realImage = node.recorder.realImage
-        let orientation = CGImagePropertyOrientation(rawValue: UInt32(realImage.imageOrientation.rawValue))
-        guard let ciImage = CIImage(image: realImage) else { fatalError("Unable to create \(CIImage.self) from \(realImage).") }
+    func computeDescriptors(node: PostNode, count: Int) -> Observable<PostNode> {
+        let imageArr = node.recorder.realImages
+        var count = count - 1 // 0 included by default
+        if count > (imageArr.count-1) { count = imageArr.count-1 }
+        let interval = Int( floor( Double(imageArr.count-1) / Double(count) ) )
+        
+        // get images to process
+        var imagesToProcess = [UIImage]()
+        for index in stride(from: 0, through: imageArr.count-1, by: interval) {
+            imagesToProcess.append(imageArr[index])
+        }
+        
+        // observe descriptor computation for each image
+        var descriptorObservables = [Observable<[Double]?>]()
+        for img in imagesToProcess {
+            let obs = compute(image: img)
+            descriptorObservables.append(obs)
+        }
+        
+        // combine descriptors and record in node
+        let combined = Observable.zip(descriptorObservables) { (results: [[Double]?]) -> PostNode in
+            let results = results.filter { $0 != nil }
+            for res in results { node.recorder.descriptors.append(res!) }
+            return node
+        }
+    
+        return combined
+    }
+    
+    func compute(image: UIImage) -> Observable<[Double]?> {
+        let orientation = CGImagePropertyOrientation(rawValue: UInt32(image.imageOrientation.rawValue))
+        guard let ciImage = CIImage(image: image) else { fatalError("Unable to create \(CIImage.self) from \(image).") }
     
         return Observable.create({ observer in
      
@@ -50,9 +78,7 @@ final class DescriptorComputer {
                     return
                 }
                 
-                node.recorder.descriptor = descriptor
-                
-                observer.onNext(node)
+                observer.onNext(descriptor)
                 observer.onCompleted()
                 
             })
@@ -64,6 +90,7 @@ final class DescriptorComputer {
             DispatchQueue.global(qos: .userInteractive).async {
                 try? handler.perform([request])
             }
+
             return Disposables.create()
         })
     

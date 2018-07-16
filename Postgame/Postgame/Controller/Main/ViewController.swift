@@ -48,7 +48,9 @@ class ViewController: UIViewController {
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
     
-    let testImageView = UIImageView()
+    let testImageView1 = UIImageView()
+    let testImageView2 = UIImageView()
+    let testImageView3 = UIImageView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,13 +77,27 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
     
-        view.addSubview(testImageView)
-        testImageView.translatesAutoresizingMaskIntoConstraints = false
-        testImageView.setWidthConstraint(100)
-        testImageView.setHeightConstraint(100)
-        testImageView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        testImageView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
-        view.bringSubview(toFront: testImageView)
+        view.addSubview(testImageView1)
+        testImageView1.translatesAutoresizingMaskIntoConstraints = false
+        testImageView1.setWidthConstraint(100)
+        testImageView1.setHeightConstraint(100)
+        testImageView1.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        testImageView1.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        view.bringSubview(toFront: testImageView1)
+        view.addSubview(testImageView2)
+        testImageView2.translatesAutoresizingMaskIntoConstraints = false
+        testImageView2.setWidthConstraint(100)
+        testImageView2.setHeightConstraint(100)
+        testImageView2.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        testImageView2.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        view.bringSubview(toFront: testImageView2)
+        view.addSubview(testImageView3)
+        testImageView3.translatesAutoresizingMaskIntoConstraints = false
+        testImageView3.setWidthConstraint(100)
+        testImageView3.setHeightConstraint(100)
+        testImageView3.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        testImageView3.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        view.bringSubview(toFront: testImageView3)
     
     }
     
@@ -292,7 +308,7 @@ extension ViewController {
                     return AWSCognitoUserPoolsSignInProvider.sharedInstance().isLoggedIn()
                 } // quick fix.
                 .subscribe(onNext: { (frame) in
-                    self.removeRectOutlineLayers()
+//                    self.removeRectOutlineLayers()
                     rectDetector.detectRectangle(in: frame)
                 })
                 .disposed(by: disposeBag)
@@ -343,6 +359,8 @@ extension ViewController {
                         if geometry.isVariation(of: child.geometryUpdater.currGeometry) {
                             // update geometry and stop creating new post node
                             child.updateGeometry(geometry)
+                            // append new image
+                            child.recorder.realImages.append(info!.realImage)
                             return false
                         }
                     }
@@ -359,35 +377,35 @@ extension ViewController {
         let descriptorComputer = DescriptorComputer()
         let _ =
         nodeObservable
-            .flatMap { descriptorComputer.compute(node: $0!) }
-            .filter{ $0 != nil }
+            .flatMap { descriptorComputer.computeDescriptors(node: $0!, count: 5) }
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (node) in
-                if let real = node?.recorder.realImage {
-                    self?.testImageView.image = real
-                }
                 if self == nil { return }
-                let match = self!.descriptorCache.findMatch(node!.recorder.descriptor!)
+                let match = self!.descriptorCache.findMatch(node)
                 if match != nil { // Post already exists
                     // deactivate in future if user updates image
-                    node!.recorder.idToDeactivate = match!.id
+                    node.recorder.idToDeactivate = match!.id
                     
                     // display image
                     if let image = ImageCache.shared[match!.parentPostInfo.s3Key] {
-                        node!.setContent(image)
+                        node.setContent(image)
                     } else {
-                        node!.downloadAndSetContent(match!.parentPostInfo.s3Key)
-                        
+                        node.downloadAndSetContent(match!.parentPostInfo.s3Key)
+                    
                         // increment viewCount
                         AppSyncService.sharedInstance.incrementViewCount(id: match!.id)
                     }
                     
                     DispatchQueue.main.async{ vibrate(.light) }
                 } else if self!.createButton.post != nil { // Post to be added
-                    node!.prompt()
+                    node.prompt()
                 } else { // Placeholder
-                    node!.deactivate()
+                    node.deactivate()
                 }
+                
+                self?.testImageView1.image = node.recorder.realImages[0]
+                self?.testImageView2.image = node.recorder.realImages[7]
+                self?.testImageView3.image = node.recorder.realImages[13]
             })
             .disposed(by: disposeBag)
         

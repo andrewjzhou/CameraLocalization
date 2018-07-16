@@ -55,11 +55,6 @@ final class DescriptorCache {
     // Reload cache
     func refresh() {
         if let location = lastLocation {
-//            // Refresh cache. Remove descriptors that are not inside user region
-//            cache = cache.filter({ (_, value: Descriptor) -> Bool in
-//                let dist = value.location.distance(from: location)
-//                return dist < (location.horizontalAccuracy + BaseLocationUncertainty)
-//            })
             
             // Download nearby descriptors
              queryPublisher.onNext(location)
@@ -71,27 +66,46 @@ final class DescriptorCache {
     
     
     // Find the best match between descriptors in cache and target descriptor. Similarity must be above of threshold.
-    func findMatch(_ target: [Double]) -> Descriptor? {
-        var bestMatch: Descriptor? = nil, bestMatchSimilarity: Double? = nil
+    func findMatch(_ node: PostNode) -> Descriptor? {
+        let inputDescriptors = node.recorder.descriptors
+        if inputDescriptors.count == 0 { return nil }
+        
+        var bestMatchInCache: Descriptor? , bestScore: Double?, bestMatchInInput: [Double]?
         
         for (_, descriptor) in cache {
-            let similarity = cosineSimilarity(v1: target, v2: descriptor.value)
-            print("Similarity: \(similarity)")
-
-            if similarity > threshold {
-                if bestMatchSimilarity == nil { // Found first best match
-                    bestMatch = descriptor
-                    bestMatchSimilarity = similarity
-                } else if similarity > bestMatchSimilarity! { // Found better match than current best match
-                    bestMatch = descriptor
-                    bestMatchSimilarity = similarity
+            var bestInput = inputDescriptors[0]
+            var bestInputScore = cosineSimilarity(v1: bestInput, v2: descriptor.value)
+            var compositeScore = bestInputScore
+            print("-------------------------------------------")
+            print("Similarity 0: \(bestInputScore)")
+            for i in 1 ..< inputDescriptors.count {
+                let score = cosineSimilarity(v1: inputDescriptors[i], v2: descriptor.value)
+                compositeScore += score
+                if score > bestInputScore {
+                    bestInputScore = score
+                    bestInput = inputDescriptors[i]
                 }
+                print("Similarity \(i): \(score)")
             }
+            
+            compositeScore = compositeScore / Double(inputDescriptors.count)
+            print("Composite: \(compositeScore)")
+            print("-------------------------------------------")
+            if bestScore == nil {
+                bestScore = compositeScore
+                bestMatchInCache = descriptor
+                bestMatchInInput = bestInput
+            } else if bestScore! < compositeScore {
+                bestScore = compositeScore
+                bestMatchInCache = descriptor
+                bestMatchInInput = bestInput
+            }
+
         }
         
-        if bestMatch != nil { print("DescriptorCache: Match Found with similarity: \(bestMatchSimilarity)") }
+        node.recorder.descriptorToRecord = bestMatchInInput
+        return bestMatchInCache
         
-        return bestMatch
     }
 }
 
