@@ -34,6 +34,13 @@
 		6A2486CD20FC0E3E00DB2133 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486CC20FC0E3E00DB2133 /* ImageCache.swift */; };
 		6A2486CF20FD0F6A00DB2133 /* CognitoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486CE20FD0F6A00DB2133 /* CognitoService.swift */; };
 		6A2486D120FD1C9E00DB2133 /* IntroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486D020FD1C9E00DB2133 /* IntroViewController.swift */; };
+		6A2486D320FD206200DB2133 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486D220FD206200DB2133 /* SignInViewController.swift */; };
+		6A2486D520FD388B00DB2133 /* UsernameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486D420FD388B00DB2133 /* UsernameViewController.swift */; };
+		6A2486D820FD397F00DB2133 /* SignUpBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486D720FD397F00DB2133 /* SignUpBaseViewController.swift */; };
+		6A2486DA20FD3ADB00DB2133 /* PasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486D920FD3ADB00DB2133 /* PasswordViewController.swift */; };
+		6A2486DC20FD3D4E00DB2133 /* PhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486DB20FD3D4E00DB2133 /* PhoneViewController.swift */; };
+		6A2486DE20FD3DCF00DB2133 /* EmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486DD20FD3DCF00DB2133 /* EmailViewController.swift */; };
+		6A2486E020FD3E0600DB2133 /* ConfirmCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486DF20FD3E0600DB2133 /* ConfirmCodeViewController.swift */; };
 		6A8EA73B20E050D000B178C1 /* UserMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8EA73A20E050D000B178C1 /* UserMenu.swift */; };
 		6A8EA73D20E1254600B178C1 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8EA73C20E1254600B178C1 /* HistoryView.swift */; };
 		6A8EA73F20E1255200B178C1 /* TotalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8EA73E20E1255200B178C1 /* TotalView.swift */; };
@@ -72,7 +79,7 @@
 		6AF52780208AC3E80039363B /* GeolocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5277F208AC3E80039363B /* GeolocationService.swift */; };
 		6AF52782208AC4190039363B /* CLLocation+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52781208AC4190039363B /* CLLocation+Rx.swift */; };
 		6AF52784208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52783208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift */; };
-		6AF52788208BBFEC0039363B /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52787208BBFEC0039363B /* SignInViewController.swift */; };
+		6AF52788208BBFEC0039363B /* SignInViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52787208BBFEC0039363B /* SignInViewControllerOld.swift */; };
 		6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF52789208BC0690039363B /* SignUpViewController.swift */; };
 		6AF5278C208BC0810039363B /* ConfirmSignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */; };
 		6AF5278E208BC0990039363B /* ForgotPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */; };
@@ -139,6 +146,13 @@
 		6A2486CC20FC0E3E00DB2133 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		6A2486CE20FD0F6A00DB2133 /* CognitoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CognitoService.swift; sourceTree = "<group>"; };
 		6A2486D020FD1C9E00DB2133 /* IntroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroViewController.swift; sourceTree = "<group>"; };
+		6A2486D220FD206200DB2133 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		6A2486D420FD388B00DB2133 /* UsernameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsernameViewController.swift; sourceTree = "<group>"; };
+		6A2486D720FD397F00DB2133 /* SignUpBaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpBaseViewController.swift; sourceTree = "<group>"; };
+		6A2486D920FD3ADB00DB2133 /* PasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewController.swift; sourceTree = "<group>"; };
+		6A2486DB20FD3D4E00DB2133 /* PhoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneViewController.swift; sourceTree = "<group>"; };
+		6A2486DD20FD3DCF00DB2133 /* EmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailViewController.swift; sourceTree = "<group>"; };
+		6A2486DF20FD3E0600DB2133 /* ConfirmCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCodeViewController.swift; sourceTree = "<group>"; };
 		6A8EA73A20E050D000B178C1 /* UserMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMenu.swift; sourceTree = "<group>"; };
 		6A8EA73C20E1254600B178C1 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		6A8EA73E20E1255200B178C1 /* TotalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalView.swift; sourceTree = "<group>"; };
@@ -184,7 +198,7 @@
 		6AF5277F208AC3E80039363B /* GeolocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeolocationService.swift; sourceTree = "<group>"; };
 		6AF52781208AC4190039363B /* CLLocation+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocation+Rx.swift"; sourceTree = "<group>"; };
 		6AF52783208AC43A0039363B /* RxCLLocationManagerDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxCLLocationManagerDelegateProxy.swift; sourceTree = "<group>"; };
-		6AF52787208BBFEC0039363B /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		6AF52787208BBFEC0039363B /* SignInViewControllerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewControllerOld.swift; sourceTree = "<group>"; };
 		6AF52789208BC0690039363B /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
 		6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmSignUpViewController.swift; sourceTree = "<group>"; };
 		6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordViewController.swift; sourceTree = "<group>"; };
@@ -328,6 +342,19 @@
 			path = Main;
 			sourceTree = "<group>";
 		};
+		6A2486D620FD389300DB2133 /* SignUp */ = {
+			isa = PBXGroup;
+			children = (
+				6A2486D720FD397F00DB2133 /* SignUpBaseViewController.swift */,
+				6A2486D420FD388B00DB2133 /* UsernameViewController.swift */,
+				6A2486D920FD3ADB00DB2133 /* PasswordViewController.swift */,
+				6A2486DB20FD3D4E00DB2133 /* PhoneViewController.swift */,
+				6A2486DD20FD3DCF00DB2133 /* EmailViewController.swift */,
+				6A2486DF20FD3E0600DB2133 /* ConfirmCodeViewController.swift */,
+			);
+			path = SignUp;
+			sourceTree = "<group>";
+		};
 		6A8EA74020E1458900B178C1 /* CountView */ = {
 			isa = PBXGroup;
 			children = (
@@ -437,12 +464,14 @@
 		6AEC1A9E20879941008E0FF8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				6A2486D620FD389300DB2133 /* SignUp */,
 				6A2486C920FC088300DB2133 /* Main */,
 				6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */,
 				6AF52793208BC2E20039363B /* UserAuthentication */,
 				6AC6C91020FBFA2300126391 /* CreationViewController.swift */,
 				6A2486CA20FC090600DB2133 /* UserViewController.swift */,
 				6A2486D020FD1C9E00DB2133 /* IntroViewController.swift */,
+				6A2486D220FD206200DB2133 /* SignInViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -526,7 +555,7 @@
 		6AF52793208BC2E20039363B /* UserAuthentication */ = {
 			isa = PBXGroup;
 			children = (
-				6AF52787208BBFEC0039363B /* SignInViewController.swift */,
+				6AF52787208BBFEC0039363B /* SignInViewControllerOld.swift */,
 				6AF52789208BC0690039363B /* SignUpViewController.swift */,
 				6AF5278B208BC0810039363B /* ConfirmSignUpViewController.swift */,
 				6AF5278D208BC0990039363B /* ForgotPasswordViewController.swift */,
@@ -882,6 +911,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A2486CD20FC0E3E00DB2133 /* ImageCache.swift in Sources */,
+				6A2486D520FD388B00DB2133 /* UsernameViewController.swift in Sources */,
+				6A2486D820FD397F00DB2133 /* SignUpBaseViewController.swift in Sources */,
 				6AC6C90D20F511C700126391 /* AppSyncAPI.swift in Sources */,
 				6A1B54B220D1BD9B00870DC2 /* Posts.swift in Sources */,
 				6AEC1A732085BF06008E0FF8 /* ViewController.swift in Sources */,
@@ -891,6 +922,7 @@
 				6AC6C90F20F90FD600126391 /* UserButton.swift in Sources */,
 				6A1B54A120D01A8700870DC2 /* Array.swift in Sources */,
 				6A1B549120D00D1F00870DC2 /* utility.swift in Sources */,
+				6A2486DE20FD3DCF00DB2133 /* EmailViewController.swift in Sources */,
 				6A1B54A020D01A8700870DC2 /* UIImage+CVPixelBuffer.swift in Sources */,
 				6A1B54D520D8253500870DC2 /* Descriptor.swift in Sources */,
 				6AEC1AB72089A6C3008E0FF8 /* DragHandle.swift in Sources */,
@@ -903,8 +935,10 @@
 				6A1B54BB20D3012700870DC2 /* ContentScene.swift in Sources */,
 				6AEC1A6F2085BF06008E0FF8 /* AppDelegate.swift in Sources */,
 				6AEC1AAB2088280B008E0FF8 /* DrawView.swift in Sources */,
+				6A2486DA20FD3ADB00DB2133 /* PasswordViewController.swift in Sources */,
 				6A1B54AE20D1A90C00870DC2 /* PostNodeExtent.swift in Sources */,
 				6AFDC43620EAFF57009ED7E5 /* PostNode.swift in Sources */,
+				6A2486D320FD206200DB2133 /* SignInViewController.swift in Sources */,
 				6AC6C8FD20F3A87000126391 /* Constants.swift in Sources */,
 				6AFDC43020EA8ACE009ED7E5 /* RectGeometry.swift in Sources */,
 				6A1B54AA20D0764C00870DC2 /* DescriptorCache.swift in Sources */,
@@ -920,8 +954,10 @@
 				6AF5278A208BC0690039363B /* SignUpViewController.swift in Sources */,
 				6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */,
 				6AFDC43220EACA25009ED7E5 /* TTL.swift in Sources */,
-				6AF52788208BBFEC0039363B /* SignInViewController.swift in Sources */,
+				6AF52788208BBFEC0039363B /* SignInViewControllerOld.swift in Sources */,
 				6A1B549F20D01A8700870DC2 /* Math.swift in Sources */,
+				6A2486E020FD3E0600DB2133 /* ConfirmCodeViewController.swift in Sources */,
+				6A2486DC20FD3D4E00DB2133 /* PhoneViewController.swift in Sources */,
 				6A2486CB20FC090600DB2133 /* UserViewController.swift in Sources */,
 				6AF52790208BC0B00039363B /* UpdatePasswordViewController.swift in Sources */,
 				6AEC1AA0208799B2008E0FF8 /* ViewController+UISetup.swift in Sources */,

@@ -53,7 +53,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    
         setupUILayout()
         
         setupScreenshoButtonRx()
@@ -96,7 +96,7 @@ class ViewController: UIViewController {
     
         // ----------------------
 
-        
+//        signOut()
     
     }
     

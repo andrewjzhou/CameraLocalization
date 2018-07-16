@@ -113,6 +113,7 @@ class ConfirmSignUpViewController: UIViewController {
             self.present(alertController, animated: true, completion:  nil)
             return
         }
+    
         self.user?.confirmSignUp(self.confirmationCode!.text!, forceAliasCreation: true).continueWith {[weak self] (task: AWSTask) -> AnyObject? in
             guard let strongSelf = self else { return nil }
             DispatchQueue.main.async(execute: {

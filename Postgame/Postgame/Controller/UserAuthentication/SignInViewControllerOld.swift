@@ -10,7 +10,7 @@ import UIKit
 import AWSCognitoIdentityProvider
 import ChameleonFramework
 
-class SignInViewController: UIViewController {
+class SignInViewControllerOld: UIViewController {
     
     // UI
     var logo: UIImageView?
@@ -146,35 +146,35 @@ class SignInViewController: UIViewController {
     
 }
 
-extension SignInViewController: AWSCognitoIdentityPasswordAuthentication {
-    
-    public func getDetails(_ authenticationInput: AWSCognitoIdentityPasswordAuthenticationInput, passwordAuthenticationCompletionSource: AWSTaskCompletionSource<AWSCognitoIdentityPasswordAuthenticationDetails>) {
-        print("SignIn: getDetails()")
-        self.passwordAuthenticationCompletion = passwordAuthenticationCompletionSource
-        
-        DispatchQueue.main.async {
-            if (self.usernameText == nil) {
-                self.usernameText = authenticationInput.lastKnownUsername
-            }
-        }
-    }
-    
-    public func didCompleteStepWithError(_ error: Error?) {
-        print("Error found")
-        DispatchQueue.main.async {
-            if let error = error as NSError? {
-                let alertController = UIAlertController(title: error.userInfo["__type"] as? String,
-                                                        message: error.userInfo["message"] as? String,
-                                                        preferredStyle: .alert)
-                let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
-                alertController.addAction(retryAction)
-                
-                self.present(alertController, animated: true, completion:  nil)
-            } else {
-                self.username!.text = nil
-                self.dismiss(animated: true, completion: nil)
-            }
-        }
-    }
-}
+//extension SignInViewController: AWSCognitoIdentityPasswordAuthentication {
+//    
+//    public func getDetails(_ authenticationInput: AWSCognitoIdentityPasswordAuthenticationInput, passwordAuthenticationCompletionSource: AWSTaskCompletionSource<AWSCognitoIdentityPasswordAuthenticationDetails>) {
+//        print("SignIn: getDetails()")
+//        self.passwordAuthenticationCompletion = passwordAuthenticationCompletionSource
+//        
+//        DispatchQueue.main.async {
+//            if (self.usernameText == nil) {
+//                self.usernameText = authenticationInput.lastKnownUsername
+//            }
+//        }
+//    }
+//    
+//    public func didCompleteStepWithError(_ error: Error?) {
+//        print("Error found")
+//        DispatchQueue.main.async {
+//            if let error = error as NSError? {
+//                let alertController = UIAlertController(title: error.userInfo["__type"] as? String,
+//                                                        message: error.userInfo["message"] as? String,
+//                                                        preferredStyle: .alert)
+//                let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+//                alertController.addAction(retryAction)
+//                
+//                self.present(alertController, animated: true, completion:  nil)
+//            } else {
+//                self.username!.text = nil
+//                self.dismiss(animated: true, completion: nil)
+//            }
+//        }
+//    }
+//}
 

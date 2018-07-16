@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var navigationController: UINavigationController?
     let signInViewController = SignInViewController()
+    let introViewController = IntroViewController()
     var rememberDeviceCompletionSource: AWSTaskCompletionSource<NSNumber>?
     
     // Add a AWSMobileClient call in application:open url
@@ -43,7 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use below method to crash
 //        Crashlytics.sharedInstance().crash()
         
-        self.navigationController = UINavigationController(rootViewController: signInViewController)
+//        self.navigationController = UINavigationController(rootViewController: signInViewController)
+        self.navigationController = UINavigationController(rootViewController: introViewController)
         
         // AWS User Pool
         let pool = AWSCognitoIdentityUserPool.default()
@@ -51,8 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         
         window = UIWindow(frame: UIScreen.main.bounds)
-//        window!.rootViewController = ViewController()
-        window!.rootViewController = IntroViewController()
+        window!.rootViewController = ViewController()
+//        window!.rootViewController = SignInViewController()
         window!.makeKeyAndVisible()
         
         
@@ -120,7 +122,8 @@ extension AppDelegate: AWSCognitoIdentityInteractiveAuthenticationDelegate {
             }
             
         }
-        return self.signInViewController
+//        return self.signInViewController
+        return self.introViewController
     }
 
     func startRememberDevice() -> AWSCognitoIdentityRememberDevice {
