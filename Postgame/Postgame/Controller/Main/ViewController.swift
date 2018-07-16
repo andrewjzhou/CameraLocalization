@@ -282,9 +282,9 @@ extension ViewController {
                                       y: center.y + sceneView.frame.size.height * 0.3)
                     let bottom = CGPoint(x: center.x,
                                          y: center.y - sceneView.frame.size.height * 0.3)
-                    if sceneView.arePointsOnConfirmed([center,top,bottom], eliminateRest: true) {
+                    if sceneView.arePointsOnConfirmed([center, top, bottom], eliminateRest: true) {
                         userButton.publishPerceptionStatus(.node)
-                    } else if sceneView.arePointsOnPlane([center,top,bottom]) {
+                    } else if sceneView.arePointsOnPlane([center, top, bottom]) {
                         userButton.publishPerceptionStatus(.plane)
                     }
                 })
