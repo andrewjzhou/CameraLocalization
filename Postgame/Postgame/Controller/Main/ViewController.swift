@@ -50,8 +50,7 @@ class ViewController: UIViewController {
     
     let testImageView1 = UIImageView()
     let testImageView2 = UIImageView()
-    let testImageView3 = UIImageView()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -76,6 +75,8 @@ class ViewController: UIViewController {
         handleWakeFromBackground()
         
         handleGeolocationService()
+        
+        // ----------------------
     
         view.addSubview(testImageView1)
         testImageView1.translatesAutoresizingMaskIntoConstraints = false
@@ -91,13 +92,11 @@ class ViewController: UIViewController {
         testImageView2.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
         testImageView2.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
         view.bringSubview(toFront: testImageView2)
-        view.addSubview(testImageView3)
-        testImageView3.translatesAutoresizingMaskIntoConstraints = false
-        testImageView3.setWidthConstraint(100)
-        testImageView3.setHeightConstraint(100)
-        testImageView3.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        testImageView3.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
-        view.bringSubview(toFront: testImageView3)
+
+    
+        // ----------------------
+
+        
     
     }
     
@@ -287,7 +286,7 @@ extension ViewController {
         let _ =
             sceneView.session.rx.didUpdateFrame
                 // slow down frame rate
-                .throttle(0.03, scheduler:  MainScheduler.asyncInstance)
+                .throttle(0.05, scheduler:  MainScheduler.asyncInstance)
                 .do(onNext: { [userButton, sceneView] (frame) in
                     let fpCount = frame.rawFeaturePoints?.points.count ?? 0
                     if fpCount > 100 { userButton.publishPerceptionStatus(.highFP) }
@@ -377,7 +376,7 @@ extension ViewController {
         let descriptorComputer = DescriptorComputer()
         let _ =
         nodeObservable
-            .flatMap { descriptorComputer.computeDescriptors(node: $0!, count: 5) }
+            .flatMap { descriptorComputer.computeDescriptors(node: $0!, count: 4) }
             .observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (node) in
                 if self == nil { return }
@@ -405,7 +404,6 @@ extension ViewController {
                 
                 self?.testImageView1.image = node.recorder.realImages[0]
                 self?.testImageView2.image = node.recorder.realImages[7]
-//                self?.testImageView3.image = node.recorder.realImages[13]
             })
             .disposed(by: disposeBag)
         

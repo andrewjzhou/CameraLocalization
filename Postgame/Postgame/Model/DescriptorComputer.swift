@@ -28,18 +28,23 @@ final class DescriptorComputer {
         let imageArr = node.recorder.realImages
         var jumps = count - 1
         if jumps > (imageArr.count-1) { jumps = imageArr.count-1 }
-        let interval = Int( floor( Double(imageArr.count-1) / Double(jumps) ) )
+        var imagesToProcess = [UIImage]()
+        
         
         // get images to process
-        var imagesToProcess = [UIImage]()
-        for index in stride(from: 0, through: imageArr.count-1, by: interval) {
-            imagesToProcess.append(imageArr[index])
+        if jumps > 0 {
+            let interval = Int( floor( Double(imageArr.count-1) / Double(jumps) ) )
+            for index in stride(from: 0, through: imageArr.count-1, by: interval) {
+                imagesToProcess.append(imageArr[index])
+            }
+        } else {
+            imagesToProcess.append(imageArr[0])
         }
         
         // observe descriptor computation for each image
         var descriptorObservables = [Observable<[Double]?>]()
         for img in imagesToProcess {
-            let obs = compute(image: img)
+            let obs = computeDescriptor(image: img)
             descriptorObservables.append(obs)
         }
         
@@ -53,41 +58,40 @@ final class DescriptorComputer {
         return combined
     }
     
-    func compute(image: UIImage) -> Observable<[Double]?> {
+    fileprivate func computeDescriptor(image: UIImage) -> Observable<[Double]?> {
         let orientation = CGImagePropertyOrientation(rawValue: UInt32(image.imageOrientation.rawValue))
         guard let ciImage = CIImage(image: image) else { fatalError("Unable to create \(CIImage.self) from \(image).") }
     
         return Observable.create({ observer in
-     
-            let request = VNCoreMLRequest(model: self.model, completionHandler: { [weak self] request, error in
-                guard let result = request.results?.first as? VNCoreMLFeatureValueObservation else {
-                    observer.onNext(nil)
+            DispatchQueue.global(qos: .background).async {
+                let request = VNCoreMLRequest(model: self.model, completionHandler: { [weak self] request, error in
+                    guard let result = request.results?.first as? VNCoreMLFeatureValueObservation else {
+                        observer.onNext(nil)
+                        observer.onCompleted()
+                        return
+                    }
+                    guard let multiArray = result.featureValue.multiArrayValue else {
+                        observer.onNext(nil)
+                        observer.onCompleted()
+                        return
+                    }
+                    
+                    let array = MultiArray<Double>(multiArray)
+                    guard let descriptor = self?.processArray(array) else {
+                        observer.onNext(nil)
+                        observer.onCompleted()
+                        return
+                    }
+                    
+                    observer.onNext(descriptor)
                     observer.onCompleted()
-                    return
-                }
-                guard let multiArray = result.featureValue.multiArrayValue else {
-                    observer.onNext(nil)
-                    observer.onCompleted()
-                    return
-                }
+                    
+                })
                 
-                let array = MultiArray<Double>(multiArray)
-                guard let descriptor = self?.processArray(array) else {
-                    observer.onNext(nil)
-                    observer.onCompleted()
-                    return
-                }
+                request.imageCropAndScaleOption = .scaleFit
                 
-                observer.onNext(descriptor)
-                observer.onCompleted()
-                
-            })
-            
-            request.imageCropAndScaleOption = .scaleFit
-            
-            // Perform request
-            let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation!)
-            DispatchQueue.global(qos: .userInteractive).async {
+                // Perform request
+                let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation!)
                 try? handler.perform([request])
             }
 
