@@ -29,6 +29,7 @@ class SignUpBaseViewController: UIViewController {
             addUnderline(for: textField)
         }
     }
+    let backButton = UIButton()
     let button = UIButton()
     
     var introVC: IntroViewController?
@@ -47,6 +48,7 @@ class SignUpBaseViewController: UIViewController {
         
         setupInput()
         setupButton()
+        setupBackButton()
         
         // Dismiss keyboard with tap
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -80,6 +82,26 @@ class SignUpBaseViewController: UIViewController {
         addUnderline(for: textField)
     }
     
+    func setupBackButton() {
+        let backButton = UIButton()
+        view.addSubview(backButton)
+        backButton.setImage(UIImage(named: "ic_baseline_keyboard_arrow_left_black_24pt"), for: .normal)
+        backButton.backgroundColor = .clear
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.setWidthConstraint(64)
+        backButton.setHeightConstraint(64)
+        backButton.setTopConstraint(equalTo: view.topAnchor, offset: 15)
+        backButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 15)
+        backButton.tintColor = .flatGray
+        backButton.rx.tap.bind {
+            self.backButtonAction()
+        }.disposed(by: disposeBag)
+    }
+    
+    func backButtonAction() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     func setupButton() {
         view.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -97,6 +119,7 @@ class SignUpBaseViewController: UIViewController {
             .bind { self.buttonAction() }
             .disposed(by: disposeBag)
     }
+    
     
     func buttonAction() { }
     

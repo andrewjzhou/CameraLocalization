@@ -38,6 +38,10 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         }.disposed(by: db)
     }
     
+    override func backButtonAction() {
+         self.navigationController?.popToRootViewController(animated: true)
+    }
+    
     override func buttonAction() {
         guard let confirmationCodeValue = textField.text, !confirmationCodeValue.isEmpty else {
             let alertController = UIAlertController(title: "Confirmation code missing.",

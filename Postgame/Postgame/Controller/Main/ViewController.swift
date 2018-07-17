@@ -88,7 +88,9 @@ class ViewController: UIViewController {
         geolocationService.location.drive(onNext: { [weak self] (location) in
             if self == nil { return }
             self?.lastLocation = location
-            self?.descriptorCache.query(location)
+            if AWSCognitoIdentityUserPool.default().currentUser()?.isSignedIn == true {
+                self?.descriptorCache.query(location)
+            }
         }).disposed(by: disposeBag)
     }
     
@@ -104,6 +106,7 @@ class ViewController: UIViewController {
                         if let tokenString = getSessionResult?.idToken?.tokenString {
                             AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
                         }
+                        self?.descriptorCache.refresh()
                         return nil
                     })
                     return nil
@@ -247,10 +250,10 @@ extension ViewController {
         indicatorButton.rx.tap.bind {
             self.checkLocationAuthorizationStatus()
             self.descriptorCache.refresh()
-            let mapVC = MapViewController()
-            mapVC.modalPresentationStyle = .overCurrentContext
-            mapVC.modalTransitionStyle = .crossDissolve
-            self.present(mapVC, animated: true, completion: nil)
+//            let mapVC = MapViewController()
+//            mapVC.modalPresentationStyle = .overCurrentContext
+//            mapVC.modalTransitionStyle = .crossDissolve
+//            self.present(mapVC, animated: true, completion: nil)
         }.disposed(by: disposeBag)
         
     }
@@ -447,14 +450,7 @@ extension ViewController {
     
     // Sign out current user
     func signOut() {
-
         AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
-        AWSCognitoIdentityUserPool.default().currentUser()?.getDetails().continueOnSuccessWith { (task) -> AnyObject? in
-            DispatchQueue.main.async(execute: {
-                var response = task.result
-            })
-            return nil
-        }
     }
 
     func checkLocationAuthorizationStatus() {

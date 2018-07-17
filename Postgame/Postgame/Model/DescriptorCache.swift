@@ -48,6 +48,8 @@ final class DescriptorCache {
     
     // Make new query using location
     func query(_ location: CLLocation) {
+        print("DescriptorCache: querying")
+        
         lastLocation = location
         refresh()
     }

@@ -29,6 +29,7 @@ class SignInViewController: UIViewController {
         setupUsernameInput()
         setupPasswordInput()
         setupSignInButton()
+        setupBackButton()
         
         // Dismiss keyboard with tap
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -114,6 +115,22 @@ class SignInViewController: UIViewController {
                 let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
                 alertController.addAction(retryAction)
             }
+        }.disposed(by: disposeBag)
+    }
+    
+    func setupBackButton() {
+        let backButton = UIButton()
+        view.addSubview(backButton)
+        backButton.setImage(UIImage(named: "ic_baseline_keyboard_arrow_left_black_24pt"), for: .normal)
+        backButton.backgroundColor = .clear
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        backButton.setWidthConstraint(64)
+        backButton.setHeightConstraint(64)
+        backButton.setTopConstraint(equalTo: view.topAnchor, offset: 15)
+        backButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 15)
+        backButton.tintColor = .flatGray
+        backButton.rx.tap.bind {
+            self.navigationController?.popViewController(animated: true)
         }.disposed(by: disposeBag)
     }
 

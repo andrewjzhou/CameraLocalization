@@ -46,6 +46,47 @@ final class AppSyncService {
         
     }
     
+    func listPostsByLocationLite(_ location: CLLocation, radiusInMeters: Int) -> Observable<CLLocationCoordinate2D> {
+        // user coordinates
+        let lat = Double(location.coordinate.latitude)
+        let lon = Double(location.coordinate.longitude)
+        
+        // radius for query in meters, in string format
+        let Unit = "m"
+        let distString = String(radiusInMeters) + Unit
+        
+        let query = ListPostsByLocationLiteQuery(lat: lat, lon: lon, distance: distString)
+        return Observable.create { [appSyncClient] (observer) -> Disposable in
+            appSyncClient?.fetch(query: query,
+                                 cachePolicy: .returnCacheDataAndFetch,
+                                 queue: DispatchQueue.global(qos: .background),
+                                 resultHandler: { (result, error) in
+                                    if error != nil {
+                                        print(error?.localizedDescription ?? "")
+                                        observer.onCompleted()
+                                        return
+                                    }
+                                    
+                                    if let posts = result?.data?.listPostsByLocation {
+                                        var descriptorArr = [Descriptor]()
+                                        for post in posts {
+                                            guard let post = post else { continue }
+                                            
+                                            let coordinate = CLLocationCoordinate2D(latitude: post.location.lat,
+                                                                                    longitude: post.location.lon)
+                                            observer.onNext(coordinate)
+                                        }
+                                        observer.onCompleted()
+                                    } else {
+                                        observer.onCompleted()
+                                    }
+                                    
+            })
+    
+            return Disposables.create()
+        }
+    }
+    
     func observeDescriptorsByLocation(_ location: CLLocation) -> Observable<[Descriptor]>{
         // user coordinates
         let lat = Double(location.coordinate.latitude)
