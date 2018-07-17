@@ -9,8 +9,11 @@
 import UIKit
 import AWSCognitoIdentityProvider
 import AWSUserPoolsSignIn
+import RxSwift
+import RxCocoa
 
 class UsernameViewController: SignUpBaseViewController {
+    private let db = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +23,27 @@ class UsernameViewController: SignUpBaseViewController {
         if let text = introVC?.signUpInfo.username {
             textField.text = text
         }
+        
+        textField.rx.controlEvent([.editingChanged]).asObservable()
+            .subscribe(onNext:{[textField] _ in
+                if !textField.text!.isValidUsername() {
+                    let alertController = UIAlertController(title: "Invalid Character.",
+                                                            message: "",
+                                                            preferredStyle: .alert)
+                    let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+                    alertController.addAction(retryAction)
+                    
+                    self.present(alertController, animated: true, completion:  nil)
+                    let _ = textField.text!.popLast()
+                }
+            }).disposed(by: db)
+        
+        textField.rx.controlEvent([.editingDidEnd]).asObservable()
+            .subscribe(onNext:{[textField, weak self] _ in
+                if textField.text!.length > 15 {
+                    self?.alertTooLong()
+                }
+            }).disposed(by: db)
     }
     
     override func buttonAction() {
@@ -47,19 +71,21 @@ class UsernameViewController: SignUpBaseViewController {
     override func buttonActionCondition() -> Bool {
         // Check if username is too long
         if textField.text!.length > 15 {
-            let alertController = UIAlertController(title: "Username is too long.",
-                                                    message: "",
-                                                    preferredStyle: .alert)
-            let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
-            alertController.addAction(retryAction)
-            
-            self.present(alertController, animated: true, completion:  nil)
+            alertTooLong()
             return false
         }
        return true
     }
     
-   
+    func alertTooLong() {
+        let alertController = UIAlertController(title: "Username is too long.",
+                                                message: "maximum 15 characters",
+                                                preferredStyle: .alert)
+        let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+        alertController.addAction(retryAction)
+        
+        self.present(alertController, animated: true, completion:  nil)
+    }
 
 }
 
@@ -92,4 +118,12 @@ func checkUser(_ loginName: String, completion: @escaping (Bool) -> Void) {
         }
         return nil
     })
+}
+
+fileprivate extension String {
+    func isValidUsername() -> Bool {
+        // Minimum 8 characters at least 1 Alphabet and 1 Number
+        let passwordRegex = "^[a-zA-Z0-9_-]*$"
+        return NSPredicate(format: "SELF MATCHES %@", passwordRegex).evaluate(with: self)
+    }
 }
