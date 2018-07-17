@@ -25,6 +25,8 @@ target 'Postgame' do
   ## UI
   pod 'Spring', :git => 'https://github.com/MengTo/Spring.git'
   pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chameleon.git'
+  ## Mapbox
+  pod 'Mapbox-iOS-SDK', '~> 4.1'
   ## Misc
   pod 'KeychainSwift', '~> 11.0'
   pod 'PhoneNumberKit'

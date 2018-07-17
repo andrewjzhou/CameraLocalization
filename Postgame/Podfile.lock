@@ -33,6 +33,7 @@ PODS:
     - Fabric (~> 1.7.7)
   - Fabric (1.7.7)
   - KeychainSwift (11.0.0)
+  - Mapbox-iOS-SDK (4.1.1)
   - PhoneNumberKit (2.1.0):
     - PhoneNumberKit/PhoneNumberKitCore (= 2.1.0)
     - PhoneNumberKit/UIKit (= 2.1.0)
@@ -62,6 +63,7 @@ DEPENDENCIES:
   - Crashlytics
   - Fabric
   - KeychainSwift (~> 11.0)
+  - Mapbox-iOS-SDK (~> 4.1)
   - PhoneNumberKit
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
@@ -98,6 +100,7 @@ SPEC CHECKSUMS:
   Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
   Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
   KeychainSwift: bea6bd9f98af7b8d7ca4aa79fe105c00fab532db
+  Mapbox-iOS-SDK: 78e66fad4085433d04fccb9364df4be08042fb82
   PhoneNumberKit: 62003f40ff75315fd3738286558bc365365ac222
   ReachabilitySwift: e67b2cab4d5386053673d8a7421b5981e5f08259
   RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
@@ -105,6 +108,6 @@ SPEC CHECKSUMS:
   Spring: 3c7666eccefdeb87140008dc81043f89f8dbb787
   SQLite.swift: 3e3bee21da701b5b9f87c4a672cb54f233505692
 
-PODFILE CHECKSUM: 518af745bc4ca65a164b84d2e8cca865e04a618f
+PODFILE CHECKSUM: c33f313bdddbeac89362ccb20d0acf3cdfcdf29f
 
 COCOAPODS: 1.4.0

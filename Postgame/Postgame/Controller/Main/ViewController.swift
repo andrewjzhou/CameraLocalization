@@ -243,11 +243,15 @@ extension ViewController {
             .disposed(by: disposeBag)
         
         // Refresh descriptor cache
-        
-        indicatorButton.rx.tap.subscribe(onNext: {[weak self] _ in
-            self?.checkLocationAuthorizationStatus()
-            self?.descriptorCache.refresh()
-        }).disposed(by: disposeBag)
+        // Open Map
+        indicatorButton.rx.tap.bind {
+            self.checkLocationAuthorizationStatus()
+            self.descriptorCache.refresh()
+            let mapVC = MapViewController()
+            mapVC.modalPresentationStyle = .overCurrentContext
+            mapVC.modalTransitionStyle = .crossDissolve
+            self.present(mapVC, animated: true, completion: nil)
+        }.disposed(by: disposeBag)
         
     }
     

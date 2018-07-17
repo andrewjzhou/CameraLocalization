@@ -36,6 +36,10 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>MGLMapboxAccessToken</key>
+	<string>pk.eyJ1IjoiYW5kcmV3anpob3UiLCJhIjoiY2pqcHcwdWtqODI0djN3cDF5anA4bTR0aiJ9.VnIxg9ekCgw5DBBAu3aaHA</string>
+	<key>MGLMapboxMetricsEnabledSettingShownInApp</key>
+	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string></string>
 	<key>NSCameraUsageDescription</key>

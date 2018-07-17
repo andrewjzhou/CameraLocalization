@@ -41,6 +41,7 @@
 		6A2486DC20FD3D4E00DB2133 /* PhoneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486DB20FD3D4E00DB2133 /* PhoneViewController.swift */; };
 		6A2486DE20FD3DCF00DB2133 /* EmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486DD20FD3DCF00DB2133 /* EmailViewController.swift */; };
 		6A2486E020FD3E0600DB2133 /* ConfirmCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486DF20FD3E0600DB2133 /* ConfirmCodeViewController.swift */; };
+		6A2486E220FE4CAA00DB2133 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2486E120FE4CAA00DB2133 /* MapViewController.swift */; };
 		6A8EA73B20E050D000B178C1 /* UserMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8EA73A20E050D000B178C1 /* UserMenu.swift */; };
 		6A8EA73D20E1254600B178C1 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8EA73C20E1254600B178C1 /* HistoryView.swift */; };
 		6A8EA73F20E1255200B178C1 /* TotalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8EA73E20E1255200B178C1 /* TotalView.swift */; };
@@ -153,6 +154,7 @@
 		6A2486DB20FD3D4E00DB2133 /* PhoneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneViewController.swift; sourceTree = "<group>"; };
 		6A2486DD20FD3DCF00DB2133 /* EmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailViewController.swift; sourceTree = "<group>"; };
 		6A2486DF20FD3E0600DB2133 /* ConfirmCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmCodeViewController.swift; sourceTree = "<group>"; };
+		6A2486E120FE4CAA00DB2133 /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		6A8EA73A20E050D000B178C1 /* UserMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMenu.swift; sourceTree = "<group>"; };
 		6A8EA73C20E1254600B178C1 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		6A8EA73E20E1255200B178C1 /* TotalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TotalView.swift; sourceTree = "<group>"; };
@@ -472,6 +474,7 @@
 				6A2486CA20FC090600DB2133 /* UserViewController.swift */,
 				6A2486D020FD1C9E00DB2133 /* IntroViewController.swift */,
 				6A2486D220FD206200DB2133 /* SignInViewController.swift */,
+				6A2486E120FE4CAA00DB2133 /* MapViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -728,6 +731,8 @@
 				"${BUILT_PRODUCTS_DIR}/AWSUserPoolsSignIn/AWSUserPoolsSignIn.framework",
 				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainSwift/KeychainSwift.framework",
+				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
+				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
 				"${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
@@ -751,6 +756,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AWSUserPoolsSignIn.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
+				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhoneNumberKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
@@ -970,6 +977,7 @@
 				6AC6C8E320E45C3900126391 /* NotificationCenter+Rx.swift in Sources */,
 				6AEC1AB52089A698008E0FF8 /* ResizableView.swift in Sources */,
 				6A2486D120FD1C9E00DB2133 /* IntroViewController.swift in Sources */,
+				6A2486E220FE4CAA00DB2133 /* MapViewController.swift in Sources */,
 				6AEC1AAF20885E8C008E0FF8 /* PhotoLibraryView.swift in Sources */,
 				6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */,
 				6A1B54A620D01A8700870DC2 /* MLMultiArray+Image.swift in Sources */,
