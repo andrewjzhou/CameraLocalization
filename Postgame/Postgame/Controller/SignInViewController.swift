@@ -53,6 +53,7 @@ class SignInViewController: UIViewController {
         
         view.addSubview(usernameField)
         usernameField.translatesAutoresizingMaskIntoConstraints = false
+        usernameField.autocorrectionType = .no
         usernameField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
         usernameField.setTopConstraint(equalTo: label.bottomAnchor,
                                        offset: UIScreen.main.bounds.height * 0.025)

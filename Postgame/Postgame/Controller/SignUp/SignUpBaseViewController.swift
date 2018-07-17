@@ -70,6 +70,7 @@ class SignUpBaseViewController: UIViewController {
         
         view.addSubview(textField)
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.autocorrectionType = .no
         textField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
         textField.setTopConstraint(equalTo: label.bottomAnchor,
                                        offset: UIScreen.main.bounds.height * 0.025)
