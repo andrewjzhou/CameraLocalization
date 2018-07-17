@@ -15,9 +15,12 @@ class PasswordViewController: SignUpBaseViewController {
 
         label.text = "Password:"
         
+        
         if let text = introVC?.signUpInfo.password {
             textField.text = text
         }
+        
+        textField.isSecureTextEntry = true
     }
     
     override func buttonAction() {

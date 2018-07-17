@@ -20,7 +20,7 @@ class EmailViewController: SignUpBaseViewController {
     }
     
     override func buttonAction() {
-        checkUser(textField.text!) {[weak self] (notExist) in
+        checkUser(textField.text!) {[weak self] (notExist) in // only work if i change current user pool to must have email login
             if self == nil { return }
             if notExist {
                 self!.introVC?.signUpInfo.email = self!.textField.text!
@@ -49,6 +49,7 @@ class EmailViewController: SignUpBaseViewController {
             alertController.addAction(retryAction)
             
             self.present(alertController, animated: true, completion:  nil)
+            return false
         }
         return true
     }

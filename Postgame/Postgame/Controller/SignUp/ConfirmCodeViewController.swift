@@ -8,10 +8,13 @@
 
 import UIKit
 import AWSCognitoIdentityProvider
+import RxSwift
 
 class ConfirmCodeViewController: SignUpBaseViewController {
     var sentTo: String?
     var user: AWSCognitoIdentityUser?
+    
+    private let db = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +22,20 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         label.text = "Confirmation Code: "
         button.setTitle("Confirm", for: .normal)
         button.backgroundColor = .flatRed
+        
+        // resend button
+        let resend = UIButton()
+        view.addSubview(resend)
+        resend.translatesAutoresizingMaskIntoConstraints = false
+        resend.setTitle("resend code", for: .normal)
+        resend.setTitleColor(.flatBlue, for: .normal)
+        resend.backgroundColor = .clear
+        resend.setTopConstraint(equalTo: textField.bottomAnchor, offset: 0)
+        resend.setTrailingConstraint(equalTo: textField.trailingAnchor, offset: 0)
+        resend.setWidthConstraint(0.4 * UIScreen.main.bounds.width)
+        resend.rx.tap.bind {
+            self.resendConfirmationCode()
+        }.disposed(by: db)
     }
     
     override func buttonAction() {

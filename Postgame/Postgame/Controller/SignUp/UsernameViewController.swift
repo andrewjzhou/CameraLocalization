@@ -24,22 +24,21 @@ class UsernameViewController: SignUpBaseViewController {
             textField.text = text
         }
         
-        textField.rx.controlEvent([.editingChanged]).asObservable()
-            .subscribe(onNext:{[textField] _ in
+
+        
+        textField.rx.controlEvent([.editingDidEnd]).asObservable()
+            .subscribe(onNext:{[textField, weak self] _ in
                 if !textField.text!.isValidUsername() {
-                    let alertController = UIAlertController(title: "Invalid Character.",
+                    let alertController = UIAlertController(title: "Invalid character exists.",
                                                             message: "",
                                                             preferredStyle: .alert)
                     let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
                     alertController.addAction(retryAction)
                     
-                    self.present(alertController, animated: true, completion:  nil)
+                    self?.present(alertController, animated: true, completion:  nil)
                     let _ = textField.text!.popLast()
                 }
-            }).disposed(by: db)
-        
-        textField.rx.controlEvent([.editingDidEnd]).asObservable()
-            .subscribe(onNext:{[textField, weak self] _ in
+                
                 if textField.text!.length > 15 {
                     self?.alertTooLong()
                 }
