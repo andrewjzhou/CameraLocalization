@@ -46,6 +46,21 @@ query ListPostsByLocation($lat: Float!, $lon: Float!, $distance: String!) {
     }
 }
 
+query ListPostsByLocationLite($lat: Float!, $lon: Float!, $distance: String!) {
+    listPostsByLocation(lat: $lat, lon: $lon, distance: $distance) {
+        id
+        location {
+            ...Location
+        }
+        timestamp
+        username
+        viewCount
+        altitude
+        verAcc
+        horAcc
+    }
+}
+
 query QueryMostRecentByUsername($username: String!, $size: Int!) {
     queryMostRecentByUsername(username: $username, size: $size) {
         id

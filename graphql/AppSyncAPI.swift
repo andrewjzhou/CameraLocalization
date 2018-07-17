@@ -1067,6 +1067,231 @@ public final class ListPostsByLocationQuery: GraphQLQuery {
   }
 }
 
+public final class ListPostsByLocationLiteQuery: GraphQLQuery {
+  public static let operationString =
+    "query ListPostsByLocationLite($lat: Float!, $lon: Float!, $distance: String!) {\n  listPostsByLocation(lat: $lat, lon: $lon, distance: $distance) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    username\n    viewCount\n    altitude\n    verAcc\n    horAcc\n  }\n}"
+
+  public static var requestString: String { return operationString.appending(Location.fragmentString) }
+
+  public var lat: Double
+  public var lon: Double
+  public var distance: String
+
+  public init(lat: Double, lon: Double, distance: String) {
+    self.lat = lat
+    self.lon = lon
+    self.distance = distance
+  }
+
+  public var variables: GraphQLMap? {
+    return ["lat": lat, "lon": lon, "distance": distance]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Query"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("listPostsByLocation", arguments: ["lat": GraphQLVariable("lat"), "lon": GraphQLVariable("lon"), "distance": GraphQLVariable("distance")], type: .list(.object(ListPostsByLocation.selections))),
+    ]
+
+    public var snapshot: Snapshot
+
+    public init(snapshot: Snapshot) {
+      self.snapshot = snapshot
+    }
+
+    public init(listPostsByLocation: [ListPostsByLocation?]? = nil) {
+      self.init(snapshot: ["__typename": "Query", "listPostsByLocation": listPostsByLocation.flatMap { $0.map { $0.flatMap { $0.snapshot } } }])
+    }
+
+    public var listPostsByLocation: [ListPostsByLocation?]? {
+      get {
+        return (snapshot["listPostsByLocation"] as? [Snapshot?]).flatMap { $0.map { $0.flatMap { ListPostsByLocation(snapshot: $0) } } }
+      }
+      set {
+        snapshot.updateValue(newValue.flatMap { $0.map { $0.flatMap { $0.snapshot } } }, forKey: "listPostsByLocation")
+      }
+    }
+
+    public struct ListPostsByLocation: GraphQLSelectionSet {
+      public static let possibleTypes = ["Post"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("location", type: .nonNull(.object(Location.selections))),
+        GraphQLField("timestamp", type: .nonNull(.scalar(String.self))),
+        GraphQLField("username", type: .nonNull(.scalar(String.self))),
+        GraphQLField("viewCount", type: .nonNull(.scalar(Int.self))),
+        GraphQLField("altitude", type: .scalar(Double.self)),
+        GraphQLField("verAcc", type: .scalar(Double.self)),
+        GraphQLField("horAcc", type: .scalar(Double.self)),
+      ]
+
+      public var snapshot: Snapshot
+
+      public init(snapshot: Snapshot) {
+        self.snapshot = snapshot
+      }
+
+      public init(id: GraphQLID, location: Location, timestamp: String, username: String, viewCount: Int, altitude: Double? = nil, verAcc: Double? = nil, horAcc: Double? = nil) {
+        self.init(snapshot: ["__typename": "Post", "id": id, "location": location.snapshot, "timestamp": timestamp, "username": username, "viewCount": viewCount, "altitude": altitude, "verAcc": verAcc, "horAcc": horAcc])
+      }
+
+      public var __typename: String {
+        get {
+          return snapshot["__typename"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return snapshot["id"]! as! GraphQLID
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var location: Location {
+        get {
+          return Location(snapshot: snapshot["location"]! as! Snapshot)
+        }
+        set {
+          snapshot.updateValue(newValue.snapshot, forKey: "location")
+        }
+      }
+
+      public var timestamp: String {
+        get {
+          return snapshot["timestamp"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "timestamp")
+        }
+      }
+
+      public var username: String {
+        get {
+          return snapshot["username"]! as! String
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "username")
+        }
+      }
+
+      public var viewCount: Int {
+        get {
+          return snapshot["viewCount"]! as! Int
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "viewCount")
+        }
+      }
+
+      public var altitude: Double? {
+        get {
+          return snapshot["altitude"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "altitude")
+        }
+      }
+
+      public var verAcc: Double? {
+        get {
+          return snapshot["verAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "verAcc")
+        }
+      }
+
+      public var horAcc: Double? {
+        get {
+          return snapshot["horAcc"] as? Double
+        }
+        set {
+          snapshot.updateValue(newValue, forKey: "horAcc")
+        }
+      }
+
+      public struct Location: GraphQLSelectionSet {
+        public static let possibleTypes = ["Location"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("lat", type: .nonNull(.scalar(Double.self))),
+          GraphQLField("lon", type: .nonNull(.scalar(Double.self))),
+        ]
+
+        public var snapshot: Snapshot
+
+        public init(snapshot: Snapshot) {
+          self.snapshot = snapshot
+        }
+
+        public init(lat: Double, lon: Double) {
+          self.init(snapshot: ["__typename": "Location", "lat": lat, "lon": lon])
+        }
+
+        public var __typename: String {
+          get {
+            return snapshot["__typename"]! as! String
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var lat: Double {
+          get {
+            return snapshot["lat"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lat")
+          }
+        }
+
+        public var lon: Double {
+          get {
+            return snapshot["lon"]! as! Double
+          }
+          set {
+            snapshot.updateValue(newValue, forKey: "lon")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(snapshot: snapshot)
+          }
+          set {
+            snapshot += newValue.snapshot
+          }
+        }
+
+        public struct Fragments {
+          public var snapshot: Snapshot
+
+          public var location: Location {
+            get {
+              return Location(snapshot: snapshot)
+            }
+            set {
+              snapshot += newValue.snapshot
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 public final class QueryMostRecentByUsernameQuery: GraphQLQuery {
   public static let operationString =
     "query QueryMostRecentByUsername($username: String!, $size: Int!) {\n  queryMostRecentByUsername(username: $username, size: $size) {\n    __typename\n    id\n    location {\n      __typename\n      ...Location\n    }\n    timestamp\n    image {\n      __typename\n      ...S3Object\n    }\n    viewCount\n    active\n  }\n}"
