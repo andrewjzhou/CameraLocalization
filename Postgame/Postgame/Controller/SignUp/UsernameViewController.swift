@@ -74,6 +74,16 @@ class UsernameViewController: SignUpBaseViewController {
             alertTooLong()
             return false
         }
+        
+        if textField.text!.length == 0 {
+            let alertController = UIAlertController(title: "Empty username.",
+                                                    message: "",
+                                                    preferredStyle: .alert)
+            let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+            alertController.addAction(retryAction)
+            
+            self.present(alertController, animated: true, completion:  nil)
+        }
        return true
     }
     
