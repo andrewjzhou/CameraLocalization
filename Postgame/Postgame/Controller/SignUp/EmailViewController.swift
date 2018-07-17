@@ -20,17 +20,47 @@ class EmailViewController: SignUpBaseViewController {
     }
     
     override func buttonAction() {
-        introVC?.signUpInfo.email = textField.text!
-        
-        let phoneVC = PhoneViewController()
-        phoneVC.introVC = self.introVC
-        self.navigationController?.pushViewController(phoneVC, animated: true)
+        checkUser(textField.text!) {[weak self] (notExist) in
+            if self == nil { return }
+            if notExist {
+                self!.introVC?.signUpInfo.email = self!.textField.text!
+                
+                let phoneVC = PhoneViewController()
+                phoneVC.introVC = self!.introVC
+                self!.navigationController?.pushViewController(phoneVC, animated: true)
+            } else {
+                let alertController = UIAlertController(title: "Email used for another account",
+                                                        message: "",
+                                                        preferredStyle: .alert)
+                let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+                alertController.addAction(retryAction)
+                
+                self!.present(alertController, animated: true, completion:  nil)
+            }
+        }
     }
     
     override func buttonActionCondition() -> Bool {
-        // set input field requirements
+        if !textField.text!.isValidEmail() {
+            let alertController = UIAlertController(title: "Invalid Email",
+                                                    message: "",
+                                                    preferredStyle: .alert)
+            let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+            alertController.addAction(retryAction)
+            
+            self.present(alertController, animated: true, completion:  nil)
+        }
         return true
     }
 
 
+}
+
+fileprivate extension String {
+    func isValidEmail() -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        
+        let emailTest = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailTest.evaluate(with: self)
+    }
 }
