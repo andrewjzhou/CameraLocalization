@@ -47,10 +47,7 @@ class ViewController: UIViewController {
 
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
-    
-    let testImageView1 = UIImageView()
-    let testImageView2 = UIImageView()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
     
@@ -76,26 +73,6 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
         
-        // ----------------------
-    
-        view.addSubview(testImageView1)
-        testImageView1.translatesAutoresizingMaskIntoConstraints = false
-        testImageView1.setWidthConstraint(100)
-        testImageView1.setHeightConstraint(100)
-        testImageView1.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        testImageView1.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
-        view.bringSubview(toFront: testImageView1)
-        view.addSubview(testImageView2)
-        testImageView2.translatesAutoresizingMaskIntoConstraints = false
-        testImageView2.setWidthConstraint(100)
-        testImageView2.setHeightConstraint(100)
-        testImageView2.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        testImageView2.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
-        view.bringSubview(toFront: testImageView2)
-
-    
-        // ----------------------
-
 //        signOut()
     
     }
@@ -120,7 +97,17 @@ class ViewController: UIViewController {
             .debounce(0.1, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 // Authenticate user
-                AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
+                AWSCognitoIdentityUserPool.default().currentUser()?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
+                    let user = AWSCognitoIdentityUserPool.default().currentUser()
+                    user?.getSession().continueWith(block: { (task) -> Any? in
+                        let getSessionResult = task.result
+                        if let tokenString = getSessionResult?.idToken?.tokenString {
+                            AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
+                        }
+                        return nil
+                    })
+                    return nil
+                })
         
                 guard let currUser = AWSCognitoIdentityUserPool.default().currentUser() else {return}
                 if currUser.isSignedIn {
@@ -401,9 +388,6 @@ extension ViewController {
                 } else { // Placeholder
                     node.deactivate()
                 }
-                
-                self?.testImageView1.image = node.recorder.realImages[0]
-                self?.testImageView2.image = node.recorder.realImages[7]
             })
             .disposed(by: disposeBag)
         

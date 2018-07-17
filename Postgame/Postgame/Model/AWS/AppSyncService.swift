@@ -18,7 +18,7 @@ final class AppSyncService {
 
     static let sharedInstance = AppSyncService()
     
-    private let keychain = KeychainSwift()
+    let keychain = KeychainSwift()
     var appSyncClient: AWSAppSyncClient?
     lazy var appSyncConfig: AWSAppSyncClientConfiguration? = {
         let databaseURL = URL(fileURLWithPath:NSTemporaryDirectory()).appendingPathComponent(database_name)
@@ -283,12 +283,16 @@ final class AppSyncService {
 
 extension AppSyncService: AWSCognitoUserPoolsAuthProvider {
     func getLatestAuthToken() -> String {
-        let key = "CognitoAuthTokenString"
-        let pool = AWSCognitoIdentityUserPool.default()
-        let session =  pool.currentUser()?.getSession()
-        let tokenString = session?.result?.idToken?.tokenString
-        if tokenString != nil { keychain.set(tokenString!, forKey: key) }
-        return keychain.get(key) ?? ""
+        let user = AWSCognitoIdentityUserPool.default().currentUser()
+        user?.getSession().continueWith(block: { [weak self](task) -> Any? in
+            let getSessionResult = task.result
+            if let tokenString = getSessionResult?.idToken?.tokenString {
+                print("getLatestAuthoToken(): \(tokenString)")
+                self?.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
+            }
+            return nil
+        })
+        return keychain.get(CognitoAuthTokenStringKey) ?? ""
     }
 }
 
