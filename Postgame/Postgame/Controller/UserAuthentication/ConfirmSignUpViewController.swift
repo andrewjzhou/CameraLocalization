@@ -128,17 +128,7 @@ class ConfirmSignUpViewController: UIViewController {
                 } else {
                     print("Confirmed Sign up")
                     let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
-                    
-                    // Successfully signed up. Register user in DynamoDB
-                    guard let username:String = strongSelf.userInfo?["username"],
-                        let phone:String = strongSelf.userInfo?["phone"],
-                        let email:String = strongSelf.userInfo?["email"]
-                        else {return}
-                    
-                    // Register user in ViewCount table
-                    // Need testing
-                    DynamoDBService.sharedInstance.registerUser(username)
-
+                
                 }
             })
             return nil
