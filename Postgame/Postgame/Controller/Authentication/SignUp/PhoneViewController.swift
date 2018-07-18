@@ -13,7 +13,7 @@ import RxCocoa
 import PhoneNumberKit
 import TextFieldEffects
 
-class PhoneViewController: SignUpBaseViewController {
+final class PhoneViewController: SignUpBaseViewController {
     let pool = AWSCognitoIdentityUserPool.default()
     var sentTo: String?
     

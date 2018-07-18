@@ -12,7 +12,7 @@ import AWSUserPoolsSignIn
 import RxSwift
 import RxCocoa
 
-class UsernameViewController: SignUpBaseViewController {
+final class UsernameViewController: SignUpBaseViewController {
     private let db = DisposeBag()
     
     override func viewDidLoad() {

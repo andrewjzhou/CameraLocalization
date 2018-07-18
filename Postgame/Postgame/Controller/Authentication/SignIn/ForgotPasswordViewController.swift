@@ -9,7 +9,7 @@
 import UIKit
 import AWSUserPoolsSignIn
 
-class ForgotPasswordViewController: SignUpBaseViewController {
+final class ForgotPasswordViewController: SignUpBaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()

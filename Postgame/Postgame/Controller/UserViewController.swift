@@ -10,7 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class UserViewController: UIViewController {
+final class UserViewController: UIViewController {
     let menu = UserMenu()
     let countView = CountView()
     let settingsView = UIView()

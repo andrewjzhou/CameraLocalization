@@ -12,7 +12,7 @@ import RxCocoa
 import AWSCognitoIdentityProvider
 
 
-class IntroViewController: UIViewController {
+final class IntroViewController: UIViewController {
     let disposeBag = DisposeBag()
     var usernameText: String?
     var passwordAuthenticationCompletion: AWSTaskCompletionSource<AWSCognitoIdentityPasswordAuthenticationDetails>?

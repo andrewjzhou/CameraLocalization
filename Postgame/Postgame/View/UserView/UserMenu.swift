@@ -92,7 +92,7 @@ final class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelega
     
 }
 
-class UserMenuCell: BaseCell {
+final class UserMenuCell: BaseCell {
     
     let imageView: UIImageView = {
         let iv = UIImageView()

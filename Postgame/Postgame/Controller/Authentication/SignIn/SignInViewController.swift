@@ -12,7 +12,7 @@ import RxCocoa
 import RxSwift
 import TextFieldEffects
 
-class SignInViewController: UIViewController, UITextFieldDelegate {
+final class SignInViewController: UIViewController, UITextFieldDelegate {
     private let disposeBag = DisposeBag()
     private var buttonsShouldReactToKeyboard = true
     

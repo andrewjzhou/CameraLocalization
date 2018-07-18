@@ -11,7 +11,7 @@ import Photos
 import RxSwift
 import RxCocoa
 
-class CreationViewController: UIViewController {
+final class CreationViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     // viewDidLoad UI Buttons (buttons that appear immediately when view loads)

@@ -20,7 +20,7 @@ import AWSUserPoolsSignIn
 import ChameleonFramework
 
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     let trackingConfiguration: ARWorldTrackingConfiguration = {

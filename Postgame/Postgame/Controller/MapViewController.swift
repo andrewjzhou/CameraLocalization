@@ -11,7 +11,7 @@ import RxSwift
 import ChameleonFramework
 
 
-class MapViewController: UIViewController, MGLMapViewDelegate {
+final class MapViewController: UIViewController, MGLMapViewDelegate {
     let disposeBag = DisposeBag()
     let mapView = MGLMapView()
     let slider = UISlider()
@@ -151,6 +151,11 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
         slider.maximumValue = Float(mapView.maximumZoomLevel)
         slider.minimumValue = Float(mapView.minimumZoomLevel)
         slider.value = Float(16)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        presentingVC = nil
     }
 }
 

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PasswordViewController: SignUpBaseViewController {
+final class PasswordViewController: SignUpBaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()

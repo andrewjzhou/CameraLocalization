@@ -9,7 +9,7 @@
 import UIKit
 import AWSUserPoolsSignIn
 
-class ResetPasswordViewController: SignUpBaseViewController {
+final class ResetPasswordViewController: SignUpBaseViewController {
     var user: AWSCognitoIdentityUser?
     let passwordField = UITextField()
     
