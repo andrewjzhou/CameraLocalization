@@ -14,7 +14,7 @@ class ForgotPasswordViewController: SignUpBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        label.text = "Username: "
+        textField.placeholder = "Username"
         button.setTitle("Confirm", for: .normal)
     }
     

@@ -15,27 +15,37 @@ class ConfirmCodeViewController: SignUpBaseViewController {
     var user: AWSCognitoIdentityUser?
     
     private let db = DisposeBag()
+    let resendButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        label.text = "Confirmation Code: "
+        textField.placeholder = "Confirmation Code"
         button.setTitle("Confirm", for: .normal)
         button.backgroundColor = .flatRed
         
-        // resend button
-        let resend = UIButton()
-        view.addSubview(resend)
-        resend.translatesAutoresizingMaskIntoConstraints = false
-        resend.setTitle("resend code", for: .normal)
-        resend.setTitleColor(.flatBlue, for: .normal)
-        resend.backgroundColor = .clear
-        resend.setTopConstraint(equalTo: textField.bottomAnchor, offset: 0)
-        resend.setTrailingConstraint(equalTo: textField.trailingAnchor, offset: 0)
-        resend.setWidthConstraint(0.4 * UIScreen.main.bounds.width)
-        resend.rx.tap.bind {
+        setupResendButton()
+        
+        backButton.isHidden = true
+    }
+    
+    func setupResendButton() {
+        view.addSubview(resendButton)
+        let rbWidth = UIScreen.main.bounds.width * 0.35
+        let rbHeight = UIScreen.main.bounds.height * 0.05
+        resendButton.translatesAutoresizingMaskIntoConstraints = false
+        resendButton.setWidthConstraint(rbWidth)
+        resendButton.setHeightConstraint(rbHeight)
+        resendButton.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        resendButton.setBottomConstraint(equalTo: button.topAnchor, offset: -0.05 * UIScreen.main.bounds.height)
+        resendButton.layer.cornerRadius = 0.12 * rbWidth
+        resendButton.setTitle("Resend Code", for: .normal)
+        resendButton.backgroundColor = .flatGray
+        resendButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        resendButton.titleLabel?.textColor = .flatWhite
+        resendButton.rx.tap.bind {
             self.resendConfirmationCode()
-        }.disposed(by: db)
+        }.disposed(by: disposeBag)
     }
     
     override func backButtonAction() {
@@ -101,5 +111,47 @@ class ConfirmCodeViewController: SignUpBaseViewController {
             return nil
         }
     }
+    
+    override func configureKeyboardDisplayAnimations() {
+        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
+            .subscribe(onNext: { [button, resendButton](notification) in
+                if let userInfo = notification.userInfo {
+                    let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+                    let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+                    let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+                    let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+                    let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+                    UIView.animate(withDuration: duration,
+                                   delay: TimeInterval(0),
+                                   options: animationCurve,
+                                   animations: {
+                                    let transform = CGAffineTransform(translationX: 0, y: -(endFrame?.size.height ?? 0.0))
+                                    button.transform = transform
+                                    resendButton.transform = transform
+                    },
+                                   completion: nil)
+                }
+            }).disposed(by: db)
+        
+        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillHide)
+            .subscribe(onNext: { [button, resendButton](notification) in
+                if let userInfo = notification.userInfo {
+                    let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+                    let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+                    let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+                    let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+                    UIView.animate(withDuration: duration,
+                                   delay: TimeInterval(0),
+                                   options: animationCurve,
+                                   animations: {
+                                    button.transform = .identity
+                                    resendButton.transform = .identity
+                    },
+                                   completion: nil)
+                }
+                
+            }).disposed(by: db)
+    }
 
+    
 }

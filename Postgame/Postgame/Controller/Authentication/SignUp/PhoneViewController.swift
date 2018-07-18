@@ -11,31 +11,27 @@ import AWSCognitoIdentityProvider
 import RxSwift
 import RxCocoa
 import PhoneNumberKit
+import TextFieldEffects
 
 class PhoneViewController: SignUpBaseViewController {
     let pool = AWSCognitoIdentityUserPool.default()
     var sentTo: String?
     
     let db = DisposeBag()
-    
     let phoneNumberKit = PhoneNumberKit()
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        label.text = "Phone: "
-        
         if let text = introVC?.signUpInfo.phone {
             textField.text = text
         }
         
+        textField.placeholder = "Phone"
+        textField.keyboardType = .phonePad
+        
         button.backgroundColor = .flatRed
         button.setTitle("Sign Up", for: .normal)
-        
-        
-        textField = PhoneNumberTextField()
-        textField.keyboardType = .phonePad
+
         
         let formatter = PartialFormatter()
         textField.rx.controlEvent([.editingChanged]).asObservable()
@@ -143,5 +139,5 @@ class PhoneViewController: SignUpBaseViewController {
         }
     }
 
-}
 
+}

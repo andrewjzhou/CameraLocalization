@@ -146,10 +146,10 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
                 
             }).disposed(by: disposeBag)
     }
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         button.sendActions(for: .touchUpInside)
+        return true
     }
-
 }

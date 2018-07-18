@@ -16,7 +16,7 @@ class ResetPasswordViewController: SignUpBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        label.text = "Confirmation Code: "
+        textField.placeholder = "Confirmation Code"
         button.setBackgroundColor(.flatRed)
         button.setTitle("Reset Password", for: .normal)
         

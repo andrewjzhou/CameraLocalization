@@ -56,7 +56,7 @@ class UsernameViewController: SignUpBaseViewController {
             let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
             alertController.addAction(retryAction)
             
-            self?.present(alertController, animated: true, completion:  nil)
+            self.present(alertController, animated: true, completion:  nil)
             let _ = textField.text!.popLast()
         }
         
@@ -94,7 +94,7 @@ func checkUser(_ loginName: String, completion: @escaping (Bool) -> Void) {
     let pool = AWSCognitoIdentityUserPool.default()
     let proposedUser = pool.getUser(loginName)
     UIApplication.shared.isNetworkActivityIndicatorVisible = true
-    proposedUser.getSession(loginName, password: "", validationData: nil).continueWith(executor: AWSExecutor.mainThread(), block: { (awsTask) in
+    proposedUser.getSession(loginName, password: "ThisIsAnIncorrectPassword", validationData: nil).continueWith(executor: AWSExecutor.mainThread(), block: { (awsTask) in
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
         if let error = awsTask.error as? NSError {
             // Error implies login failed. Check reason for failure
