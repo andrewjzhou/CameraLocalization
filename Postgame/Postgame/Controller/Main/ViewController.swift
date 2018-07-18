@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
         
-//        signOut()
+        signOut()
     
     }
     

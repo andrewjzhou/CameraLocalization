@@ -48,6 +48,7 @@ PODS:
   - SQLite.swift (0.11.4):
     - SQLite.swift/standard (= 0.11.4)
   - SQLite.swift/standard (0.11.4)
+  - TextFieldEffects (1.4.0)
 
 DEPENDENCIES:
   - AWSAPIGateway (~> 2.6.13)
@@ -68,6 +69,7 @@ DEPENDENCIES:
   - RxCocoa (~> 4.0)
   - RxSwift (~> 4.0)
   - Spring (from `https://github.com/MengTo/Spring.git`)
+  - TextFieldEffects
 
 EXTERNAL SOURCES:
   ChameleonFramework:
@@ -107,7 +109,8 @@ SPEC CHECKSUMS:
   RxSwift: e49536837d9901277638493ea537394d4b55f570
   Spring: 3c7666eccefdeb87140008dc81043f89f8dbb787
   SQLite.swift: 3e3bee21da701b5b9f87c4a672cb54f233505692
+  TextFieldEffects: 4ee41b5216e674d55fb6ac25107bf1af7629176f
 
-PODFILE CHECKSUM: c33f313bdddbeac89362ccb20d0acf3cdfcdf29f
+PODFILE CHECKSUM: 161c9050a083eeaa7d0683465907da82e49e9924
 
 COCOAPODS: 1.4.0
