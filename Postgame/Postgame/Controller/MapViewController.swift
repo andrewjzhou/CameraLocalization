@@ -15,35 +15,42 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
     let disposeBag = DisposeBag()
     let mapView = MGLMapView()
     let slider = UISlider()
+    
     var presentingVC: ViewController? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.8)
+        
         setupMapView()
         setupSlider()
         
-        // Dismiss keyboard with tap
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismiss))
         view.addGestureRecognizer(tap)
     }
-    
+  
     // Tap to dismiss Keyboard
-    @objc func dismiss(_: UITapGestureRecognizer) {
-        self.dismiss(animated: true) {
-            print("dismissed")
-            if let vc = self.presentingVC {
-                print("presenting vc")
-                UIView.animate(withDuration: 0.15) {
-                    vc.indicatorButton.alpha = 1
-                    vc.createButton.alpha = 1
-                    vc.userButton.alpha = 1
-                    vc.resetButton.alpha = 1
-                    vc.screenshotButton.alpha = 1
+    @objc func dismiss(sender: UITapGestureRecognizer) {
+        let point = sender.location(in: view)
+        // noTapZone prevents user from tapping out by accident when controlling slider
+        let noTapZone = slider.frame.insetBy(dx: -0.12 * view.bounds.width, dy: -slider.bounds.height)
+        if !noTapZone.contains(point) {
+            // dismiss MapViewController
+            self.dismiss(animated: true) {
+                if let vc = self.presentingVC {
+                    // show buttons in presenting ViewController
+                    UIView.animate(withDuration: 0.15) {
+                        vc.indicatorButton.alpha = 1
+                        vc.createButton.alpha = 1
+                        vc.userButton.alpha = 1
+                        vc.resetButton.alpha = 1
+                        vc.screenshotButton.alpha = 1
+                    }
+                    self.presentingVC = nil
                 }
-                self.presentingVC = nil
             }
         }
+        
     }
     
     
