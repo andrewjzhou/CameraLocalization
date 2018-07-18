@@ -83,6 +83,16 @@ class PhoneViewController: SignUpBaseViewController {
             attributes.append(email!)
         }
         
+        // Assume verified or else cannot reset password
+//        let emailVerified = AWSCognitoIdentityUserAttributeType()
+//        emailVerified?.name = "email_verified"
+//        emailVerified?.value = "true"
+//        attributes.append(emailVerified!)
+//        let phoneVerified = AWSCognitoIdentityUserAttributeType()
+//        phoneVerified?.name = "phone_verified"
+//        phoneVerified?.value = "true"
+//        attributes.append(phoneVerified!)
+        
         //sign up the user
         pool.signUp(userNameValue, password: passwordValue, userAttributes: attributes, validationData: nil).continueWith {[weak self] (task) -> Any? in
             guard let strongSelf = self else { return nil }

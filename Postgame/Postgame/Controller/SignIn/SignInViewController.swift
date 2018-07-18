@@ -30,6 +30,7 @@ class SignInViewController: UIViewController {
         setupPasswordInput()
         setupSignInButton()
         setupBackButton()
+        setupForgotPasswordButton()
         
         // Dismiss keyboard with tap
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -134,41 +135,23 @@ class SignInViewController: UIViewController {
         }.disposed(by: disposeBag)
     }
 
+    func setupForgotPasswordButton() {
+        let fpButton = UIButton()
+        view.addSubview(fpButton)
+        fpButton.setTitle("Forgot Password", for: .normal)
+        fpButton.backgroundColor = .clear
+        fpButton.translatesAutoresizingMaskIntoConstraints = false
+        fpButton.setWidthConstraint(UIScreen.main.bounds.width * 0.4)
+        fpButton.setTrailingConstraint(equalTo: passwordField.trailingAnchor, offset: 0)
+        fpButton.setTopConstraint(equalTo: passwordField.bottomAnchor, offset: 0)
+        fpButton.setTitleColor(.flatSkyBlueDark, for: .normal)
+        fpButton.rx.tap.bind {
+            self.navigationController?.pushViewController(ForgotPasswordViewController(), animated: true)
+        }.disposed(by: disposeBag)
+        
+    }
     
 }
-
-//extension SignInViewController: AWSCognitoIdentityPasswordAuthentication {
-//
-//    public func getDetails(_ authenticationInput: AWSCognitoIdentityPasswordAuthenticationInput, passwordAuthenticationCompletionSource: AWSTaskCompletionSource<AWSCognitoIdentityPasswordAuthenticationDetails>) {
-//        print("SignIn: getDetails()")
-//        self.passwordAuthenticationCompletion = passwordAuthenticationCompletionSource
-//
-//        DispatchQueue.main.async {
-//            if (self.usernameText == nil) {
-//                self.usernameText = authenticationInput.lastKnownUsername
-//            }
-//        }
-//    }
-//
-//    public func didCompleteStepWithError(_ error: Error?) {
-//        print("Error found")
-//        DispatchQueue.main.async {
-//            if let error = error as NSError? {
-//                let alertController = UIAlertController(title: error.userInfo["__type"] as? String,
-//                                                        message: error.userInfo["message"] as? String,
-//                                                        preferredStyle: .alert)
-//                let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
-//                alertController.addAction(retryAction)
-//
-//                self.present(alertController, animated: true, completion:  nil)
-//            } else {
-//                self.usernameField.text = nil
-//                self.navigationController?.dismiss(animated: true, completion: nil)
-////                self.dismiss(animated: true, completion: nil)
-//            }
-//        }
-//    }
-//}
 
 func addUnderline(for textField: UITextField) {
     let underline = UIView()
