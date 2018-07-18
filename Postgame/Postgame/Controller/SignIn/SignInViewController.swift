@@ -56,6 +56,7 @@ class SignInViewController: UIViewController {
         view.addSubview(usernameField)
         usernameField.translatesAutoresizingMaskIntoConstraints = false
         usernameField.autocorrectionType = .no
+        usernameField.autocapitalizationType = .none
         usernameField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
         usernameField.setTopConstraint(equalTo: label.bottomAnchor,
                                        offset: UIScreen.main.bounds.height * 0.025)
@@ -78,6 +79,8 @@ class SignInViewController: UIViewController {
         
         view.addSubview(passwordField)
         passwordField.translatesAutoresizingMaskIntoConstraints = false
+        passwordField.autocapitalizationType = .none
+        passwordField.autocorrectionType = .no
         passwordField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
         passwordField.setTopConstraint(equalTo: label.bottomAnchor,
                                        offset: UIScreen.main.bounds.height * 0.025)

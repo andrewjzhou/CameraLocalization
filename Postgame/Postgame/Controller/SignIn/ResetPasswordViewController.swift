@@ -43,6 +43,8 @@ class ResetPasswordViewController: SignUpBaseViewController {
         passwordField.contentVerticalAlignment = .bottom
         addUnderline(for: passwordField)
         passwordField.isSecureTextEntry = true
+        passwordField.autocorrectionType = .no
+        passwordField.autocapitalizationType = .none
     }
     
     override func buttonAction() {
