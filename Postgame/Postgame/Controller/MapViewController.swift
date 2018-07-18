@@ -8,38 +8,31 @@
 
 import Mapbox
 import RxSwift
+import ChameleonFramework
 
 
 class MapViewController: UIViewController, MGLMapViewDelegate {
     let disposeBag = DisposeBag()
-    lazy var mapView = MGLMapView(frame: view.bounds.insetBy(dx: UIScreen.main.bounds.width * 0.01,
-                                                             dy: UIScreen.main.bounds.height * 0.005),
-                                  styleURL: MGLStyle.streetsStyleURL)
+    let mapView = MGLMapView()
+    let slider = UISlider()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.8)
-        
-        mapView.layer.cornerRadius = 10
-        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapView.logoView.isHidden = true
-        mapView.attributionButton.isHidden = true
-        view.addSubview(mapView)
-        mapView.tintColor = .flatGreen
-        mapView.delegate = self
-        mapView.showsUserLocation = true
-        mapView.allowsTilting = false
+        setupMapView()
+        setupSlider()
         
     }
     
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
-        if let location = mapView.userLocation?.location?.coordinate {
+        // initial camera
+        if let location = mapView.userLocation?.coordinate {
             mapView.setCenter(location, zoomLevel: 16, animated: true)
         }
         
         // load annotations
         if let location = mapView.userLocation?.location {
-            AppSyncService.sharedInstance.listPostsByLocationLite(location, radiusInMeters: 5000)
+            AppSyncService.sharedInstance.listPostsByLocationLite(location, radiusInMeters: 1000)
                 .asDriver(onErrorJustReturn: CLLocationCoordinate2D())
                 .drive(onNext: { [mapView] (coordinate) in
                     let point = MGLPointAnnotation()
@@ -48,6 +41,22 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
                     mapView.addAnnotation(point)
                 })
                 .disposed(by: disposeBag)
+        }
+        
+        // track slider for zoom
+        slider.rx.value.asDriver(onErrorJustReturn: 16.0).drive(onNext: { [mapView] (zoom) in
+            if let location = mapView.userLocation?.coordinate {
+                print(zoom)
+                mapView.setCenter(location, zoomLevel: Double(zoom), animated: false)
+             
+            }
+            
+        }).disposed(by: disposeBag)
+    }
+    
+    func mapView(_ mapView: MGLMapView, didUpdate userLocation: MGLUserLocation?) {
+        if let location = userLocation?.location?.coordinate {
+            mapView.setCenter(location, animated: true)
         }
     }
     
@@ -71,6 +80,48 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
         }
         
         return annotationView
+    }
+    
+    private func setupMapView() {
+        view.addSubview(mapView)
+        mapView.frame = CGRect(x: 0,
+                               y: 0,
+                               width: 0.95 * view.bounds.width,
+                               height: 0.95 * view.bounds.width)
+        mapView.styleURL = MGLStyle.streetsStyleURL
+        mapView.center = CGPoint(x: view.center.x,
+                                 y: view.center.y - 0.1 * view.bounds.height)
+        mapView.layer.cornerRadius = 0.5 * 0.95 * view.bounds.width
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapView.logoView.isHidden = true
+        mapView.attributionButton.isHidden = true
+        mapView.tintColor = .flatGreen
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+        mapView.allowsTilting = false
+        mapView.allowsScrolling = false
+        mapView.allowsRotating = false
+        mapView.allowsZooming = false
+        mapView.maximumZoomLevel = 19
+        mapView.minimumZoomLevel = 14
+        let borderColor = GradientColor(.radial, frame: mapView.bounds, colors: [.flatForestGreenDark, .flatForestGreen, .flatWhite])
+        mapView.layer.borderColor = borderColor.cgColor
+        mapView.layer.borderWidth = 10
+        mapView.layer.opacity = 0.85
+    }
+    
+    private func setupSlider() {
+        view.addSubview(slider)
+        slider.frame = CGRect(x: 0,
+                              y: 0,
+                              width: 0.7 * view.bounds.width,
+                              height: 0.08 * view.bounds.height)
+        slider.center = CGPoint(x: view.center.x,
+                                y: 0.75 * view.bounds.height)
+        slider.tintColor = .green
+        slider.maximumValue = Float(mapView.maximumZoomLevel)
+        slider.minimumValue = Float(mapView.minimumZoomLevel)
+        slider.value = Float(16)
     }
 }
 

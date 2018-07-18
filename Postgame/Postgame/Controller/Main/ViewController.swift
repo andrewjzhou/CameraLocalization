@@ -73,7 +73,7 @@ class ViewController: UIViewController {
         
         handleGeolocationService()
         
-        signOut()
+//        signOut()
     
     }
     
@@ -250,10 +250,10 @@ extension ViewController {
         indicatorButton.rx.tap.bind {
             self.checkLocationAuthorizationStatus()
             self.descriptorCache.refresh()
-//            let mapVC = MapViewController()
-//            mapVC.modalPresentationStyle = .overCurrentContext
-//            mapVC.modalTransitionStyle = .crossDissolve
-//            self.present(mapVC, animated: true, completion: nil)
+            let mapVC = MapViewController()
+            mapVC.modalPresentationStyle = .overCurrentContext
+            mapVC.modalTransitionStyle = .crossDissolve
+            self.present(mapVC, animated: true, completion: nil)
         }.disposed(by: disposeBag)
         
     }
