@@ -126,7 +126,7 @@ extension CreationViewController {
         view.addSubview(slateView)
         slateView.isUserInteractionEnabled = true
         slateView.translatesAutoresizingMaskIntoConstraints = false
-        slateView.backgroundColor = .white
+        slateView.backgroundColor = .flatWhite
         slateView.setWidthConstraint(screenWidth * 0.9)
         slateView.setHeightConstraint(screenHeight * 0.6)
         slateView.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)

@@ -33,7 +33,7 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
     @objc func dismiss(sender: UITapGestureRecognizer) {
         let point = sender.location(in: view)
         // noTapZone prevents user from tapping out by accident when controlling slider
-        let noTapZone = slider.frame.insetBy(dx: -0.12 * view.bounds.width, dy: -slider.bounds.height)
+        let noTapZone = slider.frame.insetBy(dx: -0.12 * view.bounds.width, dy: -0.45 * slider.bounds.height)
         if !noTapZone.contains(point) {
             // dismiss MapViewController
             self.dismiss(animated: true) {
@@ -153,10 +153,6 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
         slider.value = Float(16)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        presentingVC = nil
-    }
 }
 
 // MGLAnnotationView subclass
