@@ -18,31 +18,11 @@ class UsernameViewController: SignUpBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        label.text = "Username:"
+        textField.placeholder = "Username"
         
         if let text = introVC?.signUpInfo.username {
             textField.text = text
         }
-        
-
-        
-        textField.rx.controlEvent([.editingDidEnd]).asObservable()
-            .subscribe(onNext:{[textField, weak self] _ in
-                if !textField.text!.isValidUsername() {
-                    let alertController = UIAlertController(title: "Invalid character exists.",
-                                                            message: "",
-                                                            preferredStyle: .alert)
-                    let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
-                    alertController.addAction(retryAction)
-                    
-                    self?.present(alertController, animated: true, completion:  nil)
-                    let _ = textField.text!.popLast()
-                }
-                
-                if textField.text!.length > 15 {
-                    self?.alertTooLong()
-                }
-            }).disposed(by: db)
     }
     
     override func buttonAction() {
@@ -68,6 +48,18 @@ class UsernameViewController: SignUpBaseViewController {
     }
     
     override func buttonActionCondition() -> Bool {
+        // Check if valid
+        if !textField.text!.isValidUsername() {
+            let alertController = UIAlertController(title: "Invalid character exists.",
+                                                    message: "",
+                                                    preferredStyle: .alert)
+            let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+            alertController.addAction(retryAction)
+            
+            self?.present(alertController, animated: true, completion:  nil)
+            let _ = textField.text!.popLast()
+        }
+        
         // Check if username is too long
         if textField.text!.length > 15 {
             alertTooLong()

@@ -9,26 +9,14 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import TextFieldEffects
 
-class SignUpBaseViewController: UIViewController {
+class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     let disposeBag = DisposeBag()
-    let label = UILabel()
-    var textField = UITextField() {
-        willSet {
-            textField.removeFromSuperview()
-        }
-        didSet {
-            view.addSubview(textField)
-            textField.translatesAutoresizingMaskIntoConstraints = false
-            textField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
-            textField.setTopConstraint(equalTo: label.bottomAnchor,
-                                       offset: UIScreen.main.bounds.height * 0.025)
-            textField.setTrailingConstraint(equalTo: view.trailingAnchor,
-                                            offset: -UIScreen.main.bounds.width * 0.25)
-            textField.contentVerticalAlignment = .bottom
-            addUnderline(for: textField)
-        }
-    }
+    var textField = IsaoTextField(frame: CGRect(x: UIScreen.main.bounds.width * 0.15,
+                                                y: UIScreen.main.bounds.height * 0.1,
+                                                width: UIScreen.main.bounds.width * 0.7,
+                                                height: UIScreen.main.bounds.height * 0.075))
     let backButton = UIButton()
     let button = UIButton()
     
@@ -49,10 +37,16 @@ class SignUpBaseViewController: UIViewController {
         setupInput()
         setupButton()
         setupBackButton()
+        configureKeyboardDisplayAnimations()
         
         // Dismiss keyboard with tap
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        textField.becomeFirstResponder()
     }
     
     // Tap to dismiss Keyboard
@@ -62,25 +56,13 @@ class SignUpBaseViewController: UIViewController {
     
     
     func setupInput() {
-        view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setLeadingConstraint(equalTo: view.leadingAnchor, offset: UIScreen.main.bounds.width * 0.2)
-        label.setTopConstraint(equalTo: view.topAnchor, offset: UIScreen.main.bounds.height * 0.18)
-        label.setWidthConstraint(UIScreen.main.bounds.width * 0.5)
-        label.text = "Username:"
-        label.textColor = .flatBlack
-        
         view.addSubview(textField)
-        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = "Placeholder"
+        textField.activeColor = .flatSkyBlue
+        textField.inactiveColor = .flatGrayDark
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
-        textField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
-        textField.setTopConstraint(equalTo: label.bottomAnchor,
-                                       offset: UIScreen.main.bounds.height * 0.025)
-        textField.setTrailingConstraint(equalTo: view.trailingAnchor,
-                                            offset: -UIScreen.main.bounds.width * 0.25)
-        textField.contentVerticalAlignment = .bottom
-        addUnderline(for: textField)
+        textField.delegate = self
     }
     
     func setupBackButton() {
@@ -91,11 +73,11 @@ class SignUpBaseViewController: UIViewController {
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.setWidthConstraint(64)
         backButton.setHeightConstraint(64)
-        backButton.setTopConstraint(equalTo: view.topAnchor, offset: 15)
-        backButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 15)
+        backButton.setTopConstraint(equalTo: view.topAnchor, offset: 0.02 * UIScreen.main.bounds.height)
+        backButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0.02 * UIScreen.main.bounds.width)
         backButton.tintColor = .flatGray
         backButton.rx.tap.bind {
-            self.backButtonAction()
+            self.navigationController?.popViewController(animated: true)
         }.disposed(by: disposeBag)
     }
     
@@ -125,5 +107,49 @@ class SignUpBaseViewController: UIViewController {
     func buttonAction() { }
     
     func buttonActionCondition() -> Bool { return true }
+    
+    func configureKeyboardDisplayAnimations() {
+        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
+            .subscribe(onNext: { [button] (notification) in
+                if let userInfo = notification.userInfo {
+                    let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+                    let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+                    let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+                    let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+                    let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+                    UIView.animate(withDuration: duration,
+                                   delay: TimeInterval(0),
+                                   options: animationCurve,
+                                   animations: {
+                                    let transform = CGAffineTransform(translationX: 0, y: -(endFrame?.size.height ?? 0.0))
+                                    button.transform = transform
+                    },
+                                   completion: nil)
+                }
+            }).disposed(by: disposeBag)
+        
+        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillHide)
+            .subscribe(onNext: { [button] (notification) in
+                if let userInfo = notification.userInfo {
+                    let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+                    let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+                    let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+                    let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+                    UIView.animate(withDuration: duration,
+                                   delay: TimeInterval(0),
+                                   options: animationCurve,
+                                   animations: {
+                                    button.transform = .identity
+                    },
+                                   completion: nil)
+                }
+                
+            }).disposed(by: disposeBag)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        button.sendActions(for: .touchUpInside)
+    }
 
 }

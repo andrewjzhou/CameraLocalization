@@ -13,8 +13,7 @@ class PasswordViewController: SignUpBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        label.text = "Password:"
-        
+        textField.placeholder = "Password"
         
         if let text = introVC?.signUpInfo.password {
             textField.text = text

@@ -12,8 +12,9 @@ class EmailViewController: SignUpBaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        textField.placeholder = "Email"
 
-        label.text = "Email:"
         if let text = introVC?.signUpInfo.email {
             textField.text = text
         }
