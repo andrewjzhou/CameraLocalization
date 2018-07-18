@@ -250,10 +250,20 @@ extension ViewController {
         indicatorButton.rx.tap.bind {
             self.checkLocationAuthorizationStatus()
             self.descriptorCache.refresh()
+            // show map
             let mapVC = MapViewController()
+            mapVC.presentingVC = self
             mapVC.modalPresentationStyle = .overCurrentContext
             mapVC.modalTransitionStyle = .crossDissolve
             self.present(mapVC, animated: true, completion: nil)
+            // hide main buttons
+            UIView.animate(withDuration: 0.3, animations: {
+                self.indicatorButton.alpha = 0
+                self.createButton.alpha = 0
+                self.userButton.alpha = 0
+                self.resetButton.alpha = 0
+                self.screenshotButton.alpha = 0
+            })
         }.disposed(by: disposeBag)
         
     }

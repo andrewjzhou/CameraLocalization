@@ -82,6 +82,7 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     }
     
     func backButtonAction() {
+        introVC = nil
         self.navigationController?.popViewController(animated: true)
     }
     

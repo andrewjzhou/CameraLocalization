@@ -15,6 +15,7 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
     let disposeBag = DisposeBag()
     let mapView = MGLMapView()
     let slider = UISlider()
+    var presentingVC: ViewController? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,29 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
         setupMapView()
         setupSlider()
         
+        // Dismiss keyboard with tap
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismiss))
+        view.addGestureRecognizer(tap)
     }
+    
+    // Tap to dismiss Keyboard
+    @objc func dismiss(_: UITapGestureRecognizer) {
+        self.dismiss(animated: true) {
+            print("dismissed")
+            if let vc = self.presentingVC {
+                print("presenting vc")
+                UIView.animate(withDuration: 0.15) {
+                    vc.indicatorButton.alpha = 1
+                    vc.createButton.alpha = 1
+                    vc.userButton.alpha = 1
+                    vc.resetButton.alpha = 1
+                    vc.screenshotButton.alpha = 1
+                }
+                self.presentingVC = nil
+            }
+        }
+    }
+    
     
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
         // initial camera
@@ -46,9 +69,7 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
         // track slider for zoom
         slider.rx.value.asDriver(onErrorJustReturn: 16.0).drive(onNext: { [mapView] (zoom) in
             if let location = mapView.userLocation?.coordinate {
-                print(zoom)
                 mapView.setCenter(location, zoomLevel: Double(zoom), animated: false)
-             
             }
             
         }).disposed(by: disposeBag)
@@ -104,10 +125,10 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
         mapView.allowsZooming = false
         mapView.maximumZoomLevel = 19
         mapView.minimumZoomLevel = 14
-        let borderColor = GradientColor(.radial, frame: mapView.bounds, colors: [.flatForestGreenDark, .flatForestGreen, .flatWhite])
-        mapView.layer.borderColor = borderColor.cgColor
+        mapView.layer.borderColor = UIColor.flatForestGreen.cgColor
         mapView.layer.borderWidth = 10
         mapView.layer.opacity = 0.85
+      
     }
     
     private func setupSlider() {
@@ -118,7 +139,8 @@ class MapViewController: UIViewController, MGLMapViewDelegate {
                               height: 0.08 * view.bounds.height)
         slider.center = CGPoint(x: view.center.x,
                                 y: 0.75 * view.bounds.height)
-        slider.tintColor = .green
+        slider.alpha = 0.65
+        slider.tintColor = .flatGreen
         slider.maximumValue = Float(mapView.maximumZoomLevel)
         slider.minimumValue = Float(mapView.minimumZoomLevel)
         slider.value = Float(16)

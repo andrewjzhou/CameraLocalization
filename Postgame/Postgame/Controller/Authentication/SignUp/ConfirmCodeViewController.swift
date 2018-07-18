@@ -49,7 +49,8 @@ class ConfirmCodeViewController: SignUpBaseViewController {
     }
     
     override func backButtonAction() {
-         self.navigationController?.popToRootViewController(animated: true)
+        introVC = nil
+        self.navigationController?.popToRootViewController(animated: true)
     }
     
     override func buttonAction() {
