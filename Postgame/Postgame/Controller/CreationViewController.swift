@@ -132,6 +132,7 @@ extension CreationViewController {
         slateView.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
         slateView.setCenterYConstraint(equalTo: view.centerYAnchor, offset: -0.06 * screenHeight)
         slateView.layer.cornerRadius = 10
+        slateView.clipsToBounds = true
     }
     
     
