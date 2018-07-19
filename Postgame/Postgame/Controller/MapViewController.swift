@@ -33,7 +33,7 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
     @objc func dismiss(sender: UITapGestureRecognizer) {
         let point = sender.location(in: view)
         // noTapZone prevents user from tapping out by accident when controlling slider
-        let noTapZone1 = mapView.frame.insetBy(dx: 0.1 * mapView.bounds.width, dy: 0.1 * mapView.bounds.width)
+        let noTapZone1 = mapView.frame.insetBy(dx: 0.1 * mapView.bounds.width, dy: 0.1 * mapView.bounds.width )
         let noTapZone2 = slider.frame.insetBy(dx: -0.12 * view.bounds.width, dy: -0.45 * slider.bounds.height)
         if !noTapZone1.contains(point) && !noTapZone2.contains(point) {
             // dismiss MapViewController
@@ -131,7 +131,7 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
         mapView.allowsScrolling = false
         mapView.allowsRotating = false
         mapView.allowsZooming = false
-        mapView.maximumZoomLevel = 19
+        mapView.maximumZoomLevel = 18
         mapView.minimumZoomLevel = 14
         mapView.layer.borderColor = UIColor.flatForestGreen.cgColor
         mapView.layer.borderWidth = 10
