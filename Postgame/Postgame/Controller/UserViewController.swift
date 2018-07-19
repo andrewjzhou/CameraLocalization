@@ -13,8 +13,8 @@ import RxCocoa
 final class UserViewController: UIViewController {
     let menu = UserMenu()
     let countView = CountView()
-    let settingsView = UIView()
     let disposeBag = DisposeBag()
+//    let settingsView = UIView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,13 +41,20 @@ final class UserViewController: UIViewController {
         menu.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
         menu.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0.1).isActive = true
         
-        containerView.addSubview(settingsView)
-        settingsView.translatesAutoresizingMaskIntoConstraints = false
-        settingsView.setTopConstraint(equalTo: menu.bottomAnchor, offset: 0)
-        settingsView.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
-        settingsView.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
-        settingsView.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
-        settingsView.backgroundColor = UIColor.flatPlum.withAlphaComponent(0.7)
+       
+        let layout = UICollectionViewFlowLayout()
+        let settingsVC = SettingsCollectionViewController(collectionViewLayout: layout)
+        let navVC = UINavigationController(rootViewController: settingsVC)
+        let navigationView = navVC.view!
+        navVC.hidesNavigationBarHairline = true
+        navVC.isNavigationBarHidden = true
+        addChildViewController(navVC)
+        containerView.addSubview(navigationView)
+        navigationView.translatesAutoresizingMaskIntoConstraints = false
+        navigationView.setTopConstraint(equalTo: menu.bottomAnchor, offset: 0)
+        navigationView.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
+        navigationView.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
+        navigationView.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
         
         containerView.addSubview(countView)
         countView.translatesAutoresizingMaskIntoConstraints = false
@@ -56,12 +63,12 @@ final class UserViewController: UIViewController {
         countView.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
         countView.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
         
-        menu.didSelectDriver.drive(onNext: { [countView, settingsView] (index) in
+        menu.didSelectDriver.drive(onNext: { [countView, navigationView] (index) in
             switch index {
             case 0:
                 containerView.bringSubview(toFront: countView)
             case 1:
-                containerView.bringSubview(toFront: settingsView)
+                containerView.bringSubview(toFront: navigationView)
                 countView.refresh()
             default:
                 return

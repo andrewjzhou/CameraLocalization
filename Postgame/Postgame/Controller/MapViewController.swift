@@ -131,8 +131,8 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
         mapView.allowsScrolling = false
         mapView.allowsRotating = false
         mapView.allowsZooming = false
-        mapView.maximumZoomLevel = 18
-        mapView.minimumZoomLevel = 14
+        mapView.maximumZoomLevel = 18.25
+        mapView.minimumZoomLevel = 13.75
         mapView.layer.borderColor = UIColor.flatForestGreen.cgColor
         mapView.layer.borderWidth = 10
         mapView.layer.opacity = 0.85
