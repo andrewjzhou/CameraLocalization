@@ -382,6 +382,11 @@ extension AppSyncService {
         updateUser(input)
     }
     
+    func updatePhone(username: String!, phone: String!) {
+        let input = UpdateUserInput(username: username, phone: phone, dateJoined: nil, email: nil, birthday: nil, name: nil)
+        updateUser(input)
+    }
+    
     private func updateUser(_ input: UpdateUserInput) {
         let mutation = UpdateUserMutation(input: input)
         appSyncClient?.perform(mutation: mutation,
@@ -396,7 +401,7 @@ extension AppSyncService {
                                         for err in errors {
                                             print("Error occurred: \(err.localizedDescription )")
                                         }
-                                    } 
+                                    }
                                 }
         })
     }

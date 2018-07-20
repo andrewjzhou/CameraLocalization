@@ -20,7 +20,7 @@ final class SettingsCollectionViewController: UICollectionViewController {
                                      "password"]
     let didSelect: [UIViewController?] = [nil,
                                           UpdateNameViewController(),
-                                          nil,
+                                          UpdatePhoneViewController(),
                                           UpdateEmailViewController(),
                                           nil]
     

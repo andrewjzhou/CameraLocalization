@@ -21,7 +21,11 @@ final class UpdateEmailViewController: EmailViewController {
     override func buttonAction() {
         view.endEditing(true)
         if let username = AWSCognitoIdentityUserPool.default().currentUser()?.username {
+            // update UserTable
             AppSyncService.sharedInstance.updateEmail(username: username, email: textField.text!)
+            // update Cognito
+            cognitoUpdateEmail(textField.text!)
+            
             button.isUserInteractionEnabled = false
             button.backgroundColor = .flatWhiteDark
         }

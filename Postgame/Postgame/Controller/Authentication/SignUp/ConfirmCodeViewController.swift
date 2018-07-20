@@ -10,7 +10,7 @@ import UIKit
 import AWSCognitoIdentityProvider
 import RxSwift
 
-final class ConfirmCodeViewController: SignUpBaseViewController {
+class ConfirmCodeViewController: SignUpBaseViewController {
     var sentTo: String?
     var user: AWSCognitoIdentityUser?
     
