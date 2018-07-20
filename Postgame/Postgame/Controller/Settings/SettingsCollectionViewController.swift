@@ -21,7 +21,7 @@ final class SettingsCollectionViewController: UICollectionViewController {
     let didSelect: [UIViewController?] = [nil,
                                           UpdateNameViewController(),
                                           nil,
-                                          nil,
+                                          UpdateEmailViewController(),
                                           nil]
     
     override init(collectionViewLayout layout: UICollectionViewLayout) {

@@ -39,6 +39,7 @@ class UpdateNameViewController: SignUpBaseViewController {
     }
     
     override func buttonAction() {
+        view.endEditing(true)
         let first = textField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
         let last = textField2.text!.trimmingCharacters(in: .whitespacesAndNewlines)
         let name = first + " " + last
@@ -60,8 +61,6 @@ class UpdateNameViewController: SignUpBaseViewController {
             
             self.present(alertController, animated: true, completion:  nil)
             return false
-        } else {
-            view.endEditing(true)
         }
         
         return true
