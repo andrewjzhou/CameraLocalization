@@ -102,6 +102,9 @@ class PhoneViewController: SignUpBaseViewController {
                     
                     self?.present(alertController, animated: true, completion:  nil)
                 } else if let result = task.result  {
+                    // register in UserTable
+                    AppSyncService.sharedInstance.createUser(username: userNameValue, phone: signUpInfo.phone!, email: signUpInfo.email!)
+                    
                     // handle the case where user has to confirm his identity via email / SMS
                     if (result.user.confirmedStatus != AWSCognitoIdentityUserStatus.confirmed) {
                         let confirmVC = ConfirmCodeViewController()
