@@ -22,7 +22,7 @@ final class SettingsCollectionViewController: UICollectionViewController {
                                           UpdateNameViewController(),
                                           UpdatePhoneViewController(),
                                           UpdateEmailViewController(),
-                                          nil]
+                                          UpdatePasswordViewController()]
     
     override init(collectionViewLayout layout: UICollectionViewLayout) {
         let layout = UICollectionViewFlowLayout()

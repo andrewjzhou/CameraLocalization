@@ -53,7 +53,7 @@ class UpdateNameViewController: SignUpBaseViewController {
     
     override func buttonActionCondition() -> Bool {
         if textField.text?.count == 0 || textField2.text?.count == 0 {
-            let alertController = UIAlertController(title: "Empty Name",
+            let alertController = UIAlertController(title: "Empty Field(s)",
                                                     message: "",
                                                     preferredStyle: .alert)
             let retryAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
