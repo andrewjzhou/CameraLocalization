@@ -346,11 +346,11 @@ extension AppSyncService {
     
     func createUser(username: String!, phone: String!, email: String?) {
         let input = CreateUserInput(username: username,
-                                       phone: phone,
-                                       dateJoined: timestamp(),
-                                       email: email,
-                                       birthday: nil,
-                                       name: nil)
+                                    phone: phone,
+                                    dateJoined: timestamp(),
+                                    email: email,
+                                    birthday: nil,
+                                    name: nil)
         let mutation = CreateUserMutation(input: input)
         appSyncClient?.perform(mutation: mutation,
                                resultHandler: { (result, error) in
@@ -367,6 +367,36 @@ extension AppSyncService {
                                     } else {
                                         print("Successful created new user, \(username)")
                                     }
+                                }
+        })
+    }
+    
+    
+    func updateName(username: String!, name: String!) {
+        let input = UpdateUserInput(username: username, phone: nil, dateJoined: nil, email: nil, birthday: nil, name: name)
+        updateUser(input)
+    }
+    
+    func updateEmail(username: String!, email: String!) {
+        let input = UpdateUserInput(username: username, phone: nil, dateJoined: nil, email: email, birthday: nil, name: nil)
+        updateUser(input)
+    }
+    
+    private func updateUser(_ input: UpdateUserInput) {
+        let mutation = UpdateUserMutation(input: input)
+        appSyncClient?.perform(mutation: mutation,
+                               resultHandler: { (result, error) in
+                                if let error = error as? AWSAppSyncClientError {
+                                    print("Error occurred: \(error.localizedDescription )")
+                                    return
+                                }
+                                if let result = result {
+                                    
+                                    if let errors = result.errors {
+                                        for err in errors {
+                                            print("Error occurred: \(err.localizedDescription )")
+                                        }
+                                    } 
                                 }
         })
     }

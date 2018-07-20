@@ -13,7 +13,16 @@ private let reuseIdentifier = "Cell"
 
 final class SettingsCollectionViewController: UICollectionViewController {
     
-    let UserProfileKeys: [String] = ["username", "name", "phone", "email", "password"]
+    let UserProfileKeys: [String] = ["username",
+                                     "name",
+                                     "phone",
+                                     "email",
+                                     "password"]
+    let didSelect: [UIViewController?] = [nil,
+                                          UpdateNameViewController(),
+                                          nil,
+                                          nil,
+                                          nil]
     
     override init(collectionViewLayout layout: UICollectionViewLayout) {
         let layout = UICollectionViewFlowLayout()
@@ -101,6 +110,11 @@ final class SettingsCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 {
+            if let vc = didSelect[indexPath.item] {
+                navigationController?.pushViewController(vc, animated: true)
+            }
+        }
         
     }
 
