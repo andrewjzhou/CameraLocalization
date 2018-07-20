@@ -167,6 +167,35 @@ mutation DeletePost($input: DeletePostInput!) {
  }
 }
 
+mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+        username
+    }
+}
+
+mutation UpdateUser($input: UpdateUserInput!) {
+    updateUser(input: $input) {
+        username
+        phone
+        dateJoined
+        email
+        birthday
+        name
+    }
+}
+
+query GetUser($username: String!) {
+    getUser(username: $username) {
+        username
+        phone
+        dateJoined
+        email
+        birthday
+        name
+    }
+}
+
+
 type Query {
     getPost(id: ID!): Post
     listPosts(first: Int, after: String): PostConnection
@@ -176,6 +205,8 @@ type Query {
     queryMostRecentByUsername(username: String!, size: Int!): [Post]
     queryMostViewedByUsername(username: String!, size: Int!): [Post]
     queryTotalViewsByUsername(username: String!): Int
+    getUser(username: String!): User
+    listUsers(filter: TableUserFilterInput, limit: Int, nextToken: String): UserConnection
 }
 
 type Mutation {
@@ -183,6 +214,8 @@ type Mutation {
     updatePost(input: UpdatePostInput!): Post
     deletePost(input: DeletePostInput!): Post
     incrementViewCount(id: ID!): Post
+    createUser(input: CreateUserInput!): User
+    updateUser(input: UpdateUserInput!): User
 }
 
 

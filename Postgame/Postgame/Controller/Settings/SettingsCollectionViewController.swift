@@ -13,7 +13,7 @@ private let reuseIdentifier = "Cell"
 
 final class SettingsCollectionViewController: UICollectionViewController {
     
-    let UserProfileKeys: [String] = ["Username", "Name", "Password", "Phone", "Email"]
+    let UserProfileKeys: [String] = ["username", "name", "phone", "email", "password"]
     
     override init(collectionViewLayout layout: UICollectionViewLayout) {
         let layout = UICollectionViewFlowLayout()
@@ -22,6 +22,18 @@ final class SettingsCollectionViewController: UICollectionViewController {
         layout.sectionInset = UIEdgeInsets(top: 2, left: 0, bottom: 50, right: 0)
         
         super.init(collectionViewLayout: layout)
+        
+        // get user data
+        if UserCache.shared["username"] == nil {
+            if let username = AWSCognitoIdentityUserPool.default().currentUser()?.username {
+                AppSyncService.sharedInstance.cacheUserInfo(username: username, completion: {
+                    DispatchQueue.main.async {
+                        self.collectionView?.reloadData()
+                    }
+                })
+            }
+        }
+        
     }
     
     
@@ -75,7 +87,11 @@ final class SettingsCollectionViewController: UICollectionViewController {
         if indexPath.section == 0 {
             if let cell = cell as? UserProfileCell {
                 if indexPath.item == 0 { cell.moreButton.isHidden = true }
-                cell.keyLabel.text = UserProfileKeys[indexPath.item]
+                let attr = UserProfileKeys[indexPath.item]
+                cell.keyLabel.text = attr
+                
+                cell.valueLabel.text = (UserCache.shared[attr] as? String) ?? ""
+               
             }
         } else {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: SignOutCell.reuseIdentifier, for: indexPath)

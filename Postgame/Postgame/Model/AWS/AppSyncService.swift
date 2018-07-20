@@ -318,8 +318,60 @@ final class AppSyncService {
             return Disposables.create()
         }
     }
-    
+}
 
+// UserTable
+extension AppSyncService {
+    func cacheUserInfo(username: String!, completion: @escaping ()->Void) {
+        let query = GetUserQuery(username: username)
+        appSyncClient?.fetch(query: query,
+                             cachePolicy: .returnCacheDataAndFetch,
+                             queue: DispatchQueue.global(qos: .background),
+                             resultHandler: { (result, error) in
+                                if error != nil {
+                                    print(error?.localizedDescription ?? "")
+                                    return
+                                }
+                                
+                                if let attr = result?.data?.getUser {
+                                    UserCache.shared["username"] = attr.username as AnyObject
+                                    UserCache.shared["phone"] = attr.phone as AnyObject
+                                    if let email = attr.email { UserCache.shared["email"] = email as AnyObject }
+                                    if let name = attr.name { UserCache.shared["name"] = name as AnyObject }
+                                }
+                                completion()
+        })
+        
+    }
+    
+    func createUser(username: String!, phone: String!, email: String?) {
+        let input = CreateUserInput(username: username,
+                                       phone: phone,
+                                       dateJoined: timestamp(),
+                                       email: email,
+                                       birthday: nil,
+                                       name: nil)
+        let mutation = CreateUserMutation(input: input)
+        appSyncClient?.perform(mutation: mutation,
+                               resultHandler: { (result, error) in
+                                if let error = error as? AWSAppSyncClientError {
+                                    print("Error occurred: \(error.localizedDescription )")
+                                    return
+                                }
+                                if let result = result {
+                                    
+                                    if let errors = result.errors {
+                                        for err in errors {
+                                            print("Error occurred: \(err.localizedDescription )")
+                                        }
+                                    } else {
+                                        print("Successful created new user, \(username)")
+                                    }
+                                }
+        })
+    }
+    
+    
 }
 
 extension AppSyncService: AWSCognitoUserPoolsAuthProvider {

@@ -109,6 +109,7 @@ final class ViewController: UIViewController {
                         self?.descriptorCache.refresh()
                         return nil
                     })
+                    
                     return nil
                 })
         
@@ -117,7 +118,7 @@ final class ViewController: UIViewController {
                     // Run the view's session
                     self?.resetSession()
                     self?.sceneView.showsStatistics = true // For debugging
-                    self?.descriptorCache.refresh()
+//                    self?.descriptorCache.refresh()
                     
                     // First check AV Authoirzation then check Location Authorization
                     guard let avAuth = self?.checkAVAuthoirzied() else { return }

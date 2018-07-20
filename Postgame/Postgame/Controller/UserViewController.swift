@@ -16,6 +16,11 @@ final class UserViewController: UIViewController {
     let disposeBag = DisposeBag()
 //    let settingsView = UIView()
     
+    let settingsVC: SettingsCollectionViewController = {
+        let layout = UICollectionViewFlowLayout()
+        return SettingsCollectionViewController(collectionViewLayout: layout)
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         countView.refresh()
@@ -42,8 +47,6 @@ final class UserViewController: UIViewController {
         menu.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0.1).isActive = true
         
        
-        let layout = UICollectionViewFlowLayout()
-        let settingsVC = SettingsCollectionViewController(collectionViewLayout: layout)
         let navVC = UINavigationController(rootViewController: settingsVC)
         let navigationView = navVC.view!
         navVC.hidesNavigationBarHairline = true
