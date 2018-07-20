@@ -114,6 +114,8 @@ final class SettingsCollectionViewController: UICollectionViewController {
             if let vc = didSelect[indexPath.item] {
                 navigationController?.pushViewController(vc, animated: true)
             }
+        } else {
+            AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
         }
         
     }
