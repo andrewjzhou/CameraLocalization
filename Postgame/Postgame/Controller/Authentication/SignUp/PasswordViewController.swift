@@ -20,6 +20,10 @@ final class PasswordViewController: SignUpBaseViewController {
         }
         
         textField.isSecureTextEntry = true
+        
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0)
+            }.disposed(by: disposeBag)
     }
     
     override func buttonAction() {

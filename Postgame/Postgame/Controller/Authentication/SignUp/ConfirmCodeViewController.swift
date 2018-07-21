@@ -22,11 +22,16 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         
         textField.placeholder = "Confirmation Code"
         button.setTitle("Confirm", for: .normal)
-        button.backgroundColor = .flatRed
+        button.color = .flatForestGreen
+        button.highlightedColor = .flatForestGreenDark
         
         setupResendButton()
         
         backButton.isHidden = true
+        
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0)
+        }.disposed(by: disposeBag)
     }
     
     func setupResendButton() {
@@ -77,11 +82,9 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                     
                     strongSelf.present(alertController, animated: true, completion:  nil)
                 } else {
-                    print("Confirmed Sign up")
+                    self?.introVC?.clearUserInfo()
+                    self?.introVC = nil
                     let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
-                    
-                    // Register user in database
-                    
                 }
             })
             return nil

@@ -18,6 +18,10 @@ class EmailViewController: SignUpBaseViewController {
         if let text = introVC?.signUpInfo.email {
             textField.text = text
         }
+        
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0)
+            }.disposed(by: disposeBag)
     }
     
     override func buttonAction() {

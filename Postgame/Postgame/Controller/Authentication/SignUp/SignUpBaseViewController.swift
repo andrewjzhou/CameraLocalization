@@ -18,7 +18,7 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
                                                 width: UIScreen.main.bounds.width * 0.7,
                                                 height: UIScreen.main.bounds.height * 0.075))
     let backButton = UIButton()
-    let button = UIButton()
+    let button = SubmitButton()
     
     var introVC: IntroViewController?
     
@@ -42,6 +42,7 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
         // Dismiss keyboard with tap
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -96,7 +97,6 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
         button.setTitle("Next", for: .normal)
         button.titleLabel?.font =  UIFont(name: "Catatan Perjalanan", size: 25)
         button.titleLabel?.textColor = .flatWhite
-        button.backgroundColor = .flatForestGreen
         
         button.rx.tap
             .filter { return self.buttonActionCondition() }
@@ -107,7 +107,7 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     
     func buttonAction() { }
     
-    func buttonActionCondition() -> Bool { return true }
+    func buttonActionCondition() -> Bool { return button.isActive }
     
     func configureKeyboardDisplayAnimations() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
@@ -157,5 +157,35 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.introVC = nil
+    }
+}
+
+final class SubmitButton: UIButton {
+    var color = UIColor.flatRed
+    var highlightedColor = UIColor.flatRedDark
+    
+    var isActive = false {
+        didSet {
+            backgroundColor = isActive ? color : .flatGray
+        }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .flatGray
+    }
+    
+    override public var isHighlighted: Bool {
+        didSet {
+            if isActive {
+                backgroundColor = isHighlighted ? highlightedColor : color
+            } else {
+                backgroundColor = isHighlighted ? UIColor.flatGrayDark : UIColor.flatGray
+            }
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

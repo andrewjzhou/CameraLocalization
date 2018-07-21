@@ -29,15 +29,16 @@ class PhoneViewController: SignUpBaseViewController {
         textField.placeholder = "Phone"
         textField.keyboardType = .phonePad
         
-        button.backgroundColor = .flatRed
+        button.color = .flatForestGreen
+        button.highlightedColor = .flatForestGreenDark
         button.setTitle("Sign Up", for: .normal)
 
         
         let formatter = PartialFormatter()
-        textField.rx.controlEvent([.editingChanged]).asObservable()
-            .subscribe(onNext:{[textField] _ in
-                textField.text =  formatter.formatPartial(textField.text!)
-            }).disposed(by: db)
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0)
+            self.textField.text =  formatter.formatPartial(self.textField.text!)
+        }.disposed(by: db)
     }
     
     override func buttonAction() {
@@ -102,8 +103,6 @@ class PhoneViewController: SignUpBaseViewController {
                     
                     self?.present(alertController, animated: true, completion:  nil)
                 } else if let result = task.result  {
-                    // register in UserTable
-                    AppSyncService.sharedInstance.createUser(username: userNameValue, phone: signUpInfo.phone!, email: signUpInfo.email!)
                     
                     // handle the case where user has to confirm his identity via email / SMS
                     if (result.user.confirmedStatus != AWSCognitoIdentityUserStatus.confirmed) {

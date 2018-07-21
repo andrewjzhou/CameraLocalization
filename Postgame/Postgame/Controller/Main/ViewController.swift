@@ -96,6 +96,7 @@ final class ViewController: UIViewController {
     
     func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
+            .filter { _ in return self.view.window != nil }
             .debounce(0.1, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 // Authenticate user

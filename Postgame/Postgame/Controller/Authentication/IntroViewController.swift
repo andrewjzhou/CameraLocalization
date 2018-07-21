@@ -68,6 +68,9 @@ final class IntroViewController: UIViewController {
         
     }
     
+    func clearUserInfo() {
+        signUpInfo = SignUpInfo()
+    }
     
     
 

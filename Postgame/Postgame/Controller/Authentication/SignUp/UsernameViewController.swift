@@ -23,6 +23,10 @@ final class UsernameViewController: SignUpBaseViewController {
         if let text = introVC?.signUpInfo.username {
             textField.text = text
         }
+        
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0)
+        }.disposed(by: disposeBag)
     }
     
     override func buttonAction() {
@@ -48,6 +52,8 @@ final class UsernameViewController: SignUpBaseViewController {
     }
     
     override func buttonActionCondition() -> Bool {
+        if !button.isActive { return false }
+        
         // Check if valid
         if !textField.text!.isValidUsername() {
             let alertController = UIAlertController(title: "Invalid character exists.",
@@ -87,6 +93,7 @@ final class UsernameViewController: SignUpBaseViewController {
         
         self.present(alertController, animated: true, completion:  nil)
     }
+  
 
 }
 
