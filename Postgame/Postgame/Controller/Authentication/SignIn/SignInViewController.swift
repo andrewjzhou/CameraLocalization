@@ -28,7 +28,7 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
                                                     y: UIScreen.main.bounds.height * 0.25,
                                                     width: UIScreen.main.bounds.width * 0.7,
                                                     height: UIScreen.main.bounds.height * 0.075))
-    let signInButton = UIButton()
+    let signInButton = SubmitButton()
     let fpButton = UIButton()
     
     override func viewDidLoad() {
@@ -45,6 +45,14 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
         // Dismiss keyboard with tap
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
+        usernameField.rx.controlEvent([.editingChanged]).bind {
+            self.signInButton.isActive = (self.usernameField.text!.count != 0 && self.passwordField.text!.count != 0)
+        }.disposed(by: disposeBag)
+        
+        passwordField.rx.controlEvent([.editingChanged]).bind {
+            self.signInButton.isActive = (self.usernameField.text!.count != 0 && self.passwordField.text!.count != 0)
+        }.disposed(by: disposeBag)
     
     }
     
@@ -90,10 +98,13 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
         signInButton.setTitle("Sign In", for: .normal)
         signInButton.titleLabel?.font =  UIFont(name: "Catatan Perjalanan", size: 25)
         signInButton.titleLabel?.textColor = .flatWhite
-        signInButton.backgroundColor = .flatSkyBlue
+        signInButton.color = .flatSkyBlue
+        signInButton.highlightedColor = .flatSkyBlueDark
         
         // tapped
-        signInButton.rx.tap.bind {
+        signInButton.rx.tap
+            .filter { _ in return self.signInButton.isActive }
+            .bind {
             if (self.usernameField.text != nil && self.passwordField.text != nil) {
                 let authDetails = AWSCognitoIdentityPasswordAuthenticationDetails(username: self.usernameField.text!,
                                                                                   password: self.passwordField.text! )

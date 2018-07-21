@@ -42,6 +42,7 @@ class PhoneViewController: SignUpBaseViewController {
     }
     
     override func buttonAction() {
+        print("Sign up clicked. In action")
         do {
             let phoneRaw = phoneNumberKit.format(try phoneNumberKit.parse(textField.text!), toType: .e164)
             introVC?.signUpInfo.phone = phoneRaw
@@ -103,7 +104,7 @@ class PhoneViewController: SignUpBaseViewController {
                     
                     self?.present(alertController, animated: true, completion:  nil)
                 } else if let result = task.result  {
-                    
+                    print("System is signing up new user")
                     // handle the case where user has to confirm his identity via email / SMS
                     if (result.user.confirmedStatus != AWSCognitoIdentityUserStatus.confirmed) {
                         let confirmVC = ConfirmCodeViewController()
