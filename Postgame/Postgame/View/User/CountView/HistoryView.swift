@@ -103,6 +103,7 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
             cell.titleLabel.text = date
             cell.numberLabel.text = String(info.viewCount)
             
+            // display image
             if let imageToShow = ImageCache.shared[info.s3Key] {
                 cell.isLoadingImage = false
                 cell.imageView.image = imageToShow
@@ -117,6 +118,10 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
                     })
                     .disposed(by: cell.disposeBag)
             }
+            
+            // active/inactive
+            cell.backgroundColor = info.active ? UIColor.flatGreen.withAlphaComponent(0.85) : UIColor.flatRed.withAlphaComponent(0.85)
+            
         }
         
         return cell
@@ -127,9 +132,6 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         return CGSize(width: collectionView.frame.width, height: collectionView.frame.height / 5)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 1
-    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {}
     
@@ -154,7 +156,7 @@ final class HistoryViewCell: BaseCell {
 
     private let activityIndicator = NVActivityIndicatorView(frame: .zero,
                                                             type: NVActivityIndicatorType.pacman,
-                                                            color: .flatRed,
+                                                            color: .flatWhite,
                                                             padding: 7)
     var isLoadingImage: Bool = false {
         didSet {
@@ -174,10 +176,11 @@ final class HistoryViewCell: BaseCell {
         super.setupViews()
         
         addSubview(imageView)
+        imageView.layer.cornerRadius = 2
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.setLeadingConstraint(equalTo: leadingAnchor, offset: 5)
         imageView.setTopConstraint(equalTo: topAnchor, offset: 5)
-        imageView.setBottomConstraint(equalTo: bottomAnchor, offset: 5)
+        imageView.setBottomConstraint(equalTo: bottomAnchor, offset: -5)
         imageView.setWidthConstraint(frame.height - 10)
         
         imageView.addSubview(activityIndicator)
@@ -193,8 +196,6 @@ final class HistoryViewCell: BaseCell {
         numberLabel.setTopConstraint(equalTo: topAnchor, offset: 5)
         numberLabel.setBottomConstraint(equalTo: bottomAnchor, offset: 5)
         numberLabel.setWidthConstraint(frame.width / 4)
-        let view: Int = 1234
-        numberLabel.text = view.labelFormat()
         numberLabel.textAlignment = .center
         
         addSubview(titleLabel)

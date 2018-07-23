@@ -24,6 +24,7 @@ final class TotalView: UIView {
         titleLabel.setHeightConstraint(32)
         titleLabel.text = "Total : "
         titleLabel.textAlignment = .center
+        titleLabel.textColor = .flatWhite
         
         addSubview(numberLabel)
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
