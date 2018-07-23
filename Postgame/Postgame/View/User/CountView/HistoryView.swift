@@ -54,12 +54,14 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         super.init(frame: frame)
         
         addSubview(titleLabel)
+        titleLabel.alpha = 0.9
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.setTopConstraint(equalTo: topAnchor, offset: 0)
         titleLabel.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
         titleLabel.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
         titleLabel.setHeightConstraint(32)
         titleLabel.textAlignment = .center
+        titleLabel.textColor = .flatWhite
         titleLabel.text = "Top 5 : "
         
         addSubview(collectionView)
@@ -71,8 +73,8 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         collectionView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
         collectionView.isScrollEnabled = false
         
-        titleLabel.backgroundColor = UIColor.flatMint
-        collectionView.backgroundColor = UIColor.flatSand
+        titleLabel.backgroundColor = UIColor.flatSkyBlue
+        collectionView.backgroundColor = UIColor.flatWhiteDark
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
         titleLabel.addGestureRecognizer(tap)
@@ -102,6 +104,7 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
             cell.numberLabel.text = String(info.viewCount)
             
             if let imageToShow = ImageCache.shared[info.s3Key] {
+                cell.isLoadingImage = false
                 cell.imageView.image = imageToShow
             } else {
                 cell.isLoadingImage = true
@@ -125,7 +128,7 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {}
@@ -152,10 +155,11 @@ final class HistoryViewCell: BaseCell {
     private let activityIndicator = NVActivityIndicatorView(frame: .zero,
                                                             type: NVActivityIndicatorType.pacman,
                                                             color: .flatRed,
-                                                            padding: 5)
+                                                            padding: 7)
     var isLoadingImage: Bool = false {
         didSet {
             if isLoadingImage {
+                imageView.image = nil
                 activityIndicator.isHidden = false
                 activityIndicator.startAnimating()
             } else {

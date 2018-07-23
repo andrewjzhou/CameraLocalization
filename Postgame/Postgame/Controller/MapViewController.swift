@@ -19,8 +19,11 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         blurBackground()
+        
         setupMapView()
+        
         setupSlider()
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismiss))

@@ -14,7 +14,6 @@ final class UserViewController: UIViewController {
     let menu = UserMenu()
     let countView = CountView()
     let disposeBag = DisposeBag()
-//    let settingsView = UIView()
     
     let settingsVC: SettingsCollectionViewController = {
         let layout = UICollectionViewFlowLayout()
@@ -23,11 +22,13 @@ final class UserViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .clear
+        
         countView.refresh()
         
         blurBackground()
         
-        let margin: CGFloat = 4
+        let margin: CGFloat = 8
         
         let containerView = UIView()
         view.addSubview(containerView)
@@ -38,15 +39,37 @@ final class UserViewController: UIViewController {
         containerView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: -margin)
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = 16
+        containerView.backgroundColor = .clear
         
+        // menu
         containerView.addSubview(menu)
+        menu.alpha = 0.85
         menu.translatesAutoresizingMaskIntoConstraints = false
         menu.setTopConstraint(equalTo: containerView.topAnchor, offset: 0)
         menu.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
         menu.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
         menu.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0.1).isActive = true
         
-       
+        // exit button
+        let exitButton = UIButton()
+        containerView.addSubview(exitButton)
+        exitButton.translatesAutoresizingMaskIntoConstraints = false
+        exitButton.backgroundColor = .flatSkyBlueDark
+        exitButton.setTitle("Cancel", for: .normal)
+        exitButton.titleLabel?.textColor = .flatWhite
+        exitButton.alpha = 0.85
+        exitButton.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
+        exitButton.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
+        exitButton.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
+        exitButton.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0.05).isActive = true
+        exitButton.rx.tap.bind {
+            UIView.animate(withDuration: 0.5, animations: {
+                self.dismiss(animated: true, completion: nil)
+            })
+        }.disposed(by: disposeBag)
+        
+        
+        // settings
         let navVC = UINavigationController(rootViewController: settingsVC)
         let navigationView = navVC.view!
         navVC.hidesNavigationBarHairline = true
@@ -57,40 +80,36 @@ final class UserViewController: UIViewController {
         navigationView.setTopConstraint(equalTo: menu.bottomAnchor, offset: 0)
         navigationView.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
         navigationView.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
-        navigationView.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
+        navigationView.setBottomConstraint(equalTo: exitButton.topAnchor, offset: 0)
         
+        
+        // view count
         containerView.addSubview(countView)
         countView.translatesAutoresizingMaskIntoConstraints = false
         countView.setTopConstraint(equalTo: menu.bottomAnchor, offset: 0)
         countView.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
         countView.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
-        countView.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)
+        countView.setBottomConstraint(equalTo: exitButton.topAnchor, offset: 0)
         
+        // menu toggle
+        navigationView.isHidden = true
         menu.didSelectDriver.drive(onNext: { [countView, navigationView] (index) in
             switch index {
             case 0:
-                containerView.bringSubview(toFront: countView)
+                countView.isHidden = false
+                navigationView.isHidden = true
             case 1:
-                containerView.bringSubview(toFront: navigationView)
-                countView.refresh()
+                countView.isHidden = true
+                navigationView.isHidden = false
             default:
                 return
             }
         }).disposed(by: disposeBag)
-        
-        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(handleUserViewSwipe(sender:)))
-        swipe.direction = .up
-        containerView.addGestureRecognizer(swipe)
+    
     }
     
-
-    @objc func handleUserViewSwipe (sender: UISwipeGestureRecognizer) {
-        UIView.animate(withDuration: 0.5, animations: {
-            self.dismiss(animated: true, completion: nil)
-        })
-    }
     
-    func blurBackground() {
+    private func blurBackground() {
         view.backgroundColor = .clear
         
         let blurEffect = UIBlurEffect(style: .dark)

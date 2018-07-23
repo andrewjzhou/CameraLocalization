@@ -15,7 +15,7 @@ final class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelega
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.red
+        cv.backgroundColor = UIColor.flatSkyBlueDark
         cv.dataSource = self
         cv.delegate = self
         return cv
@@ -73,7 +73,7 @@ final class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelega
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserMenuCell
         
         cell.imageView.image = UIImage(named: "ic_camera_alt")?.withRenderingMode(.alwaysTemplate)
-        cell.tintColor = UIColor.green
+        cell.tintColor = UIColor.flatGray
         
         return cell
     }
@@ -97,19 +97,19 @@ final class UserMenuCell: BaseCell {
     let imageView: UIImageView = {
         let iv = UIImageView()
         iv.image = UIImage(named: "ic_camera_alt")?.withRenderingMode(.alwaysTemplate)
-        iv.tintColor = UIColor.green
+        iv.tintColor = UIColor.flatGray
         return iv
     }()
     
     override var isHighlighted: Bool {
         didSet {
-            imageView.tintColor = isHighlighted ? UIColor.white : UIColor.green
+            imageView.tintColor = isHighlighted ? UIColor.flatWhite : UIColor.flatGray
         }
     }
     
     override var isSelected: Bool {
         didSet {
-            imageView.tintColor = isSelected ? UIColor.white : UIColor.green
+            imageView.tintColor = isSelected ? UIColor.flatWhite : UIColor.flatGray
         }
     }
     

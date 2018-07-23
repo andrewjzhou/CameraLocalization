@@ -16,6 +16,7 @@ final class TotalView: UIView {
         super.init(frame: frame)
         
         addSubview(titleLabel)
+        titleLabel.alpha = 0.9
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.setTopConstraint(equalTo: topAnchor, offset: 0)
         titleLabel.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
@@ -34,8 +35,8 @@ final class TotalView: UIView {
         numberLabel.textAlignment = .center
         
         // debugging
-        titleLabel.backgroundColor = UIColor.flatLime
-        numberLabel.backgroundColor = UIColor.flatBlue
+        titleLabel.backgroundColor = UIColor.flatSkyBlue
+        numberLabel.backgroundColor = UIColor.flatWhiteDark
     
     }
     

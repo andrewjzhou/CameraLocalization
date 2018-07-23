@@ -282,6 +282,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		6A10CC3221066FD900A5EAE1 /* User */ = {
+			isa = PBXGroup;
+			children = (
+				6A2486CA20FC090600DB2133 /* UserViewController.swift */,
+				6A17414E21010819000067CA /* Settings */,
+			);
+			path = User;
+			sourceTree = "<group>";
+		};
 		6A17414E21010819000067CA /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -509,12 +518,11 @@
 		6AEC1A9E20879941008E0FF8 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				6A17414E21010819000067CA /* Settings */,
+				6A10CC3221066FD900A5EAE1 /* User */,
 				6A2486E820FF8ABC00DB2133 /* Authentication */,
 				6A2486C920FC088300DB2133 /* Main */,
 				6AC6C8E520E811C800126391 /* LaunchScreen.storyboard */,
 				6AC6C91020FBFA2300126391 /* CreationViewController.swift */,
-				6A2486CA20FC090600DB2133 /* UserViewController.swift */,
 				6A2486E120FE4CAA00DB2133 /* MapViewController.swift */,
 			);
 			path = Controller;
