@@ -26,6 +26,7 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
     }
     
     override func buttonAction() {
+        view.endEditing(true)
         button.isActive = false
         user?.verifyAttribute("phone_number", code: textField.text!).continueWith(block: { [messageLabel, button] (task) -> Any? in
             DispatchQueue.main.async {
