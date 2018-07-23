@@ -13,10 +13,10 @@ import TextFieldEffects
 
 class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     let disposeBag = DisposeBag()
-    var textField = IsaoTextField(frame: CGRect(x: UIScreen.main.bounds.width * 0.15,
-                                                y: UIScreen.main.bounds.height * 0.1,
-                                                width: UIScreen.main.bounds.width * 0.7,
-                                                height: UIScreen.main.bounds.height * 0.075))
+    lazy var textField = IsaoTextField(frame: CGRect(x: view.bounds.width * 0.15,
+                                                y: view.bounds.height * 0.1,
+                                                width: view.bounds.width * 0.7,
+                                                height: view.bounds.height * 0.075))
     let backButton = UIButton()
     let button = SubmitButton()
     

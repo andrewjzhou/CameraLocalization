@@ -15,10 +15,10 @@ class UpdateNameViewController: SignUpBaseViewController {
 
     private let db = DisposeBag()
     private var buttonsShouldReactToKeyboard = false
-    let textField2 = IsaoTextField(frame: CGRect(x: UIScreen.main.bounds.width * 0.15,
-                                                 y: UIScreen.main.bounds.height * 0.25,
-                                                 width: UIScreen.main.bounds.width * 0.7,
-                                                 height: UIScreen.main.bounds.height * 0.075))
+    lazy var textField2 = IsaoTextField(frame: CGRect(x: view.bounds.width * 0.15,
+                                                 y: view.bounds.height * 0.25,
+                                                 width: view.bounds.width * 0.7,
+                                                 height: view.bounds.height * 0.075))
     
     let messageLabel = MessageLabel()
     
@@ -62,6 +62,11 @@ class UpdateNameViewController: SignUpBaseViewController {
         messageLabel.layer.cornerRadius = 12
     }
     
+    @objc override func dismissKeyboard(_: UITapGestureRecognizer) {
+        buttonsShouldReactToKeyboard = true
+        view.endEditing(true)
+    }
+    
     override func buttonAction() {
         buttonsShouldReactToKeyboard = true
         view.endEditing(true)
@@ -84,6 +89,7 @@ class UpdateNameViewController: SignUpBaseViewController {
     }
     
     override func buttonActionCondition() -> Bool {
+        if !button.isActive { return false }
         if textField.text?.count == 0 || textField2.text?.count == 0 {
             let alertController = UIAlertController(title: "Empty Field(s)",
                                                     message: "",
@@ -120,6 +126,7 @@ class UpdateNameViewController: SignUpBaseViewController {
     }
     
     override func configureKeyboardDisplayAnimations() {
+        
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
             .subscribe(onNext: { [button](notification) in
                 if let userInfo = notification.userInfo {
@@ -132,8 +139,13 @@ class UpdateNameViewController: SignUpBaseViewController {
                                    delay: TimeInterval(0),
                                    options: animationCurve,
                                    animations: {
-                                    let transform = CGAffineTransform(translationX: 0, y: -(endFrame?.size.height ?? 0.0))
-                                    button.transform = transform
+                                    
+                                    let translation = CGAffineTransform(translationX: 0, y: -(endFrame?.size.height ?? 0.0))
+                                    let scale = CGAffineTransform(scaleX: 0.8, y: 0.9)
+                                    
+                                    button.transform = translation.concatenating(scale)
+                                    button.layer.cornerRadius = 10.0
+                                    
                     },
                                    completion: nil)
                 }
@@ -153,6 +165,8 @@ class UpdateNameViewController: SignUpBaseViewController {
                                        options: animationCurve,
                                        animations: {
                                         self?.button.transform = .identity
+                                        self?.button.layer.cornerRadius = 0
+                                        
                         },
                                        completion: nil)
                     }

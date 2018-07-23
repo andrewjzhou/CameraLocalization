@@ -70,5 +70,47 @@ final class UpdateEmailViewController: EmailViewController {
             self.textField.text! = ""
         }
     }
+    
+    override func configureKeyboardDisplayAnimations() {
+        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
+            .subscribe(onNext: { [button] (notification) in
+                if let userInfo = notification.userInfo {
+                    let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+                    let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+                    let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+                    let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+                    let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+                    UIView.animate(withDuration: duration,
+                                   delay: TimeInterval(0),
+                                   options: animationCurve,
+                                   animations: {
+                                    let translation = CGAffineTransform(translationX: 0, y: -(endFrame?.size.height ?? 0.0))
+                                    let scale = CGAffineTransform(scaleX: 0.8, y: 0.9)
+                                    button.transform = translation.concatenating(scale)
+                                    button.layer.cornerRadius = 10.0
+                    },
+                                   completion: nil)
+                }
+            }).disposed(by: disposeBag)
+        
+        NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillHide)
+            .subscribe(onNext: { [button] (notification) in
+                if let userInfo = notification.userInfo {
+                    let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+                    let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+                    let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+                    let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+                    UIView.animate(withDuration: duration,
+                                   delay: TimeInterval(0),
+                                   options: animationCurve,
+                                   animations: {
+                                    button.transform = .identity
+                                     button.layer.cornerRadius = 0
+                    },
+                                   completion: nil)
+                }
+                
+            }).disposed(by: disposeBag)
+    }
 
 }

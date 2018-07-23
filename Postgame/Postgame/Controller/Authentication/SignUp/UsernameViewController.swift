@@ -103,7 +103,7 @@ func checkUser(_ loginName: String, completion: @escaping (Bool) -> Void) {
     UIApplication.shared.isNetworkActivityIndicatorVisible = true
     proposedUser.getSession(loginName, password: "ThisIsAnIncorrectPassword", validationData: nil).continueWith(executor: AWSExecutor.mainThread(), block: { (awsTask) in
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
-        if let error = awsTask.error as? NSError {
+        if let error = awsTask.error as NSError? {
             // Error implies login failed. Check reason for failure
             let exceptionString = error.userInfo["__type"] as! String
             if let exception = ExceptionString(rawValue: exceptionString) {
