@@ -40,6 +40,8 @@ final class UserViewController: UIViewController {
         containerView.clipsToBounds = true
         containerView.layer.cornerRadius = 16
         containerView.backgroundColor = .clear
+        containerView.layer.borderColor = UIColor.flatBlack.withAlphaComponent(0.8).cgColor
+        containerView.layer.borderWidth = 2.0
         
         // menu
         containerView.addSubview(menu)
@@ -62,6 +64,8 @@ final class UserViewController: UIViewController {
         exitButton.setLeadingConstraint(equalTo: containerView.leadingAnchor, offset: 0)
         exitButton.setTrailingConstraint(equalTo: containerView.trailingAnchor, offset: 0)
         exitButton.heightAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: 0.05).isActive = true
+        exitButton.layer.borderColor = UIColor.flatBlack.withAlphaComponent(0.8).cgColor
+        exitButton.layer.borderWidth = 2.0
         exitButton.rx.tap.bind {
             UIView.animate(withDuration: 0.5, animations: {
                 self.dismiss(animated: true, completion: nil)
