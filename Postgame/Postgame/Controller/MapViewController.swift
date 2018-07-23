@@ -77,7 +77,6 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
         effectView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
     }
     
-    
     func mapViewDidFinishLoadingMap(_ mapView: MGLMapView) {
         // initial camera
         if let location = mapView.userLocation?.coordinate {

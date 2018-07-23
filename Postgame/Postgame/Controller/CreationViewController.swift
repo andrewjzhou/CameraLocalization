@@ -32,8 +32,7 @@ final class CreationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.8)
+        blurBackground()
         
         // Setup layout of viewDidLoad UIButtons and slateView
         setupSlateView()
@@ -113,6 +112,31 @@ final class CreationViewController: UIViewController {
         let capturedImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return capturedImage
+    }
+    
+    func blurBackground() {
+        view.backgroundColor = .clear
+        
+        let blurEffect = UIBlurEffect(style: .dark)
+        let effectView =  UIVisualEffectView(effect: blurEffect)
+        
+        // add vibrancy
+        let vibrancyEffect = UIVibrancyEffect(blurEffect: blurEffect)
+        let vibrancyView = UIVisualEffectView(effect: vibrancyEffect)
+        effectView.contentView.addSubview(vibrancyView)
+        vibrancyView.translatesAutoresizingMaskIntoConstraints = false
+        vibrancyView.setTopConstraint(equalTo: effectView.topAnchor, offset: 0)
+        vibrancyView.setBottomConstraint(equalTo: effectView.bottomAnchor, offset: 0)
+        vibrancyView.setLeadingConstraint(equalTo: effectView.leadingAnchor, offset: 0)
+        vibrancyView.setTrailingConstraint(equalTo: effectView.trailingAnchor, offset: 0)
+        
+        // add blur
+        view.addSubview(effectView)
+        effectView.translatesAutoresizingMaskIntoConstraints = false
+        effectView.setTopConstraint(equalTo: view.topAnchor, offset: 0)
+        effectView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        effectView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        effectView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
     }
 }
 
