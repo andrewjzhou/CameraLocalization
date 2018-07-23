@@ -42,7 +42,6 @@ class PhoneViewController: SignUpBaseViewController {
     }
     
     override func buttonAction() {
-        print("Sign up clicked. In action")
         do {
             let phoneRaw = phoneNumberKit.format(try phoneNumberKit.parse(textField.text!), toType: .e164)
             introVC?.signUpInfo.phone = phoneRaw
@@ -52,7 +51,7 @@ class PhoneViewController: SignUpBaseViewController {
         }
         
         guard let signUpInfo = introVC?.signUpInfo else { return }
-        print("phone: ", signUpInfo.phone!)
+      
         guard let userNameValue = signUpInfo.username, !userNameValue.isEmpty,
             let passwordValue = signUpInfo.password, !passwordValue.isEmpty else {
                 let alertController = UIAlertController(title: "Missing Required Fields",
@@ -126,6 +125,8 @@ class PhoneViewController: SignUpBaseViewController {
     }
     
     override func buttonActionCondition() -> Bool {
+        if !button.isActive { return false }
+        
         do {
             let _ = try phoneNumberKit.parse(textField.text!, withRegion: "US", ignoreType: true)
             return true

@@ -48,6 +48,9 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         textField.becomeFirstResponder()
+        if textField.text!.count != 0 {
+            button.isActive = true
+        }
     }
     
     // Tap to dismiss Keyboard

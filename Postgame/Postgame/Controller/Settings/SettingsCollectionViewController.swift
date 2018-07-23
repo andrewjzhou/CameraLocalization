@@ -43,16 +43,6 @@ final class SettingsCollectionViewController: UICollectionViewController {
             }
         }
         
-        let containerView = UIView()
-        containerView.backgroundColor = .clear
-        view.addSubview(containerView)
-        view.bringSubview(toFront: containerView)
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.setTopConstraint(equalTo: view.topAnchor, offset: 0)
-        containerView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        containerView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
-        containerView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
-        
     }
     
     
@@ -120,6 +110,7 @@ final class SettingsCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Tapped!!!")
         print(indexPath)
         if indexPath.section == 0 {
             if let vc = didSelect[indexPath.item] {

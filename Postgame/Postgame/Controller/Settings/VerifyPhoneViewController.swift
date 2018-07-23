@@ -10,29 +10,37 @@ import UIKit
 
 class VerifyPhoneViewController: ConfirmCodeViewController {
     
+    let messageLabel = MessageLabel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        // configure message label
+        view.addSubview(messageLabel)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        messageLabel.setCenterYConstraint(equalTo: view.centerYAnchor, offset: -0.15 * view.bounds.height)
+        messageLabel.setWidthConstraint(view.bounds.width * 0.45)
+        messageLabel.setHeightConstraint(view.bounds.height * 0.06)
+        messageLabel.layer.cornerRadius = 12
     }
     
     override func buttonAction() {
-        user?.verifyAttribute("phone_number", code: textField.text!)
+        button.isActive = false
+        user?.verifyAttribute("phone_number", code: textField.text!).continueWith(block: { [messageLabel, button] (task) -> Any? in
+            DispatchQueue.main.async {
+                if let _ = task.error {
+                    button.isActive = true
+                    messageLabel.display(.tryAgain)
+                }
+        
+                messageLabel.display(.phoneVerified)
+            }
+            return nil
+        })
     }
     
     override func resendConfirmationCode() {
         user?.getAttributeVerificationCode("phone_number")
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

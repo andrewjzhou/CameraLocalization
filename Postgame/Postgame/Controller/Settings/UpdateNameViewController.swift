@@ -20,6 +20,7 @@ class UpdateNameViewController: SignUpBaseViewController {
                                                  width: UIScreen.main.bounds.width * 0.7,
                                                  height: UIScreen.main.bounds.height * 0.075))
     
+    let messageLabel = MessageLabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,20 +51,33 @@ class UpdateNameViewController: SignUpBaseViewController {
         textField2.rx.controlEvent([.editingChanged]).bind {
             self.button.isActive = (self.textField.text!.count != 0 && self.textField2.text!.count != 0)
             }.disposed(by: db)
+        
+        // configure message label
+        view.addSubview(messageLabel)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        messageLabel.setCenterYConstraint(equalTo: view.centerYAnchor, offset: -0.15 * view.bounds.height)
+        messageLabel.setWidthConstraint(view.bounds.width * 0.45)
+        messageLabel.setHeightConstraint(view.bounds.height * 0.06)
+        messageLabel.layer.cornerRadius = 12
+       
+        
     }
     
     override func buttonAction() {
         buttonsShouldReactToKeyboard = true
         view.endEditing(true)
+        button.isActive = false
         let first = textField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
         let last = textField2.text!.trimmingCharacters(in: .whitespacesAndNewlines)
         let name = first + " " + last
         if let username = AWSCognitoIdentityUserPool.default().currentUser()?.username {
-            AppSyncService.sharedInstance.updateName(username: username, name: name) { (success) in
+            AppSyncService.sharedInstance.updateName(username: username, name: name) { [messageLabel, button] (success) in
                 if success {
-                    // display label
+                    messageLabel.display(.nameUpdated)
                 } else {
-                    
+                    messageLabel.display(.tryAgain)
+                    button.isActive = true
                 }
             }
             

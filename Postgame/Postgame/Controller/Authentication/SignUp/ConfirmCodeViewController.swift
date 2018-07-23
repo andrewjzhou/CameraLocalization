@@ -48,9 +48,11 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         resendButton.backgroundColor = .flatGray
         resendButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         resendButton.titleLabel?.textColor = .flatWhite
-        resendButton.rx.tap.bind {
-            self.resendConfirmationCode()
-        }.disposed(by: disposeBag)
+        resendButton.rx.tap
+            .throttle(5.0, scheduler: MainScheduler.instance)
+            .bind {
+                self.resendConfirmationCode()
+            }.disposed(by: disposeBag)
     }
     
     override func backButtonAction() {
