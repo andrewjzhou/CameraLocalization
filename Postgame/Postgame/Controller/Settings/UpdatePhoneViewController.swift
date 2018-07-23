@@ -67,7 +67,11 @@ class UpdatePhoneViewController: PhoneViewController {
         } catch {
             print("PhoneViewController: Error parsing phone number for raw string")
         }
-        
-        
+    }
+    
+    override func backButtonAction() {
+        dismiss(animated: true) {
+            self.textField.text! = ""
+        }
     }
 }

@@ -410,13 +410,13 @@
 			path = CountView;
 			sourceTree = "<group>";
 		};
-		6A93257420D8567A00E0C9B4 /* UserView */ = {
+		6A93257420D8567A00E0C9B4 /* User */ = {
 			isa = PBXGroup;
 			children = (
 				6A8EA74020E1458900B178C1 /* CountView */,
 				6A8EA73A20E050D000B178C1 /* UserMenu.swift */,
 			);
-			path = UserView;
+			path = User;
 			sourceTree = "<group>";
 		};
 		6A98CC6120E416F0003A0E44 /* Fonts */ = {
@@ -541,18 +541,18 @@
 			isa = PBXGroup;
 			children = (
 				6A1B54B820D2D15900870DC2 /* CreateButton.swift */,
-				6AEC1AA72087C3C9008E0FF8 /* CreationViewController */,
+				6AEC1AA72087C3C9008E0FF8 /* Creation */,
 				6AEC1AA52087ADC5008E0FF8 /* IndicatorButton.swift */,
 				6A1B54D120D47D2E00870DC2 /* LongPressIndicator.swift */,
 				6A1B54D820D83D7700870DC2 /* Node */,
-				6A93257420D8567A00E0C9B4 /* UserView */,
+				6A93257420D8567A00E0C9B4 /* User */,
 				6AC6C90E20F90FD600126391 /* UserButton.swift */,
 				6A10CC302106465400A5EAE1 /* MessageLabel.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
 		};
-		6AEC1AA72087C3C9008E0FF8 /* CreationViewController */ = {
+		6AEC1AA72087C3C9008E0FF8 /* Creation */ = {
 			isa = PBXGroup;
 			children = (
 				6AEC1AAA2088280B008E0FF8 /* DrawView.swift */,
@@ -560,7 +560,7 @@
 				6AEC1AB32089A678008E0FF8 /* PhotoPickerView */,
 				6AEC1AB22089A65A008E0FF8 /* ResizableView */,
 			);
-			path = CreationViewController;
+			path = Creation;
 			sourceTree = "<group>";
 		};
 		6AEC1AB22089A65A008E0FF8 /* ResizableView */ = {
@@ -759,6 +759,7 @@
 				"${BUILT_PRODUCTS_DIR}/KeychainSwift/KeychainSwift.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework",
 				"${PODS_ROOT}/Mapbox-iOS-SDK/dynamic/Mapbox.framework.dSYM",
+				"${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework",
 				"${BUILT_PRODUCTS_DIR}/PhoneNumberKit/PhoneNumberKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
@@ -785,6 +786,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mapbox.framework",
 				"${DWARF_DSYM_FOLDER_PATH}/Mapbox.framework.dSYM",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NVActivityIndicatorView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PhoneNumberKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",

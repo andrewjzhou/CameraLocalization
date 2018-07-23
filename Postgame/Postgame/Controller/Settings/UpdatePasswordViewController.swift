@@ -11,6 +11,7 @@ import AWSUserPoolsSignIn
 
 class UpdatePasswordViewController: UpdateNameViewController {
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,16 +39,8 @@ class UpdatePasswordViewController: UpdateNameViewController {
                         alertController.addAction(retryAction)
                         
                         self?.present(alertController, animated: true, completion:  nil)
-                    } else if let result = task.result  {
-                        let alertController = UIAlertController(title:"Password Update Success",
-                                                                message: "",
-                                                                preferredStyle: .alert)
-                        let retryAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                        alertController.addAction(retryAction)
-                        
-                        self?.present(alertController, animated: true, completion:  {
-                            self?.navigationController?.popToRootViewController(animated: true)
-                        })
+                    } else {
+                        self?.messageLabel.display(.passwordUpdated)
                     }
                     
                 })
@@ -55,16 +48,12 @@ class UpdatePasswordViewController: UpdateNameViewController {
             }
         }
     }
-    
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func backButtonAction() {
+        dismiss(animated: true) {
+            self.textField.text! = ""
+            self.textField2.text! = ""
+        }
     }
-    */
 
 }

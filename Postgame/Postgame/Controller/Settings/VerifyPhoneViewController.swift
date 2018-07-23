@@ -44,4 +44,10 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
     override func resendConfirmationCode() {
         user?.getAttributeVerificationCode("phone_number")
     }
+    
+    override func backButtonAction() {
+        dismiss(animated: true) {
+            self.textField.text! = ""
+        }
+    }
 }

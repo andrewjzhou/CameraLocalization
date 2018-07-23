@@ -31,6 +31,7 @@ target 'Postgame' do
   pod 'KeychainSwift', '~> 11.0'
   pod 'PhoneNumberKit'
   pod 'TextFieldEffects'
+  pod 'NVActivityIndicatorView'
 
   target 'PostgameTests' do
     inherit! :search_paths

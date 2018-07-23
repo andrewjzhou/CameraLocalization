@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import NVActivityIndicatorView
 
 final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     let disposeBag = DisposeBag()
@@ -103,9 +104,11 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
             if let imageToShow = ImageCache.shared[info.s3Key] {
                 cell.imageView.image = imageToShow
             } else {
+                cell.isLoadingImage = true
                 S3Service.sharedInstance.downloadPost(info.s3Key)
                     .asDriver(onErrorJustReturn: UIImage(named: "ic_camera_alt")!.withRenderingMode(.alwaysTemplate))
                     .drive(onNext: { (image) in
+                        cell.isLoadingImage = false 
                         cell.imageView.image  = image
                         ImageCache.shared[info.s3Key] = image
                     })
@@ -146,6 +149,22 @@ final class HistoryViewCell: BaseCell {
     let titleLabel = UILabel()
     let numberLabel = UILabel()
 
+    private let activityIndicator = NVActivityIndicatorView(frame: .zero,
+                                                            type: NVActivityIndicatorType.pacman,
+                                                            color: .flatRed,
+                                                            padding: 5)
+    var isLoadingImage: Bool = false {
+        didSet {
+            if isLoadingImage {
+                activityIndicator.isHidden = false
+                activityIndicator.startAnimating()
+            } else {
+                activityIndicator.isHidden = true
+                activityIndicator.stopAnimating()
+            }
+            
+        }
+    }
     
     override func setupViews() {
         super.setupViews()
@@ -156,6 +175,13 @@ final class HistoryViewCell: BaseCell {
         imageView.setTopConstraint(equalTo: topAnchor, offset: 5)
         imageView.setBottomConstraint(equalTo: bottomAnchor, offset: 5)
         imageView.setWidthConstraint(frame.height - 10)
+        
+        imageView.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.setLeadingConstraint(equalTo: imageView.leadingAnchor, offset: 5)
+        activityIndicator.setTopConstraint(equalTo: imageView.topAnchor, offset: 5)
+        activityIndicator.setBottomConstraint(equalTo: imageView.bottomAnchor, offset: 5)
+        activityIndicator.setTrailingConstraint(equalTo: imageView.trailingAnchor, offset: 5)
         
         addSubview(numberLabel)
         numberLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -194,6 +220,7 @@ func formatDateForDisplay(_ date: String) -> String {
     dateFormatter.pmSymbol = "PM"
     return dateFormatter.string(from: date!)
 }
+
 
 fileprivate extension Int {
     func labelFormat() -> String {

@@ -60,8 +60,6 @@ class UpdateNameViewController: SignUpBaseViewController {
         messageLabel.setWidthConstraint(view.bounds.width * 0.45)
         messageLabel.setHeightConstraint(view.bounds.height * 0.06)
         messageLabel.layer.cornerRadius = 12
-       
-        
     }
     
     override func buttonAction() {
@@ -102,7 +100,8 @@ class UpdateNameViewController: SignUpBaseViewController {
     
     override func backButtonAction() {
         dismiss(animated: true) {
-            //..
+            self.textField.text! = ""
+            self.textField2.text! = ""
         }
     }
     
