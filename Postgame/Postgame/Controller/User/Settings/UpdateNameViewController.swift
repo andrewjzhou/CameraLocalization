@@ -15,10 +15,7 @@ class UpdateNameViewController: SignUpBaseViewController {
 
     private let db = DisposeBag()
     private var buttonsShouldReactToKeyboard = false
-    lazy var textField2 = IsaoTextField(frame: CGRect(x: view.bounds.width * 0.15,
-                                                 y: view.bounds.height * 0.25,
-                                                 width: view.bounds.width * 0.7,
-                                                 height: view.bounds.height * 0.075))
+    let textField2 = IsaoTextField()
     
     let messageLabel = MessageLabel()
     
@@ -37,6 +34,11 @@ class UpdateNameViewController: SignUpBaseViewController {
         textField2.inactiveColor = .flatGrayDark
         textField2.autocapitalizationType = .words
         textField2.delegate = self
+        textField2.translatesAutoresizingMaskIntoConstraints = false
+        textField2.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        textField2.setTopConstraint(equalTo: view.topAnchor, offset: view.bounds.height * 0.25)
+        textField2.setWidthConstraint(view.bounds.width * 0.7)
+        textField2.setHeightConstraint(view.bounds.height * 0.075)
     
         // configure button
         button.color = .flatRed
@@ -105,10 +107,10 @@ class UpdateNameViewController: SignUpBaseViewController {
     }
     
     override func backButtonAction() {
-        dismiss(animated: true) {
-            self.textField.text! = ""
-            self.textField2.text! = ""
-        }
+        self.navigationController?.popViewController(animated: true)
+        textField.text = ""
+        textField2.text = ""
+        
     }
     
     override func textFieldShouldReturn(_ textField: UITextField) -> Bool {

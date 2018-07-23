@@ -49,11 +49,4 @@ class UpdatePasswordViewController: UpdateNameViewController {
         }
     }
 
-    override func backButtonAction() {
-        dismiss(animated: true) {
-            self.textField.text! = ""
-            self.textField2.text! = ""
-        }
-    }
-
 }

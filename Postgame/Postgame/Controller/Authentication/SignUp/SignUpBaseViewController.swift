@@ -13,10 +13,7 @@ import TextFieldEffects
 
 class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     let disposeBag = DisposeBag()
-    lazy var textField = IsaoTextField(frame: CGRect(x: view.bounds.width * 0.15,
-                                                y: view.bounds.height * 0.1,
-                                                width: view.bounds.width * 0.7,
-                                                height: view.bounds.height * 0.075))
+    let textField = IsaoTextField()
     let backButton = UIButton()
     let button = SubmitButton()
     
@@ -67,6 +64,11 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         textField.delegate = self
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.setTopConstraint(equalTo: view.topAnchor, offset: view.bounds.height * 0.1)
+        textField.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        textField.setWidthConstraint(view.bounds.width * 0.7)
+        textField.setHeightConstraint(view.bounds.height * 0.075)
     }
     
     func setupBackButton() {
@@ -81,7 +83,7 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
         backButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0.02 * UIScreen.main.bounds.width)
         backButton.tintColor = .flatGray
         backButton.rx.tap.bind {
-            self.navigationController?.popViewController(animated: true)
+            self.backButtonAction()
         }.disposed(by: disposeBag)
     }
     

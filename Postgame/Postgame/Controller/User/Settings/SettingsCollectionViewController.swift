@@ -110,8 +110,6 @@ final class SettingsCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Tapped!!!")
-        print(indexPath)
         if indexPath.section == 0 {
             if let vc = didSelect[indexPath.item] {
                 navigationController?.pushViewController(vc, animated: true)

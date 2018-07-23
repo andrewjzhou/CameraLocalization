@@ -66,9 +66,8 @@ final class UpdateEmailViewController: EmailViewController {
     }
     
     override func backButtonAction() {
-        dismiss(animated: true) {
-            self.textField.text! = ""
-        }
+        self.navigationController?.popViewController(animated: true)
+        textField.text = ""
     }
     
     override func configureKeyboardDisplayAnimations() {
