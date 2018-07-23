@@ -20,9 +20,15 @@ import RxCocoa
 import RxSwift
 
 final class DescriptorComputer {
-    private lazy var model = try VNCoreMLModel(for: CaffenetExtractor().model)
+    private var model: VNCoreMLModel?
     
-    init() {}
+    init() {
+        do {
+            model = try VNCoreMLModel(for: CaffenetExtractor().model)
+        } catch {
+            print("DescriptorComputer: CoreML model cannot be loaded")
+        }
+    }
     
     func computeDescriptors(node: PostNode, count: Int) -> Observable<PostNode> {
         let imageArr = node.recorder.realImages
@@ -64,7 +70,7 @@ final class DescriptorComputer {
     
         return Observable.create({ observer in
             DispatchQueue.global(qos: .background).async {
-                let request = VNCoreMLRequest(model: self.model, completionHandler: { [weak self] request, error in
+                let request = VNCoreMLRequest(model: self.model!, completionHandler: { [weak self] request, error in
                     guard let result = request.results?.first as? VNCoreMLFeatureValueObservation else {
                         observer.onNext(nil)
                         observer.onCompleted()

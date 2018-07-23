@@ -372,35 +372,45 @@ extension AppSyncService {
     }
     
     
-    func updateName(username: String!, name: String!) {
+    func updateName(username: String!, name: String!, completion: @escaping (Bool)->Void) {
         let input = UpdateUserInput(username: username, phone: nil, dateJoined: nil, email: nil, birthday: nil, name: name)
-        updateUser(input)
+        updateUser(input) { (bool) in
+            completion(bool)
+        }
     }
     
-    func updateEmail(username: String!, email: String!) {
+    func updateEmail(username: String!, email: String!, completion: @escaping (Bool)->Void) {
         let input = UpdateUserInput(username: username, phone: nil, dateJoined: nil, email: email, birthday: nil, name: nil)
-        updateUser(input)
+        updateUser(input) { (bool) in
+            completion(bool)
+        }
     }
     
-    func updatePhone(username: String!, phone: String!) {
+    func updatePhone(username: String!, phone: String!, completion: @escaping (Bool)->Void) {
         let input = UpdateUserInput(username: username, phone: phone, dateJoined: nil, email: nil, birthday: nil, name: nil)
-        updateUser(input)
+        updateUser(input) { (bool) in
+            completion(bool)
+        }
     }
     
-    private func updateUser(_ input: UpdateUserInput) {
+    private func updateUser(_ input: UpdateUserInput, completion: @escaping (Bool)->Void) {
         let mutation = UpdateUserMutation(input: input)
         appSyncClient?.perform(mutation: mutation,
                                resultHandler: { (result, error) in
                                 if let error = error as? AWSAppSyncClientError {
                                     print("Error occurred: \(error.localizedDescription )")
+                                    completion(false)
                                     return
                                 }
+                                
                                 if let result = result {
-                                    
                                     if let errors = result.errors {
                                         for err in errors {
                                             print("Error occurred: \(err.localizedDescription )")
                                         }
+                                        completion(false)
+                                    } else {
+                                        completion(true)
                                     }
                                 }
         })

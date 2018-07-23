@@ -73,8 +73,6 @@ final class ViewController: UIViewController {
         
         handleGeolocationService()
         
-//        signOut()
-    
     }
     
     override func viewDidAppear(_ animated: Bool) {

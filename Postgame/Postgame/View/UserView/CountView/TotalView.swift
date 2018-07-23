@@ -56,7 +56,8 @@ fileprivate extension Int {
         
         // add commas
         str.insert(separator: ",", every: 3)
-        str.remove(at: str.endIndex) // To: "xxx,xxx,xxx"
+        str.remove(at: str.endIndex)// To: "xxx,xxx,xxx"
+        
         
         // add space
         str.insert(separator: " ", every: 1) // To: "x x x , x x x , x x x"

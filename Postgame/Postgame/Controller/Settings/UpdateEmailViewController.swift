@@ -22,7 +22,9 @@ final class UpdateEmailViewController: EmailViewController {
         view.endEditing(true)
         if let username = AWSCognitoIdentityUserPool.default().currentUser()?.username {
             // update UserTable
-            AppSyncService.sharedInstance.updateEmail(username: username, email: textField.text!)
+            AppSyncService.sharedInstance.updateEmail(username: username, email: textField.text!, completion: {result in
+                print(result)
+            })
             // update Cognito
             cognitoUpdateEmail(textField.text!)
             

@@ -1,39 +1,39 @@
 PODS:
-  - AWSAPIGateway (2.6.21):
-    - AWSCore (= 2.6.21)
+  - AWSAPIGateway (2.6.25):
+    - AWSCore (= 2.6.25)
   - AWSAppSync (2.6.17):
     - AWSCore (~> 2.6.6)
     - ReachabilitySwift (~> 4.0.0)
     - SQLite.swift (= 0.11.4)
-  - AWSAuthCore (2.6.21):
-    - AWSCore (= 2.6.21)
-  - AWSAuthUI (2.6.21):
-    - AWSAuthCore (= 2.6.21)
-    - AWSCore (= 2.6.21)
-  - AWSCognito (2.6.21):
-    - AWSCore (= 2.6.21)
-  - AWSCognitoIdentityProvider (2.6.21):
+  - AWSAuthCore (2.6.25):
+    - AWSCore (= 2.6.25)
+  - AWSAuthUI (2.6.25):
+    - AWSAuthCore (= 2.6.25)
+    - AWSCore (= 2.6.25)
+  - AWSCognito (2.6.25):
+    - AWSCore (= 2.6.25)
+  - AWSCognitoIdentityProvider (2.6.25):
     - AWSCognitoIdentityProviderASF (= 1.0.1)
-    - AWSCore (= 2.6.21)
+    - AWSCore (= 2.6.25)
   - AWSCognitoIdentityProviderASF (1.0.1)
-  - AWSCore (2.6.21)
-  - AWSDynamoDB (2.6.21):
-    - AWSCore (= 2.6.21)
-  - AWSMobileClient (2.6.21):
-    - AWSAuthCore (= 2.6.21)
-  - AWSS3 (2.6.21):
-    - AWSCore (= 2.6.21)
-  - AWSUserPoolsSignIn (2.6.21):
-    - AWSAuthCore (= 2.6.21)
-    - AWSCognitoIdentityProvider (= 2.6.21)
+  - AWSCore (2.6.25)
+  - AWSDynamoDB (2.6.25):
+    - AWSCore (= 2.6.25)
+  - AWSMobileClient (2.6.25):
+    - AWSAuthCore (= 2.6.25)
+  - AWSS3 (2.6.25):
+    - AWSCore (= 2.6.25)
+  - AWSUserPoolsSignIn (2.6.25):
+    - AWSAuthCore (= 2.6.25)
+    - AWSCognitoIdentityProvider (= 2.6.25)
   - ChameleonFramework/Default (2.1.0)
   - ChameleonFramework/Swift (2.1.0):
     - ChameleonFramework/Default
-  - Crashlytics (3.10.2):
-    - Fabric (~> 1.7.7)
-  - Fabric (1.7.7)
+  - Crashlytics (3.10.5):
+    - Fabric (~> 1.7.9)
+  - Fabric (1.7.9)
   - KeychainSwift (11.0.0)
-  - Mapbox-iOS-SDK (4.1.1)
+  - Mapbox-iOS-SDK (4.2.0)
   - PhoneNumberKit (2.1.0):
     - PhoneNumberKit/PhoneNumberKitCore (= 2.1.0)
     - PhoneNumberKit/UIKit (= 2.1.0)
@@ -41,9 +41,9 @@ PODS:
   - PhoneNumberKit/UIKit (2.1.0):
     - PhoneNumberKit/PhoneNumberKitCore
   - ReachabilitySwift (4.0.0)
-  - RxCocoa (4.1.2):
+  - RxCocoa (4.2.0):
     - RxSwift (~> 4.0)
-  - RxSwift (4.1.2)
+  - RxSwift (4.2.0)
   - Spring (1.0.5)
   - SQLite.swift (0.11.4):
     - SQLite.swift/standard (= 0.11.4)
@@ -71,6 +71,31 @@ DEPENDENCIES:
   - Spring (from `https://github.com/MengTo/Spring.git`)
   - TextFieldEffects
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - AWSAPIGateway
+    - AWSAppSync
+    - AWSAuthCore
+    - AWSAuthUI
+    - AWSCognito
+    - AWSCognitoIdentityProvider
+    - AWSCognitoIdentityProviderASF
+    - AWSCore
+    - AWSDynamoDB
+    - AWSMobileClient
+    - AWSS3
+    - AWSUserPoolsSignIn
+    - Crashlytics
+    - Fabric
+    - KeychainSwift
+    - Mapbox-iOS-SDK
+    - PhoneNumberKit
+    - ReachabilitySwift
+    - RxCocoa
+    - RxSwift
+    - SQLite.swift
+    - TextFieldEffects
+
 EXTERNAL SOURCES:
   ChameleonFramework:
     :git: https://github.com/ViccAlexander/Chameleon.git
@@ -86,31 +111,31 @@ CHECKOUT OPTIONS:
     :git: https://github.com/MengTo/Spring.git
 
 SPEC CHECKSUMS:
-  AWSAPIGateway: 11bde0b08ef108be05c043eef11ab1b9084fd731
+  AWSAPIGateway: fa7923f8e0a7c66696ab06e91fbc973f3dc3e11e
   AWSAppSync: f55e249d70e483863cd6582d8d9b148436dda364
-  AWSAuthCore: f912e4f032092818ee21860a44386c485329a92b
-  AWSAuthUI: 8549f06975c03b653e45623f19d4cb34f16f2e8f
-  AWSCognito: ddd3d4cb90dc0adb47acd199ca9bbe48ea1d18a7
-  AWSCognitoIdentityProvider: 1f724c5e43528580cd9f60f0a1290888793ed473
+  AWSAuthCore: ee797576ca94ef45b48cbf40bb113944791a09ab
+  AWSAuthUI: 45a637989cb188f504ac21152198f06cd2ccfc2c
+  AWSCognito: c86cc3a4b1c6e2250dee489c17010662d3e4b3b5
+  AWSCognitoIdentityProvider: 4a417e3f669c310253be85b0b0d884e144758761
   AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
-  AWSCore: a1ff1d32ea7af235fe64be301c204b34cb1f9f83
-  AWSDynamoDB: 0e96aa1f06be1cdcebc384655505c162e58e2be6
-  AWSMobileClient: f61ef1ca52cf561a3831f4c29b8bfc43234db8f3
-  AWSS3: e6b042fdbf092ffd49bf7998b3fd5be729949ee7
-  AWSUserPoolsSignIn: 5c2a162e62cdcb47fb0f3f5ede4dec492fc00307
+  AWSCore: 93ac57c361f6ff9c0749adf9404c4a1a1ecdaa2b
+  AWSDynamoDB: b891ec00abf6b58ca850172e4f92ed8de53d1b16
+  AWSMobileClient: 89f45bf39e73dedc2c9ce673146167e2009e8200
+  AWSS3: 0614ff4e0f0d11942322b5a15c30927a93fe35db
+  AWSUserPoolsSignIn: 973edde05954dac3069e32c059c24495d9fb9134
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
-  Crashlytics: 0360624eea1c978a743feddb2fb1ef8b37fb7a0d
-  Fabric: bda89e242bce1b7b8ab264248cf3407774ce0095
+  Crashlytics: 7f2e38d302d9da96475b3d64d86fb29e31a542b7
+  Fabric: a2917d3895e4c1569b9c3170de7320ea1b1e6661
   KeychainSwift: bea6bd9f98af7b8d7ca4aa79fe105c00fab532db
-  Mapbox-iOS-SDK: 78e66fad4085433d04fccb9364df4be08042fb82
+  Mapbox-iOS-SDK: 706d52e3ad095e16944d9643f37d5a97627f6c19
   PhoneNumberKit: 62003f40ff75315fd3738286558bc365365ac222
   ReachabilitySwift: e67b2cab4d5386053673d8a7421b5981e5f08259
-  RxCocoa: d88ba0f1f6abf040011a9eb4b539324fc426843a
-  RxSwift: e49536837d9901277638493ea537394d4b55f570
+  RxCocoa: 0b54909c902e1e581212a03e690bbd94032d8baa
+  RxSwift: 99e10317ddfcc7fbe01356aafd118fde4a0be104
   Spring: 3c7666eccefdeb87140008dc81043f89f8dbb787
   SQLite.swift: 3e3bee21da701b5b9f87c4a672cb54f233505692
   TextFieldEffects: 4ee41b5216e674d55fb6ac25107bf1af7629176f
 
 PODFILE CHECKSUM: 161c9050a083eeaa7d0683465907da82e49e9924
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3

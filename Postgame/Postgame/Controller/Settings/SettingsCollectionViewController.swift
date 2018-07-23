@@ -43,6 +43,16 @@ final class SettingsCollectionViewController: UICollectionViewController {
             }
         }
         
+        let containerView = UIView()
+        containerView.backgroundColor = .clear
+        view.addSubview(containerView)
+        view.bringSubview(toFront: containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.setTopConstraint(equalTo: view.topAnchor, offset: 0)
+        containerView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        containerView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        containerView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        
     }
     
     
@@ -110,12 +120,19 @@ final class SettingsCollectionViewController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print(indexPath)
         if indexPath.section == 0 {
             if let vc = didSelect[indexPath.item] {
                 navigationController?.pushViewController(vc, animated: true)
             }
         } else {
-            AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SignOutCell.reuseIdentifier, for: indexPath) as! SignOutCell
+            cell.isHighlighted = true
+            dismiss(animated: true) {
+                AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
+                AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
+                cell.isHighlighted = false
+            }
         }
         
     }
@@ -173,11 +190,6 @@ final class UserProfileCell: UICollectionViewCell {
         super.init(frame: frame)
         backgroundColor = .flatWhite
         
-        // add bottom border
-//        let bottomLine = CALayer()
-//        bottomLine.frame = CGRect(x: 0, y: frame.height - 4.0, width: frame.width, height: 4.0)
-//        bottomLine.backgroundColor = UIColor.flatGrayDark.cgColor
-//        layer.addSublayer(bottomLine)
         
         // keyLabel
         contentView.addSubview(keyLabel)
@@ -220,20 +232,29 @@ final class UserProfileCell: UICollectionViewCell {
 final class SignOutCell: UICollectionViewCell {
     static let reuseIdentifier = "SignOutCell"
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        let signOutButton = UIButton()
-        contentView.addSubview(signOutButton)
-        signOutButton.translatesAutoresizingMaskIntoConstraints = false
-        signOutButton.setTopConstraint(equalTo: contentView.topAnchor, offset: 0)
-        signOutButton.setBottomConstraint(equalTo: contentView.bottomAnchor, offset: 0)
-        signOutButton.setLeadingConstraint(equalTo: contentView.leadingAnchor, offset: 0)
-        signOutButton.setTrailingConstraint(equalTo: contentView.trailingAnchor, offset: 0)
-        signOutButton.setTitle("Sign Out", for: .normal)
-        signOutButton.titleLabel?.textColor = .flatWhite
-        signOutButton.backgroundColor = .flatBlue
+    private let signOutButton = UILabel()
+    
+    override public var isHighlighted: Bool {
+        didSet {
+            signOutButton.backgroundColor = isHighlighted ? .flatSkyBlueDark : .flatSkyBlue
+        }
     }
     
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        contentView.addSubview(signOutButton)
+        signOutButton.translatesAutoresizingMaskIntoConstraints = false
+        signOutButton.setCenterXConstraint(equalTo: contentView.centerXAnchor, offset: 0)
+        signOutButton.setCenterYConstraint(equalTo: contentView.centerYAnchor, offset: 0)
+        signOutButton.setWidthConstraint(contentView.bounds.width * 0.8)
+        signOutButton.setHeightConstraint(contentView.bounds.height * 0.8)
+        signOutButton.layer.cornerRadius = contentView.bounds.height * 0.2
+        signOutButton.text = "Sign Out"
+        signOutButton.textAlignment = .center
+        signOutButton.textColor = .flatWhite
+        signOutButton.backgroundColor = .flatSkyBlue
+      
+    }
     
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 }

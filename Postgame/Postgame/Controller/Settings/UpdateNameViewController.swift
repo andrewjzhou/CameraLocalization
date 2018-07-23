@@ -9,23 +9,27 @@
 import UIKit
 import TextFieldEffects
 import AWSUserPoolsSignIn
+import RxSwift
 
 class UpdateNameViewController: SignUpBaseViewController {
 
+    private let db = DisposeBag()
+    private var buttonsShouldReactToKeyboard = false
     let textField2 = IsaoTextField(frame: CGRect(x: UIScreen.main.bounds.width * 0.15,
                                                  y: UIScreen.main.bounds.height * 0.25,
                                                  width: UIScreen.main.bounds.width * 0.7,
                                                  height: UIScreen.main.bounds.height * 0.075))
     
-    var buttonsShouldReactToKeyboard = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // configure top textField
         textField.placeholder = "First name"
         textField.autocorrectionType = .default
         textField.autocapitalizationType = .words
         
+        // configure bottom textField
         view.addSubview(textField2)
         textField2.placeholder = "Last name"
         textField2.activeColor = .flatSkyBlue
@@ -33,20 +37,36 @@ class UpdateNameViewController: SignUpBaseViewController {
         textField2.autocapitalizationType = .words
         textField2.delegate = self
     
-
-        button.backgroundColor = .flatRed
+        // configure button
+        button.color = .flatRed
+        button.highlightedColor = .flatRedDark
         button.setTitle("Update", for: .normal)
+        
+        // button becomes active when both textFields are written in
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0 && self.textField2.text!.count != 0)
+            }.disposed(by: db)
+        
+        textField2.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0 && self.textField2.text!.count != 0)
+            }.disposed(by: db)
     }
     
     override func buttonAction() {
+        buttonsShouldReactToKeyboard = true
         view.endEditing(true)
         let first = textField.text!.trimmingCharacters(in: .whitespacesAndNewlines)
         let last = textField2.text!.trimmingCharacters(in: .whitespacesAndNewlines)
         let name = first + " " + last
         if let username = AWSCognitoIdentityUserPool.default().currentUser()?.username {
-            AppSyncService.sharedInstance.updateName(username: username, name: name)
-            button.isUserInteractionEnabled = false
-            button.backgroundColor = .flatWhiteDark
+            AppSyncService.sharedInstance.updateName(username: username, name: name) { (success) in
+                if success {
+                    // display label
+                } else {
+                    
+                }
+            }
+            
         }
         
     }
@@ -66,14 +86,20 @@ class UpdateNameViewController: SignUpBaseViewController {
         return true
     }
     
+    override func backButtonAction() {
+        dismiss(animated: true) {
+            //..
+        }
+    }
+    
     override func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == self.textField {
             buttonsShouldReactToKeyboard = false
             textField.resignFirstResponder()
-            textField.becomeFirstResponder()
+            textField2.becomeFirstResponder()
         } else if textField == self.textField2 {
             buttonsShouldReactToKeyboard = true
-            textField.resignFirstResponder()
+            textField2.resignFirstResponder()
             button.sendActions(for: .touchUpInside)
         }
         

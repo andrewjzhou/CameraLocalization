@@ -11,6 +11,7 @@ import AWSCognitoIdentityProvider
 import AWSUserPoolsSignIn
 import RxSwift
 import RxCocoa
+import TextFieldEffects
 
 final class UsernameViewController: SignUpBaseViewController {
     private let db = DisposeBag()
@@ -63,7 +64,6 @@ final class UsernameViewController: SignUpBaseViewController {
             alertController.addAction(retryAction)
             
             self.present(alertController, animated: true, completion:  nil)
-            let _ = textField.text!.popLast()
         }
         
         // Check if username is too long

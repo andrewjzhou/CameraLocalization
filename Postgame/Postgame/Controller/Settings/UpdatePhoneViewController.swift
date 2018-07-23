@@ -23,7 +23,9 @@ class UpdatePhoneViewController: PhoneViewController {
             
             if let user = AWSCognitoIdentityUserPool.default().currentUser() {
                 cognitoUpdatePhoneNumber(phoneRaw)
-                AppSyncService.sharedInstance.updatePhone(username: user.username!, phone: phoneRaw)
+                AppSyncService.sharedInstance.updatePhone(username: user.username!, phone: phoneRaw, completion: {result in
+                    print(result)
+                })
                 
                 
                 let verifyVC = VerifyPhoneViewController()
