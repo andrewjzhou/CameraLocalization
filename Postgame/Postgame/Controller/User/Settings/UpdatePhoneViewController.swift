@@ -44,6 +44,7 @@ class UpdatePhoneViewController: PhoneViewController {
                                                                   completion: { success in
                                                                     DispatchQueue.main.async {
                                                                         if success {
+                                                                            UserCache.shared["phone"] = phoneRaw as AnyObject
                                                                             // verify on success
                                                                             let verifyVC = VerifyPhoneViewController()
                                                                             verifyVC.user = user

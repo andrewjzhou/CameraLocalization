@@ -80,6 +80,7 @@ class UpdateNameViewController: SignUpBaseViewController {
             AppSyncService.sharedInstance.updateName(username: username, name: name) { [messageLabel, button] (success) in
                 if success {
                     messageLabel.display(.nameUpdated)
+                    UserCache.shared["name"] = name as AnyObject
                 } else {
                     messageLabel.display(.tryAgain)
                     button.isActive = true

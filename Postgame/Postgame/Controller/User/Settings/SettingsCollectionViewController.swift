@@ -61,6 +61,12 @@ final class SettingsCollectionViewController: UICollectionViewController {
         
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print("View just appeared")
+        collectionView?.reloadData()
+    }
 
     /*
     // MARK: - Navigation
@@ -233,11 +239,14 @@ final class SignOutCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(signOutButton)
         signOutButton.translatesAutoresizingMaskIntoConstraints = false
+        signOutButton.clipsToBounds = true
         signOutButton.setCenterXConstraint(equalTo: contentView.centerXAnchor, offset: 0)
         signOutButton.setCenterYConstraint(equalTo: contentView.centerYAnchor, offset: 0)
         signOutButton.setWidthConstraint(contentView.bounds.width * 0.8)
         signOutButton.setHeightConstraint(contentView.bounds.height * 0.8)
-        signOutButton.layer.cornerRadius = contentView.bounds.height * 0.2
+        signOutButton.layer.cornerRadius = 8
+        signOutButton.layer.borderColor = UIColor.flatWhite.cgColor
+        signOutButton.layer.borderWidth = 1
         signOutButton.text = "Sign Out"
         signOutButton.textAlignment = .center
         signOutButton.textColor = .flatWhite

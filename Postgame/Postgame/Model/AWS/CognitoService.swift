@@ -53,6 +53,7 @@ func cognitoUpdateEmail(_ email: String, completion: @escaping (Bool) -> Void) {
         } else {
             completion (true)
         }
+        
         return nil
     })
 }

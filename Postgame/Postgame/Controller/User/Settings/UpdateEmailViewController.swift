@@ -45,6 +45,7 @@ final class UpdateEmailViewController: EmailViewController {
                                                                                 DispatchQueue.main.async {
                                                                                     if success {
                                                                                         messageLabel.display(.emailUpdated)
+                                                                                        UserCache.shared["email"] = email as AnyObject
                                                                                     }
                                                                                     else {
                                                                                         messageLabel.display(.tryAgain)
