@@ -23,6 +23,7 @@ final class MessageLabel: UIView {
         case phoneVerified = "Phone verified"
         case emailUpdated = "Email updated"
         case passwordUpdated = "Password updated"
+        case savedToLibrary = "Saved to library"
     }
     
     override init(frame: CGRect) {

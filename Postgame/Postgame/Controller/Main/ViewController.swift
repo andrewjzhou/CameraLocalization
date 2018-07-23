@@ -45,6 +45,7 @@ final class ViewController: UIViewController {
     let longPressIndicator = LongPressIndicator(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
     
 
+    let messageLabel = MessageLabel()
     // For debugging
     var highlightedRectangleOutlineLayers = [CAShapeLayer]()
 
@@ -73,6 +74,7 @@ final class ViewController: UIViewController {
         
         handleGeolocationService()
         
+        setupMessageLabel()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -80,6 +82,16 @@ final class ViewController: UIViewController {
 
         NotificationCenter.default.post(Notification(name: NSNotification.Name.UIApplicationDidBecomeActive))
             
+    }
+    
+    func setupMessageLabel() {
+        view.addSubview(messageLabel)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        messageLabel.setCenterYConstraint(equalTo: view.centerYAnchor, offset: 0)
+        messageLabel.setWidthConstraint(view.bounds.width * 0.45)
+        messageLabel.setHeightConstraint(view.bounds.height * 0.06)
+        messageLabel.layer.cornerRadius = 12
     }
     
     func handleGeolocationService() {
@@ -157,6 +169,7 @@ extension ViewController {
                 // Take screenshot and save to photo album
                 let screenshot = self.sceneView.snapshot()
                 UIImageWriteToSavedPhotosAlbum(screenshot, self, nil, nil)
+                self.messageLabel.display(.savedToLibrary)
             }
             .disposed(by: disposeBag)
     }
