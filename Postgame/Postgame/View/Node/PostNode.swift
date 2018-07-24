@@ -100,7 +100,7 @@ final class PostNode: SCNNode {
             self.username = username
         }
         
-        mutating func record() {
+        mutating func record(completion: @escaping (Bool) -> Void) {
             guard let id = id, let location = location, let descriptor = descriptorToRecord else { return }
             
             // 1. deactivate post if necessary
@@ -111,10 +111,17 @@ final class PostNode: SCNNode {
                                                         username: username,
                                                         location: location,
                                                         timestamp: timestamp(),
-                                                        descriptor: descriptor.base64EncodedString())
-            
-            // 3. upload image to S3
-            S3Service.sharedInstance.uploadPost(post!, key: id)
+                                                        descriptor: descriptor.base64EncodedString(),
+                                                        completion: { [post] success in
+                                                            if success {
+                                                                // 3. upload image to S3
+                                                                S3Service.sharedInstance.uploadPost(post!, key: id, completion: {success in
+                                                                    completion(success)
+                                                                })
+                                                            } else {
+                                                                completion(false)
+                                                            }
+            })
         }
     }
     
@@ -210,7 +217,13 @@ final class PostNode: SCNNode {
     func setContentAndRecord(image: UIImage, location: CLLocation) {
         setContent(image, username: recorder.username, timestamp: timestamp())
         recorder.location = location
-        recorder.record()
+        recorder.record { (success) in
+            if !success {
+                //retry
+            }
+            print(success)
+                
+        }
         
         // cache image
         ImageCache.shared[recorder.id!] = recorder.post!
