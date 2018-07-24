@@ -468,9 +468,13 @@ extension ViewController {
                     
                     // display image
                     if let image = ImageCache.shared[match!.parentPostInfo.s3Key] {
-                        node.setContent(image)
+                        node.setContent(image,
+                                        username: match!.parentPostInfo.username,
+                                        timestamp: match!.parentPostInfo.timestamp)
                     } else {
-                        node.downloadAndSetContent(match!.parentPostInfo.s3Key)
+                        node.downloadAndSetContent(match!.parentPostInfo.s3Key,
+                                                   username: match!.parentPostInfo.username,
+                                                   timestamp: match!.parentPostInfo.timestamp)
                     
                         // increment viewCount
                         AppSyncService.sharedInstance.incrementViewCount(id: match!.id)

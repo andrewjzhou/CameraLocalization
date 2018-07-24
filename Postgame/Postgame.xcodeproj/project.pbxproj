@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		342C81AF448FA8D9BBE2BF86 /* Pods_Postgame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 67F9079E5E578EF2222B8112 /* Pods_Postgame.framework */; };
 		6A10CC312106465400A5EAE1 /* MessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A10CC302106465400A5EAE1 /* MessageLabel.swift */; };
+		6A10CC392107AB7500A5EAE1 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A10CC382107AB7500A5EAE1 /* TagView.swift */; };
 		6A17414D2100E2C1000067CA /* SettingsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17414C2100E2C1000067CA /* SettingsCollectionViewController.swift */; };
 		6A1741572102808A000067CA /* UserCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1741562102808A000067CA /* UserCache.swift */; };
 		6A1741592102903D000067CA /* UpdateNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1741582102903D000067CA /* UpdateNameViewController.swift */; };
@@ -126,6 +127,7 @@
 		6560C76AE5F74FF7FEAC5581 /* Pods_PostgameTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PostgameTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		67F9079E5E578EF2222B8112 /* Pods_Postgame.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Postgame.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A10CC302106465400A5EAE1 /* MessageLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageLabel.swift; sourceTree = "<group>"; };
+		6A10CC382107AB7500A5EAE1 /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		6A17414C2100E2C1000067CA /* SettingsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCollectionViewController.swift; sourceTree = "<group>"; };
 		6A1741562102808A000067CA /* UserCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCache.swift; sourceTree = "<group>"; };
 		6A1741582102903D000067CA /* UpdateNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNameViewController.swift; sourceTree = "<group>"; };
@@ -556,6 +558,7 @@
 				6A93257420D8567A00E0C9B4 /* User */,
 				6AC6C90E20F90FD600126391 /* UserButton.swift */,
 				6A10CC302106465400A5EAE1 /* MessageLabel.swift */,
+				6A10CC382107AB7500A5EAE1 /* TagView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -926,6 +929,7 @@
 				6A1B549520D019E500870DC2 /* DescriptorComputer.swift in Sources */,
 				6A1B54A320D01A8700870DC2 /* MultiArray.swift in Sources */,
 				6AF67C0220DDB1D90096CEA0 /* AWSAPI_QJVZDPTXRF_PostManagementMobileHubClient.m in Sources */,
+				6A10CC392107AB7500A5EAE1 /* TagView.swift in Sources */,
 				6A8EA73F20E1255200B178C1 /* TotalView.swift in Sources */,
 				6AEC1AA62087ADC5008E0FF8 /* IndicatorButton.swift in Sources */,
 				6AFDC43220EACA25009ED7E5 /* TTL.swift in Sources */,

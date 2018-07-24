@@ -74,7 +74,7 @@ final class PostNode: SCNNode {
     var recorder: Recorder
     struct Recorder {
         private var firstDiscovery = true // determines if need to deactivate old post before creating new post
-        private let username: String
+        let username: String
         var realImages = [UIImage]()
     
         private(set) var id: String? {
@@ -188,28 +188,27 @@ final class PostNode: SCNNode {
     }
     
     // Display the image in Content Node
-    func setContent(_ image: UIImage) {
-//        contentNode.content = image.convertToScene()
-        contentNode.setImage(image)
+    func setContent(_ image: UIImage, username: String, timestamp: String) {
+        contentNode.setImage(image, username: username, timestamp: timestamp)
         state = .active
         recorder.post = image
     }
     
-    func downloadAndSetContent(_ key: String) {
+    func downloadAndSetContent(_ key: String, username: String, timestamp: String) {
         state = .load
         
         // Download post and set content
         let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
         postDownloadObservable.observeOn(MainScheduler.instance)
             .subscribe(onNext: { [weak self] (image) in
-                self?.setContent(image)
+                self?.setContent(image, username: username, timestamp: timestamp)
                 ImageCache.shared[key] = image
             })
             .disposed(by: disposeBag)
     }
     
     func setContentAndRecord(image: UIImage, location: CLLocation) {
-        setContent(image)
+        setContent(image, username: recorder.username, timestamp: timestamp())
         recorder.location = location
         recorder.record()
         

@@ -10,12 +10,6 @@ import ARKit
 import NVActivityIndicatorView
 
 final class ContentNode: SCNNode {
-    var content: ContentScene = UIImage.from(color: .clear).convertToScene() {
-        didSet{
-            self.geometry?.firstMaterial?.diffuse.contents = content
-        }
-    }
-    
     private let activityInd: NVActivityIndicatorView = {
         let edgeLength = UIScreen.main.bounds.height
         let activityInd = NVActivityIndicatorView(frame: CGRect(x: 0,
@@ -58,8 +52,17 @@ final class ContentNode: SCNNode {
                                            width: edgeLength,
                                            height: edgeLength))
         iv.contentMode = .scaleAspectFill
+        iv.layer.borderColor = UIColor.flatBlack.cgColor
+        iv.layer.borderWidth = 5
         return iv
     }()
+    
+    private let tagView: TagView = {
+        let tag = TagView()
+        tag.layer.cornerRadius = 5
+        return tag
+    }()
+    
     
     private let containerView: UIView = {
         let edgeLength = UIScreen.main.bounds.height
@@ -68,9 +71,6 @@ final class ContentNode: SCNNode {
                                            width: edgeLength,
                                            height: edgeLength))
         view.backgroundColor = .flatBlack
-        let rotate = CGAffineTransform(rotationAngle: .pi)
-        let flip = CGAffineTransform(scaleX: -1, y: 1)
-        view.transform = rotate.concatenating(flip)
         return view
     }()
     
@@ -79,66 +79,66 @@ final class ContentNode: SCNNode {
         
         // Create the 3D plane geometry with the dimensions calculated from corners
         let planeGeometry = SCNPlane(width: size.width, height: size.height)
-       
-        
         planeGeometry.firstMaterial?.diffuse.contents = containerView
+        
         containerView.addSubview(activityInd)
-//        activityInd.center = containerView.center
-        containerView.addSubview(imageView)
-        imageView.center = containerView.center
         containerView.addSubview(promptView)
-        promptView.center = containerView.center
-      
+        promptView.isHidden = true
+        containerView.addSubview(imageView)
+        addTagToImageView()
         
-//        // Flip content horizontally for skscene in setImage()
-//        planeGeometry.firstMaterial?.diffuse.contentsTransform = SCNMatrix4MakeScale(1,-1,1)
-//        planeGeometry.firstMaterial?.diffuse.wrapT = SCNWrapMode.init(rawValue: 2)!
-        
-        self.geometry = planeGeometry
+        geometry = planeGeometry
+        geometry?.firstMaterial?.colorBufferWriteMask = []
 
     }
     
     func updateSize(_ size: CGSize) {
-        let plane = self.geometry as! SCNPlane
-        plane.width = size.width
-        plane.height = size.height
+        if let plane = self.geometry as? SCNPlane {
+            plane.width = size.width
+            plane.height = size.height
+        }
     }
     
     func activate() {
         if activityInd.isAnimating { activityInd.stopAnimating() }
         geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
         containerView.bringSubview(toFront: imageView)
-//        geometry?.firstMaterial?.diffuse.contents = containerView
-//        content.activate()
     }
     
-    func deactivate() {
-//        geometry?.firstMaterial?.diffuse.contents = content
-        geometry?.firstMaterial?.colorBufferWriteMask = []
-    }
+    func deactivate() { geometry?.firstMaterial?.colorBufferWriteMask = [] }
     
     func prompt() {
+        promptView.isHidden = false
         if activityInd.isAnimating { activityInd.stopAnimating() }
         geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
         containerView.bringSubview(toFront: promptView)
-//        geometry?.firstMaterial?.diffuse.contents = promptView
-//        content.prompt()
     }
     
     func load() {
-//        geometry?.firstMaterial?.diffuse.contents = activityInd
         containerView.bringSubview(toFront: activityInd)
         geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
         activityInd.startAnimating()
-//        content.load()
     }
     
-    func setImage(_ image: UIImage) {
+    func setImage(_ image: UIImage, username: String, timestamp: String) {
         imageView.image = image
+        tagView.display(username: username, timestamp: timestamp)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func addTagToImageView() {
+        imageView.addSubview(tagView)
+        tagView.translatesAutoresizingMaskIntoConstraints = false
+        tagView.setTrailingConstraint(equalTo: imageView.trailingAnchor,
+                                      offset: -imageView.layer.borderWidth)
+        tagView.setBottomConstraint(equalTo: imageView.bottomAnchor, offset: 0)
+        tagView.setWidthConstraint(imageView.bounds.width * 0.27)
+        let height = imageView.bounds.height * 0.05
+        tagView.setHeightConstraint(height)
+        tagView.font = UIFont.systemFont(ofSize: height * 0.4)
     }
 }
 

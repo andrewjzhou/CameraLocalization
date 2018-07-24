@@ -262,10 +262,10 @@ extension UIImage {
     /**
      Convert to SKScene using screen frame size. SKScene is used to display content in PostNode's cntentNode.
      */
-    
-    func convertToScene() -> ContentScene {
-        return ContentScene(self)
-    }
+
+//    func convertToScene() -> ContentScene {
+//        return ContentScene(self)
+//    }
     
     
     func resized(withPercentage percentage: CGFloat) -> UIImage? {
