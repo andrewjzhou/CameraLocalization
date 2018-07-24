@@ -217,8 +217,40 @@ extension ViewController {
     private func setupResetButtonRx() {
         resetButton.rx.tap
             .throttle(1, scheduler: MainScheduler.instance)
-            .bind { self.resetSession() }
+            .bind {
+                self.clearScreenAnimation()
+                self.resetSession()
+            }
             .disposed(by: disposeBag)
+    }
+    
+    private func clearScreenAnimation() {
+        let stormAnimationView = UIView(frame: self.resetButton.frame)
+        stormAnimationView.layer.cornerRadius = 0.5 * self.resetButton.bounds.width
+        stormAnimationView.backgroundColor = .flatSkyBlue
+        stormAnimationView.layer.borderColor = UIColor.flatSkyBlue.cgColor
+        stormAnimationView.layer.borderWidth = 0.1
+        stormAnimationView.alpha = 0.2
+        self.view.addSubview(stormAnimationView)
+        UIView.animate(withDuration: 0.4,
+                       delay: 0,
+                       options: .curveEaseOut,
+                       animations: {
+            stormAnimationView.backgroundColor = .clear
+            let scaleT = CGAffineTransform(scaleX: 100, y: 100)
+            stormAnimationView.transform = scaleT
+            stormAnimationView.alpha = 0
+        }) { (_) in
+            stormAnimationView.removeFromSuperview()
+        }
+//        UIView.animate(withDuration: 0.3, animations: {
+//            stormAnimationView.backgroundColor = .clear
+//            let scaleT = CGAffineTransform(scaleX: 70, y: 70)
+//            stormAnimationView.transform = scaleT
+//            stormAnimationView.alpha = 0
+//        }, completion: { (_) in
+//            stormAnimationView.removeFromSuperview()
+//        })
     }
     
     private func setupCreateButtonRx() {
