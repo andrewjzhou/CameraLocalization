@@ -18,6 +18,7 @@ import AWSAuthUI
 import Crashlytics
 import AWSUserPoolsSignIn
 import ChameleonFramework
+import Photos
 
 
 final class ViewController: UIViewController {
@@ -164,14 +165,53 @@ extension ViewController {
 
     private func setupScreenshoButtonRx() {
         screenshotButton.rx.tap
-            .throttle(0.1, scheduler: MainScheduler.instance)
+            .throttle(1, scheduler: MainScheduler.instance)
+            .do(onNext: { (_) in
+                if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
+                    PHPhotoLibrary.requestAuthorization({ (status) in
+                        if status != PHAuthorizationStatus.authorized {
+                            let alertController = UIAlertController(title: "Photos",
+                                                                    message: "Require permssion to save photo to library",
+                                                                    preferredStyle: .alert)
+                            let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+                            alertController.addAction(cancelAction)
+                            let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
+                                guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                                    return
+                                }
+                                
+                                if UIApplication.shared.canOpenURL(settingsUrl) {
+                                    UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                                        print("Settings opened: \(success)") // Prints true
+                                    })
+                                }
+                            }
+                            alertController.addAction(settingsAction)
+                            self.present(alertController, animated: true, completion: nil)
+                        }
+                    })
+                }
+            })
+            .filter{ return PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized }
             .bind {
                 // Take screenshot and save to photo album
                 let screenshot = self.sceneView.snapshot()
                 UIImageWriteToSavedPhotosAlbum(screenshot, self, nil, nil)
-                self.messageLabel.display(.savedToLibrary)
+                self.flashScreen()
+                self.messageLabel.display(.savedToPhotos)
             }
             .disposed(by: disposeBag)
+    }
+    
+    private func flashScreen() {
+        let flashView = UIView(frame: self.view.bounds)
+        flashView.backgroundColor = .white
+        view.addSubview(flashView)
+        UIView.animate(withDuration: 1, animations: {
+            flashView.alpha = 0
+        }) { (success) in
+            flashView.removeFromSuperview()
+        }
     }
     
     private func setupResetButtonRx() {

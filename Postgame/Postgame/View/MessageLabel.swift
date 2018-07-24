@@ -23,7 +23,7 @@ final class MessageLabel: UIView {
         case phoneVerified = "Phone verified"
         case emailUpdated = "Email updated"
         case passwordUpdated = "Password updated"
-        case savedToLibrary = "Saved to library"
+        case savedToPhotos = "Saved to Photos"
     }
     
     override init(frame: CGRect) {
@@ -56,7 +56,7 @@ final class MessageLabel: UIView {
         UIView.animate(withDuration: 0.3, animations: {
             self.alpha = 1.0
         }) { (finished) in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
                 UIView.animate(withDuration: 0.3, animations: {
                     self.alpha = 0
                 })
