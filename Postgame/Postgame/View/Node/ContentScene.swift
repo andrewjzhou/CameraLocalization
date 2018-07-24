@@ -8,6 +8,7 @@
 
 import ARKit
 import ChameleonFramework
+import NVActivityIndicatorView
 
 final class ContentScene: SKScene {
     private let sceneSize = UIScreen.main.bounds.size
@@ -72,7 +73,7 @@ final class ContentScene: SKScene {
         // Display content
         contentNode.run(undarken)
         contentNode.isHidden = false
-        
+
         // Hide all other elements
         promptNode.isHidden = true
         whiteNode.isHidden = true
@@ -131,7 +132,7 @@ fileprivate func createChildNode(image: UIImage, name: String) -> SKSpriteNode{
     imageNode.position = CGPoint(x: sceneSize.width / 2.0, y: sceneSize.height / 2.0)
     imageNode.size = sceneSize
     imageNode.name = name
-    
+   
     return imageNode
 }
 

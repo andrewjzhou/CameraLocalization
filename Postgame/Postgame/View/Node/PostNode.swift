@@ -189,7 +189,8 @@ final class PostNode: SCNNode {
     
     // Display the image in Content Node
     func setContent(_ image: UIImage) {
-        contentNode.content = image.convertToScene()
+//        contentNode.content = image.convertToScene()
+        contentNode.setImage(image)
         state = .active
         recorder.post = image
     }

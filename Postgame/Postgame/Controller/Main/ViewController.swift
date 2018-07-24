@@ -243,14 +243,6 @@ extension ViewController {
         }) { (_) in
             stormAnimationView.removeFromSuperview()
         }
-//        UIView.animate(withDuration: 0.3, animations: {
-//            stormAnimationView.backgroundColor = .clear
-//            let scaleT = CGAffineTransform(scaleX: 70, y: 70)
-//            stormAnimationView.transform = scaleT
-//            stormAnimationView.alpha = 0
-//        }, completion: { (_) in
-//            stormAnimationView.removeFromSuperview()
-//        })
     }
     
     private func setupCreateButtonRx() {
