@@ -60,8 +60,9 @@ extension ViewController {
         let scnHitTestResults = sceneView.hitTest(point, options: nil)
         guard let postNode = scnHitTestResults.first?.node.parent as? PostNode else {return}
         
-        
-        if postNode.state == .prompt && createButton.post != nil { // Adding / Updating
+        if postNode.state == .retry {
+            postNode.retryUpload()
+        } else if postNode.state == .prompt && createButton.post != nil { // Adding / Updating
             // Do NOT switch function orders inside scope without purpose
             
             if lastLocation != nil  && CLLocationManager.locationServicesEnabled() {

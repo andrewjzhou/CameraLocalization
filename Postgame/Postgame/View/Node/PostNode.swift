@@ -20,7 +20,7 @@ final class PostNode: SCNNode {
     private var contentNode: ContentNode
     
     // state changes. control display
-    enum PostNodeState { case initialize, active, inactive, load, prompt }
+    enum PostNodeState { case initialize, active, inactive, load, prompt, retry }
     private(set) var state: PostNodeState = .initialize {
         willSet { previousState = state }
         didSet {
@@ -36,6 +36,8 @@ final class PostNode: SCNNode {
             case .prompt:
                 contentNode.prompt()
                 DispatchQueue.main.async { vibrate(.medium) }
+            case .retry:
+                contentNode.retry()
             }
             if state != .initialize { isHidden = false }
         }
@@ -53,77 +55,11 @@ final class PostNode: SCNNode {
         }
     }
     private var geometryPublisher = PublishSubject<RectGeometry>()
-    struct GeometryUpdater {
-        var currGeometry: RectGeometry
-        var status: UpdaterStatus
-        enum UpdaterStatus { case stage1, stage2, confirmed }
-        fileprivate mutating func upgradeStatus() {
-            switch status {
-            case .stage1:
-                status = .stage2
-            case .stage2:
-                status = .confirmed
-            case .confirmed:
-                break
-            }
-        }
-    }
+    
     private(set) var confirmObservable: Observable<PostNode?> // notify view controller when geometry is confirmed
     
     // recorder: record updates and upload to AWS
     var recorder: Recorder
-    struct Recorder {
-        private var firstDiscovery = true // determines if need to deactivate old post before creating new post
-        let username: String
-        var realImages = [UIImage]()
-    
-        private(set) var id: String? {
-            willSet {
-                if id != nil { idToDeactivate = id }
-            }
-        }
-        var idToDeactivate: String?
-        var descriptors = [[Double]]() {
-            didSet {
-                if descriptors.count > 0 { descriptorToRecord = descriptors[0] }
-            }
-        }
-        var descriptorToRecord: [Double]?
-        var post: UIImage?
-        var location: CLLocation? {
-            didSet {
-                id = generateID(with: location!)
-            }
-        }
-        
-        fileprivate init(username: String) {
-            self.username = username
-        }
-        
-        mutating func record(completion: @escaping (Bool) -> Void) {
-            guard let id = id, let location = location, let descriptor = descriptorToRecord else { return }
-            
-            // 1. deactivate post if necessary
-            if idToDeactivate != nil{ AppSyncService.sharedInstance.deactivatePost(id: idToDeactivate!) }
-            
-            // 2. store info in dynamoDB
-            AppSyncService.sharedInstance.createNewPost(id: id,
-                                                        username: username,
-                                                        location: location,
-                                                        timestamp: timestamp(),
-                                                        descriptor: descriptor.base64EncodedString(),
-                                                        completion: { [post] success in
-                                                            if success {
-                                                                // 3. upload image to S3
-                                                                S3Service.sharedInstance.uploadPost(post!, key: id, completion: {success in
-                                                                    completion(success)
-                                                                })
-                                                            } else {
-                                                                completion(false)
-                                                            }
-            })
-        }
-    }
     
     init(_ info: RectInfo) {
         // initialize Geometry Updater
@@ -217,12 +153,13 @@ final class PostNode: SCNNode {
     func setContentAndRecord(image: UIImage, location: CLLocation) {
         setContent(image, username: recorder.username, timestamp: timestamp())
         recorder.location = location
-        recorder.record { (success) in
-            if !success {
-                //retry
+        recorder.record { [weak self] (error) in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.recorder.recordError(error)
+                    self?.state = .retry
+                }
             }
-            print(success)
-                
         }
         
         // cache image
@@ -241,11 +178,123 @@ final class PostNode: SCNNode {
     // deactivate
     func deactivate() { state = .inactive }
     
+    func retryUpload() {
+        state = .active
+        recorder.retry { [weak self] (error) in
+            if let error = error {
+                self?.recorder.recordError(error)
+                self?.state = .retry
+            }
+        }
+    }
+
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
 }
+
+extension PostNode {
+    struct Recorder {
+        private var firstDiscovery = true // determines if need to deactivate old post before creating new post
+        let username: String
+        var realImages = [UIImage]()
+        
+        private(set) var id: String? {
+            willSet {
+                if id != nil { idToDeactivate = id }
+            }
+        }
+        var idToDeactivate: String?
+        var descriptors = [[Double]]() {
+            didSet {
+                if descriptors.count > 0 { descriptorToRecord = descriptors[0] }
+            }
+        }
+        var descriptorToRecord: [Double]?
+        var post: UIImage?
+        var location: CLLocation? {
+            didSet {
+                id = generateID(with: location!)
+            }
+        }
+        
+        private var error: AWSError?
+        
+        fileprivate init(username: String) {
+            self.username = username
+        }
+        
+        mutating func record(completion: @escaping (AWSError?) -> Void) {
+            guard let id = id, let location = location, let descriptor = descriptorToRecord else { return }
+            
+            // 1. deactivate post if necessary
+            if idToDeactivate != nil { AppSyncService.sharedInstance.deactivatePost(id: idToDeactivate!) }
+            
+            // 2. store info in dynamoDB
+            AppSyncService.sharedInstance.createNewPost(id: id,
+                                                        username: username,
+                                                        location: location,
+                                                        timestamp: timestamp(),
+                                                        descriptor: descriptor.base64EncodedString(),
+                                                        completion: { [post] error in
+                                                            if let error = error {
+                                                                completion(error)
+                                                            } else {
+                                                                // 3. upload image to S3 if no error
+                                                                S3Service.sharedInstance.uploadPost(post!, key: id, completion: {error in
+                                                                    completion(error)
+                                                                })
+                                                            }
+            })
+        }
+        
+        mutating func recordError(_ newError: AWSError) {
+            error = newError
+        }
+        
+        mutating func retry(completion: @escaping (AWSError?) -> Void) {
+            if let error = error {
+                switch error {
+                case .appSyncCreateError:
+                    record { (error) in
+                        completion(error)
+                    }
+                case .s3UploadError:
+                    guard let id = id else {
+                        completion(.s3UploadError)
+                        return
+                    }
+                    S3Service.sharedInstance.uploadPost(post!, key: id, completion: {error in
+                        completion(error)
+                    })
+                }
+            } else {
+                fatalError("PostNode: No error recorded but attempting to retry")
+            }
+        }
+    }
+}
+
+extension PostNode {
+    struct GeometryUpdater {
+        var currGeometry: RectGeometry
+        var status: UpdaterStatus
+        enum UpdaterStatus { case stage1, stage2, confirmed }
+        fileprivate mutating func upgradeStatus() {
+            switch status {
+            case .stage1:
+                status = .stage2
+            case .stage2:
+                status = .confirmed
+            case .confirmed:
+                break
+            }
+        }
+    }
+}
+
 
 fileprivate func generateID(with location: CLLocation) -> String {
     return "\(location.coordinate.latitude)/\(location.coordinate.longitude)/\(UUID().uuidString)"

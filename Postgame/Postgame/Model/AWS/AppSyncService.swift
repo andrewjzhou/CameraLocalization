@@ -137,7 +137,7 @@ final class AppSyncService {
     }
     
 
-    func createNewPost(id: String, username: String, location: CLLocation, timestamp: String, descriptor: String, completion: @escaping (Bool)-> Void) {
+    func createNewPost(id: String, username: String, location: CLLocation, timestamp: String, descriptor: String, completion: @escaping (AWSError?)-> Void) {
         let locationInput = LocationInput(lat: Double(location.coordinate.latitude),
                                           lon: Double(location.coordinate.longitude))
         let s3Input = S3ObjectInput(bucket: S3Bucket,
@@ -155,7 +155,6 @@ final class AppSyncService {
                                             altitude: Double(location.altitude),
                                             horAcc: Double(location.horizontalAccuracy),
                                             verAcc: Double(location.verticalAccuracy))
-        
 
         let mutation = CreatePostMutation(input: mutationInput)
         appSyncClient?.perform(mutation: mutation, optimisticUpdate: { (transaction) in
@@ -170,19 +169,19 @@ final class AppSyncService {
         }) { (result, error) in
             if let error = error {
                 print("Error occurred: \(error.localizedDescription )")
-                completion(false)
+                completion(.appSyncCreateError)
                 return
             }
             
             if let result = result {
                 
                 if let errors = result.errors {
-                    completion(false)
+                    completion(.appSyncCreateError)
                     for err in errors {
                          print("Error occurred: \(err.localizedDescription )")
                     }
                 } else {
-                    completion(true)
+                    completion(nil)
                     print("Successful Mutation")
                 }
                 

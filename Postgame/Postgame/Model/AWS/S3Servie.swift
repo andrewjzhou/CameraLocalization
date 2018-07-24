@@ -98,7 +98,7 @@ struct S3Service {
     /**
      Upload post to S3 using key.
      */
-    func uploadPost(_ post: UIImage, key: String, completion: @escaping (Bool)->Void) {
+    func uploadPost(_ post: UIImage, key: String, completion: @escaping (AWSError?)->Void) {
         // generate data
         // compress image to 0.1x to increase upload/download speed
         guard let jpeg = UIImageJPEGRepresentation(post, 0.1) else {return}
@@ -106,15 +106,15 @@ struct S3Service {
         // generate key
         let prefix = "public/post/"
         let _key = prefix + key
-        upload(data: data, key: _key, completion: {success in
-            completion(success)
+        upload(data: data, key: _key, completion: {error in
+            completion(error)
         })
     }
     
     /**
      Upload data to S3 using key.
      */
-    private func upload(data: Data, key: String, completion: @escaping (Bool)->Void) {
+    private func upload(data: Data, key: String, completion: @escaping (AWSError?)->Void) {
         let expression = AWSS3TransferUtilityUploadExpression()
         expression.progressBlock = {(task, progress) in
             DispatchQueue.main.async(execute: {
@@ -140,15 +140,15 @@ struct S3Service {
                                         (task) -> AnyObject! in
                                         if let error = task.error {
                                             print("Error: \(error.localizedDescription)")
-                                            completion(false)
+                                            completion(AWSError.s3UploadError)
                                         }
                                         
                                         if let _ = task.result {
                                             // Do something with uploadTask.
-                                            completion(true)
+                                            completion(nil)
                                             
                                         } else {
-                                            completion(false)
+                                            completion(AWSError.s3UploadError)
                                         }
                                         return nil
             }

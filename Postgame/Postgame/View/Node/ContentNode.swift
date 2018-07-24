@@ -30,7 +30,7 @@ final class ContentNode: SCNNode {
                                              y: 0,
                                              width: edgeLength,
                                              height: edgeLength))
-        container.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.9)
+        container.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.8)
         let label = UILabel(frame: CGRect(x: 0,
                                           y: 0,
                                           width: edgeLength,
@@ -41,6 +41,28 @@ final class ContentNode: SCNNode {
         label.textColor = .flatWhite
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: edgeLength / 5)
+        
+        return container
+    }()
+    
+    private let retryView: UIView = {
+        let edgeLength = UIScreen.main.bounds.height
+        let container = UIView(frame: CGRect(x: 0,
+                                             y: 0,
+                                             width: edgeLength,
+                                             height: edgeLength))
+        container.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.8)
+        let label = UILabel(frame: CGRect(x: 0,
+                                          y: 0,
+                                          width: edgeLength,
+                                          height: edgeLength))
+        container.addSubview(label)
+        label.center = container.center
+        label.numberOfLines = 2
+        label.text = "Error :<\n Tap to Retry"
+        label.textColor = .flatWhite
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: edgeLength / 5.5)
         
         return container
     }()
@@ -86,6 +108,8 @@ final class ContentNode: SCNNode {
         promptView.isHidden = true
         containerView.addSubview(imageView)
         addTagToImageView()
+        containerView.addSubview(retryView)
+        retryView.isHidden = true
         
         geometry = planeGeometry
         geometry?.firstMaterial?.colorBufferWriteMask = []
@@ -103,15 +127,26 @@ final class ContentNode: SCNNode {
         if activityInd.isAnimating { activityInd.stopAnimating() }
         geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
         containerView.bringSubview(toFront: imageView)
+        promptView.isHidden = true
+        retryView.isHidden = true
     }
     
     func deactivate() { geometry?.firstMaterial?.colorBufferWriteMask = [] }
     
     func prompt() {
         promptView.isHidden = false
+        retryView.isHidden = true
         if activityInd.isAnimating { activityInd.stopAnimating() }
         geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
         containerView.bringSubview(toFront: promptView)
+    }
+    
+    func retry() {
+        promptView.isHidden = true
+        retryView.isHidden = false
+        if activityInd.isAnimating { activityInd.stopAnimating() }
+        geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
+        containerView.bringSubview(toFront: retryView)
     }
     
     func load() {
@@ -119,6 +154,8 @@ final class ContentNode: SCNNode {
         geometry?.firstMaterial?.colorBufferWriteMask = defaultMask
         activityInd.startAnimating()
     }
+    
+    
     
     func setImage(_ image: UIImage, username: String, timestamp: String) {
         imageView.image = image
