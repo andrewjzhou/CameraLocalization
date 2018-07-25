@@ -68,7 +68,7 @@ final class CreationViewController: UIViewController {
                 } else {
                     UIView.animate(withDuration: 0.3, animations: {
                         // Move drawButton to offset at -0.2*screenWidth w.r.t current trailing anchor
-                        self.drawButton.transform = CGAffineTransform(translationX: screenWidth * 0.17, y: 0)
+                        self.drawButton.transform = CGAffineTransform(translationX: screenWidth * 0.12, y: 0)
                         
                         // Show all other UIButtons (excluding drawing components)
                         self.textButton.alpha = 0
@@ -154,7 +154,7 @@ extension CreationViewController {
         slateView.setWidthConstraint(screenWidth * 0.9)
         slateView.setHeightConstraint(screenHeight * 0.6)
         slateView.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
-        slateView.setCenterYConstraint(equalTo: view.centerYAnchor, offset: -0.06 * screenHeight)
+        slateView.setCenterYConstraint(equalTo: view.centerYAnchor, offset: -0.04 * screenHeight)
         slateView.layer.cornerRadius = 10
         slateView.clipsToBounds = true
     }
@@ -167,8 +167,8 @@ extension CreationViewController {
         view.addSubview(drawButton)
         drawButton.setImage(UIImage(named: "ic_create_white"), for: .normal)
         setButtonBasics(drawButton)
-        drawButton.setTrailingConstraint(equalTo: slateView.trailingAnchor, offset: -0.2 * screenWidth)
-        drawButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.05 * screenHeight)
+        drawButton.setLeadingConstraint(equalTo: slateView.centerXAnchor, offset: 0.15 * screenWidth)
+        drawButton.setCenterYConstraint(equalTo: slateView.topAnchor, offset: -0.05 * screenHeight)
     }
     
     /**
@@ -197,22 +197,22 @@ extension CreationViewController {
      Setup finishButton positioned above slateView to right.
      */
     private func setupFinishButton() {
-        view.addSubview(finishButton)
-        finishButton.setImage(UIImage(named: "ic_done"), for: .normal)
-        setButtonBasics(finishButton)
-        finishButton.setTrailingConstraint(equalTo: slateView.trailingAnchor, offset: -0.015 * screenWidth)
-        finishButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
+//        view.addSubview(finishButton)
+//        finishButton.setImage(UIImage(named: "ic_done"), for: .normal)
+//        setButtonBasics(finishButton)
+//        finishButton.setTrailingConstraint(equalTo: slateView.trailingAnchor, offset: -0.015 * screenWidth)
+//        finishButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
     }
     
     /**
      Setup cancelButton positioned above slateView to left.
      */
     private func setupCancelButton() {
-        view.addSubview(cancelButton)
-        cancelButton.setImage(UIImage(named: "ic_close"), for: .normal)
-        setButtonBasics(cancelButton)
-        cancelButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: 0.015 * screenWidth)
-        cancelButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
+//        view.addSubview(cancelButton)
+//        cancelButton.setImage(UIImage(named: "ic_close"), for: .normal)
+//        setButtonBasics(cancelButton)
+//        cancelButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: 0.015 * screenWidth)
+//        cancelButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
     }
 }
 
@@ -286,7 +286,7 @@ extension CreationViewController {
                 if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
                     PHPhotoLibrary.requestAuthorization({ (status) in
                         if status != PHAuthorizationStatus.authorized {
-                            let alertController = UIAlertController(title: "Photos",
+                            let alertController = UIAlertController(title: "Photos Permission Required",
                                                                     message: "Require permssion to add photos from library",
                                                                     preferredStyle: .alert)
                             let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
@@ -431,7 +431,7 @@ extension CreationViewController {
         drawColorSlider.setWidthConstraint(screenWidth * 0.45)
         drawColorSlider.setHeightConstraint(screenHeight * 0.03)
         drawColorSlider.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
-        drawColorSlider.setTopConstraint(equalTo: slateView.bottomAnchor, offset: screenHeight * 0.07)
+        drawColorSlider.setCenterYConstraint(equalTo: drawButton.centerYAnchor, offset: 0)
         drawColorSlider.alpha = 0
         
         // Set drawView color using drawColorSlider - React to drawColorSlider's colorObservable
@@ -448,8 +448,9 @@ extension CreationViewController {
         view.addSubview(undoButton)
         setButtonBasics(undoButton)
         undoButton.setImage(UIImage(named: "ic_undo"), for: .normal)
-        undoButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: screenHeight * 0.05)
-        undoButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: screenWidth * 0.03)
+        undoButton.setCenterYConstraint(equalTo: drawButton.centerYAnchor, offset: 0)
+        undoButton.setTrailingConstraint(equalTo: view.centerXAnchor, offset: screenWidth * -0.27)
+        undoButton.tintColor = .white
         undoButton.alpha = 0
         
         /**
@@ -467,18 +468,23 @@ extension CreationViewController {
          */
         drawButton.rx.tap
             .share()
-            .subscribe(onNext: { (_) in
-                if self.drawButton.isSelected {
+            .subscribe(onNext: { [weak self] (_) in
+                if self?.drawButton.isSelected == true {
                     // Hide drawing components
                     drawView.isActive = false
                     UIView.animate(withDuration: 0.15, animations: {
                         drawColorSlider.alpha = 0
                     })
                     undoButton.alpha = 0
+                    
+                    // bring textView to front to facilitate user interactions
+                    if let textView = self?.textView {
+                        self?.slateView.bringSubview(toFront: textView)
+                    }
                 } else {
                     // Show drawing components
                     drawView.isActive = true
-                    self.slateView.bringSubview(toFront: drawView)
+                    self?.slateView.bringSubview(toFront: drawView)
                     UIView.animate(withDuration: 0.15, animations: {
                         drawColorSlider.alpha = 1
                     })
