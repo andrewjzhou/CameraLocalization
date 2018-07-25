@@ -214,22 +214,34 @@ extension CreationViewController {
      Setup finishButton positioned above slateView to right.
      */
     private func setupFinishButton() {
-//        view.addSubview(finishButton)
-//        finishButton.setImage(UIImage(named: "ic_done"), for: .normal)
-//        setButtonBasics(finishButton)
-//        finishButton.setTrailingConstraint(equalTo: slateView.trailingAnchor, offset: -0.015 * screenWidth)
-//        finishButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
+        view.addSubview(finishButton)
+        finishButton.translatesAutoresizingMaskIntoConstraints = false
+        finishButton.setImage(UIImage(named: "baseline_done_white_24pt"), for: .normal)
+        finishButton.setBackgroundImage(.from(color: UIColor.flatSkyBlue.withAlphaComponent(0.2)), for: .normal)
+        finishButton.setBackgroundImage(.from(color: UIColor.flatSkyBlueDark.withAlphaComponent(0.2)), for: .selected)
+        finishButton.setLeadingConstraint(equalTo: view.centerXAnchor, offset: 2)
+        finishButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.065 * screenHeight)
+        finishButton.setHeightConstraint(0.088 * screenHeight)
+        finishButton.setWidthConstraint(0.465 * screenWidth)
+        finishButton.tintColor = UIColor.flatWhite.withAlphaComponent(0.65)
+        finishButton.layer.cornerRadius = 10
     }
     
     /**
      Setup cancelButton positioned above slateView to left.
      */
     private func setupCancelButton() {
-//        view.addSubview(cancelButton)
-//        cancelButton.setImage(UIImage(named: "ic_close"), for: .normal)
-//        setButtonBasics(cancelButton)
-//        cancelButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: 0.015 * screenWidth)
-//        cancelButton.setBottomConstraint(equalTo: slateView.topAnchor, offset: -0.02 * screenHeight)
+        view.addSubview(cancelButton)
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        cancelButton.setImage(UIImage(named: "baseline_close_white_24pt"), for: .normal)
+        cancelButton.setBackgroundImage(.from(color: UIColor.flatRed.withAlphaComponent(0.2)), for: .normal)
+        cancelButton.setBackgroundImage(.from(color: UIColor.flatRedDark.withAlphaComponent(0.2)), for: .selected)
+        cancelButton.setTrailingConstraint(equalTo: view.centerXAnchor, offset: -2)
+        cancelButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.065 * screenHeight)
+        cancelButton.setHeightConstraint(0.088 * screenHeight)
+        cancelButton.setWidthConstraint(0.465 * screenWidth)
+        cancelButton.tintColor = UIColor.flatWhite.withAlphaComponent(0.65)
+        cancelButton.layer.cornerRadius = 10
     }
 }
 
@@ -284,7 +296,6 @@ extension CreationViewController {
         /**
          Show PhotoPicker - React to photoPickerButton tap gesture
          */
-        var initialTap = true
         photoPickerButton.rx.tap
             .do(onNext: { (_) in
                 if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
@@ -459,7 +470,7 @@ extension CreationViewController {
         let undoButton = UIButton()
         view.addSubview(undoButton)
         setButtonBasics(undoButton)
-        undoButton.setImage(UIImage(named: "ic_undo"), for: .normal)
+        undoButton.setImage(UIImage(named: "baseline_undo_white_24pt"), for: .normal)
         undoButton.setCenterYConstraint(equalTo: drawButton.centerYAnchor, offset: 0)
         undoButton.setTrailingConstraint(equalTo: view.centerXAnchor, offset: screenWidth * -0.27)
         undoButton.tintColor = .white
@@ -489,10 +500,8 @@ extension CreationViewController {
                     })
                     undoButton.alpha = 0
                     
-                    // bring textView to front to facilitate user interactions
-                    if let textView = self?.textView {
-                        self?.slateView.bringSubview(toFront: textView)
-                    }
+                    self?.slateView.sendSubview(toBack: drawView)
+                    
                 } else {
                     // Show drawing components
                     drawView.isActive = true
