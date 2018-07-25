@@ -23,7 +23,18 @@ final class CreationViewController: UIViewController {
     
     // Subviews
     let slateView = UIImageView()
-    var textView: ResizableView?
+    lazy var textView: ResizableView = {
+        let rv = ResizableView(frame: CGRect(x:0,
+                                             y: 0,
+                                             width: 0.5 * screenWidth,
+                                             height: 0.2 * screenHeight))
+        rv.autocorrectionType = .no
+        rv.center = CGPoint(x: view.center.x - 0.05 * screenWidth,
+                            y: view.center.y - 0.2 * screenHeight)
+        rv.isUserInteractionEnabled = false
+        rv.textAlignment = .center
+        return rv
+    }()
     
     
     // Observable to publish and communicate with ViewController
@@ -58,7 +69,7 @@ final class CreationViewController: UIViewController {
                         // Move drawButton back to original position
                         self.drawButton.transform = .identity
                         
-                        // Hide all other UIButtons (excluding drawing components)
+                        // Show all other UIButtons (excluding drawing components)
                         self.textButton.alpha = 1
                         self.photoPickerButton.alpha = 1
                         self.finishButton.alpha = 1
@@ -69,8 +80,10 @@ final class CreationViewController: UIViewController {
                     UIView.animate(withDuration: 0.3, animations: {
                         // Move drawButton to offset at -0.2*screenWidth w.r.t current trailing anchor
                         self.drawButton.transform = CGAffineTransform(translationX: screenWidth * 0.12, y: 0)
-                        
-                        // Show all other UIButtons (excluding drawing components)
+                    })
+                    
+                    UIView.animate(withDuration: 0.15, animations: {
+                        // Hide all other UIButtons (excluding drawing components)
                         self.textButton.alpha = 0
                         self.photoPickerButton.alpha = 0
                         self.finishButton.alpha = 0
@@ -168,7 +181,7 @@ extension CreationViewController {
         drawButton.setImage(UIImage(named: "ic_create_white"), for: .normal)
         setButtonBasics(drawButton)
         drawButton.setLeadingConstraint(equalTo: slateView.centerXAnchor, offset: 0.15 * screenWidth)
-        drawButton.setCenterYConstraint(equalTo: slateView.topAnchor, offset: -0.05 * screenHeight)
+        drawButton.setCenterYConstraint(equalTo: slateView.topAnchor, offset: -0.055 * screenHeight)
     }
     
     /**
@@ -178,8 +191,8 @@ extension CreationViewController {
         view.addSubview(textButton)
         textButton.setImage(UIImage(named: "ic_title_white"), for: .normal)
         setButtonBasics(textButton)
-        textButton.setLeadingConstraint(equalTo: slateView.leadingAnchor, offset: 0.2 * screenWidth)
-        textButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.05 * screenHeight)
+        textButton.setCenterYConstraint(equalTo: slateView.topAnchor, offset: -0.055 * screenHeight)
+        textButton.setTrailingConstraint(equalTo: slateView.centerXAnchor, offset: -0.15 * screenWidth)
     }
     
     /**
@@ -190,7 +203,7 @@ extension CreationViewController {
         photoPickerButton.setImage(UIImage(named: "ic_photo_white"), for: .normal)
         setButtonBasics(photoPickerButton)
         photoPickerButton.setCenterXConstraint(equalTo: slateView.centerXAnchor, offset: 0)
-        photoPickerButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.05 * screenHeight)
+        photoPickerButton.setCenterYConstraint(equalTo: slateView.topAnchor, offset: -0.055 * screenHeight)
     }
     
     /**
@@ -327,8 +340,50 @@ extension CreationViewController {
 // MARK:- Text-specific Rx
 extension CreationViewController {
     private func setupTextLayoutAndRx() {
-        // Setup textColorSlider
         let textColorSlider = ColorSlider()
+
+
+        slateView.addSubview(textView)
+        textView.showHandles = false
+        
+        textView.rx.didBeginEditing
+            .bind{
+                UIView.animate(withDuration: 0.3, animations: {
+                    // Move drawButton to offset at -0.2*screenWidth w.r.t current trailing anchor
+                    self.textButton.transform = CGAffineTransform(translationX: screenWidth * -0.12, y: 0)
+                    textColorSlider.alpha = 1
+                    
+                })
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    // Hide all other UIButtons (excluding drawing components)
+                    self.drawButton.alpha = 0
+                    self.photoPickerButton.alpha = 0
+                    self.finishButton.alpha = 0
+                    self.cancelButton.alpha = 0
+                    self.textView.showHandles = true
+                })
+                
+                self.textButton.isSelected = true
+            }.disposed(by: disposeBag)
+  
+        textView.rx.didEndEditing
+            .bind{
+                UIView.animate(withDuration: 0.25, animations: {
+                    // Move drawButton to offset at -0.2*screenWidth w.r.t current trailing anchor
+                    self.textButton.transform = .identity
+                    textColorSlider.alpha = 0
+                    self.finishButton.alpha = 1
+                    self.cancelButton.alpha = 1
+                    self.drawButton.alpha = 1
+                    self.photoPickerButton.alpha = 1
+                    self.textView.showHandles = false
+                })
+                self.textButton.isSelected = false
+            }.disposed(by: disposeBag)
+        
+
+        // Setup textColorSlider
         view.addSubview(textColorSlider)
         textColorSlider.translatesAutoresizingMaskIntoConstraints = false
         textColorSlider.orientation = .horizontal
@@ -336,70 +391,29 @@ extension CreationViewController {
         textColorSlider.setWidthConstraint(screenWidth * 0.45)
         textColorSlider.setHeightConstraint(screenHeight * 0.03)
         textColorSlider.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
-        textColorSlider.setBottomConstraint(equalTo: slateView.topAnchor, offset: screenHeight * -0.04)
+        textColorSlider.setCenterYConstraint(equalTo: textButton.centerYAnchor, offset: 0)
         textColorSlider.alpha = 0
+        
+        textColorSlider.colorSubject
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { (color) in
+                self.textView.textColor = color
+            })
+            .disposed(by: self.disposeBag)
         
         /**
          Show textView - React to textButton tap gesture
          */
         textButton.rx.tap
-            .subscribe(onNext: { (_) in
-                if self.textView == nil {
-                    // Add textView, if it does not already exist
-                    self.textView = ResizableView()
-                    self.textView!.frame = CGRect.init(x: 0.3 * self.slateView.bounds.width,
-                                                       y: 0.4 * self.slateView.bounds.height,
-                                                       width: 0.4 * self.slateView.bounds.width,
-                                                       height: 0.2 * self.slateView.bounds.height)
-                    self.textView!.autocorrectionType = .no
-                    self.slateView.addSubview(self.textView!)
-                    
-                    /**
-                     Show textColorSlider and handles. Hide finishButton and cancelButton when editing begins - React to textView didBeginEditing
-                     */
-                    self.textView!.rx.didBeginEditing
-                        .subscribe(onNext: { (_) in
-                            self.textView!.showHandles = true
-                            UIView.animate(withDuration: 0.1, animations: {
-                                self.textView!.showHandles = true
-                                self.view.bringSubview(toFront: self.textView!)
-                                textColorSlider.alpha = 1
-                                self.finishButton.alpha = 0
-                                self.cancelButton.alpha = 0
-                            })
-                        })
-                        .disposed(by: self.disposeBag)
-                    
-                    /**
-                     Hide textColorSlider and handles. Show finishButton and cancelButton when editing begins - React to textView didEndEditing
-                     */
-                    self.textView!.rx.didEndEditing
-                        .subscribe(onNext: { (_) in
-                            UIView.animate(withDuration: 0.1, animations: {
-                                textColorSlider.alpha = 0
-                                self.finishButton.alpha = 1
-                                self.cancelButton.alpha = 1
-                            })
-                        })
-                        .disposed(by: self.disposeBag)
-                    
-                    /**
-                     Select textView texColor using textColorSlider. - React to textColorSlider colorObservable
-                     */
-                    textColorSlider.colorSubject
-                        .subscribe(onNext: { (color) in
-                            self.textView!.textColor = color
-                        })
-                        .disposed(by: self.disposeBag)
-                    
-                    self.textView!.becomeFirstResponder()
-                    
+            .bind{
+                self.textView.isUserInteractionEnabled = true
+                
+                if self.textButton.isSelected {
+                    self.textView.endEditing(true)
                 } else {
-                    // Select current TextView, if it already exists
-                    self.textView!.becomeFirstResponder()
-                    self.view.bringSubview(toFront: self.textView!)
+                    self.textView.becomeFirstResponder()
                 }
-            })
+            }
             .disposed(by: disposeBag)
         
         

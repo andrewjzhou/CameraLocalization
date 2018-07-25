@@ -11,6 +11,7 @@
 		6A10CC312106465400A5EAE1 /* MessageLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A10CC302106465400A5EAE1 /* MessageLabel.swift */; };
 		6A10CC392107AB7500A5EAE1 /* TagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A10CC382107AB7500A5EAE1 /* TagView.swift */; };
 		6A10CC3B2107D51800A5EAE1 /* AWSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A10CC3A2107D51800A5EAE1 /* AWSError.swift */; };
+		6A10CC3D2109067A00A5EAE1 /* InteractiveTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A10CC3C2109067A00A5EAE1 /* InteractiveTextView.swift */; };
 		6A17414D2100E2C1000067CA /* SettingsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17414C2100E2C1000067CA /* SettingsCollectionViewController.swift */; };
 		6A1741572102808A000067CA /* UserCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1741562102808A000067CA /* UserCache.swift */; };
 		6A1741592102903D000067CA /* UpdateNameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1741582102903D000067CA /* UpdateNameViewController.swift */; };
@@ -130,6 +131,7 @@
 		6A10CC302106465400A5EAE1 /* MessageLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageLabel.swift; sourceTree = "<group>"; };
 		6A10CC382107AB7500A5EAE1 /* TagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagView.swift; sourceTree = "<group>"; };
 		6A10CC3A2107D51800A5EAE1 /* AWSError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AWSError.swift; sourceTree = "<group>"; };
+		6A10CC3C2109067A00A5EAE1 /* InteractiveTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveTextView.swift; sourceTree = "<group>"; };
 		6A17414C2100E2C1000067CA /* SettingsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCollectionViewController.swift; sourceTree = "<group>"; };
 		6A1741562102808A000067CA /* UserCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCache.swift; sourceTree = "<group>"; };
 		6A1741582102903D000067CA /* UpdateNameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateNameViewController.swift; sourceTree = "<group>"; };
@@ -569,6 +571,7 @@
 		6AEC1AA72087C3C9008E0FF8 /* Creation */ = {
 			isa = PBXGroup;
 			children = (
+				6A10CC3C2109067A00A5EAE1 /* InteractiveTextView.swift */,
 				6AEC1AAA2088280B008E0FF8 /* DrawView.swift */,
 				6AEC1AAC20882BB0008E0FF8 /* ColorSlider.swift */,
 				6AEC1AB32089A678008E0FF8 /* PhotoPickerView */,
@@ -954,6 +957,7 @@
 				6A2486E220FE4CAA00DB2133 /* MapViewController.swift in Sources */,
 				6AEC1AAF20885E8C008E0FF8 /* PhotoLibraryView.swift in Sources */,
 				6AEBAB5C20CEE3F000741EB0 /* ARSession+Rx.swift in Sources */,
+				6A10CC3D2109067A00A5EAE1 /* InteractiveTextView.swift in Sources */,
 				6A17415B210297B5000067CA /* UpdateEmailViewController.swift in Sources */,
 				6A1B54A620D01A8700870DC2 /* MLMultiArray+Image.swift in Sources */,
 				6A8EA73B20E050D000B178C1 /* UserMenu.swift in Sources */,
