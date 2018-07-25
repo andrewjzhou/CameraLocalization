@@ -75,7 +75,6 @@ final class ViewController: UIViewController {
         
         handleGeolocationService()
         
-        setupMessageLabel()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -85,20 +84,10 @@ final class ViewController: UIViewController {
             
     }
     
-    func setupMessageLabel() {
-        view.addSubview(messageLabel)
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        messageLabel.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
-        messageLabel.setCenterYConstraint(equalTo: view.centerYAnchor, offset: 0)
-        messageLabel.setWidthConstraint(view.bounds.width * 0.45)
-        messageLabel.setHeightConstraint(view.bounds.height * 0.06)
-        messageLabel.layer.cornerRadius = 12
-    }
-    
     func handleGeolocationService() {
         geolocationService.location.drive(onNext: { [weak self] (location) in
-            if self == nil { return }
             self?.lastLocation = location
+            
             if AWSCognitoIdentityUserPool.default().currentUser()?.isSignedIn == true {
                 self?.descriptorCache.query(location)
             }
@@ -110,34 +99,38 @@ final class ViewController: UIViewController {
             .filter { _ in return self.view.window != nil }
             .debounce(0.1, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
+                let user = AWSCognitoIdentityUserPool.default().currentUser()
                 // Authenticate user
-                AWSCognitoIdentityUserPool.default().currentUser()?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
-                    let user = AWSCognitoIdentityUserPool.default().currentUser()
+                user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
+                    
                     user?.getSession().continueWith(block: { (task) -> Any? in
+                        // get session token
                         let getSessionResult = task.result
                         if let tokenString = getSessionResult?.idToken?.tokenString {
                             AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
                         }
+                        
+                        // check AV Authoirzation then check Location Authorization
+                        guard let avAuth = self?.checkAVAuthoirzied() else { return nil }
+                        if avAuth {
+                            self?.checkLocationAuthorizationStatus()
+                        }
+                        
+                        // restart sceneView session and long press indicator animation
+                        self?.resetSession()
+                        
+                        // poll descriptors
                         self?.descriptorCache.refresh()
+                        
                         return nil
                     })
                     
                     return nil
                 })
         
-                guard let currUser = AWSCognitoIdentityUserPool.default().currentUser() else {return}
-                if currUser.isSignedIn {
-                    // Run the view's session
-                    self?.resetSession()
-                    self?.sceneView.showsStatistics = true // For debugging
-//                    self?.descriptorCache.refresh()
-                    
-                    // First check AV Authoirzation then check Location Authorization
-                    guard let avAuth = self?.checkAVAuthoirzied() else { return }
-                    if avAuth {
-                        self?.checkLocationAuthorizationStatus()
-                    }
-                }
+
+
+                self?.sceneView.showsStatistics = true // For debugging
             })
             .disposed(by: disposeBag)
         
@@ -170,7 +163,7 @@ extension ViewController {
                 if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
                     PHPhotoLibrary.requestAuthorization({ (status) in
                         if status != PHAuthorizationStatus.authorized {
-                            let alertController = UIAlertController(title: "Photos",
+                            let alertController = UIAlertController(title: "Photo library permission needed",
                                                                     message: "Require permssion to save photo to library",
                                                                     preferredStyle: .alert)
                             let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
@@ -218,13 +211,16 @@ extension ViewController {
         resetButton.rx.tap
             .throttle(1, scheduler: MainScheduler.instance)
             .bind {
-                self.clearScreenAnimation()
+                self.runClearScreenAnimation()
+                
                 self.resetSession()
+                
+                self.descriptorCache.refresh()
             }
             .disposed(by: disposeBag)
     }
     
-    private func clearScreenAnimation() {
+    private func runClearScreenAnimation() {
         let stormAnimationView = UIView(frame: self.resetButton.frame)
         stormAnimationView.layer.cornerRadius = 0.5 * self.resetButton.bounds.width
         stormAnimationView.backgroundColor = .flatSkyBlue

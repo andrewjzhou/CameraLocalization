@@ -34,6 +34,8 @@ extension ViewController {
         
         setupUserButton()
         
+        setupMessageLabel()
+        
         // On shelf. Change color of buttons based on camera feed in real-time
 //        colorButtonsRealTime()
     }
@@ -122,6 +124,16 @@ extension ViewController {
             .disposed(by: disposeBag)
                 
         
+    }
+    
+    func setupMessageLabel() {
+        view.addSubview(messageLabel)
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        messageLabel.setCenterYConstraint(equalTo: view.centerYAnchor, offset: 0)
+        messageLabel.setWidthConstraint(view.bounds.width * 0.45)
+        messageLabel.setHeightConstraint(view.bounds.height * 0.06)
+        messageLabel.layer.cornerRadius = 12
     }
     
 

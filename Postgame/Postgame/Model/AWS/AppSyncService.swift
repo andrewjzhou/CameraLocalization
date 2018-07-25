@@ -106,7 +106,7 @@ final class AppSyncService {
                                  resultHandler: { (result, error) in
                                     if error != nil {
                                         print(error?.localizedDescription ?? "")
-                                        observer.onCompleted()
+                                        observer.onError(error!)
                                         return
                                     }
                                     

@@ -20,6 +20,7 @@ final class DescriptorCache {
     let threshold = 0.60
     var lastLocation: CLLocation?
     
+    // stores the descriptors
     var cache = [String : Descriptor]() {
         didSet{ countSubject.onNext(cache.count) }
     }
@@ -28,7 +29,7 @@ final class DescriptorCache {
     private let countSubject = BehaviorSubject<Int>(value: 0)
     private(set) lazy var counter = countSubject.asObservable().asDriver(onErrorJustReturn: 0).debounce(0.05)
     
-    // Every observered event downloads descriptor to cache
+    // Every observation leads to downloading of descriptors to cache
     private let queryPublisher = PublishSubject<CLLocation>()
     
     init() {
@@ -38,9 +39,17 @@ final class DescriptorCache {
                       scheduler: ConcurrentDispatchQueueScheduler(qos: DispatchQoS.userInteractive))
             .flatMap { AppSyncService.sharedInstance.observeDescriptorsByLocation($0) }
             .subscribe(onNext: { [weak self] (descriptors) in
+                // clear cache; consider if this is optimal on large scale
                 self?.cache.removeAll()
+                
+                // cache
                 for descriptor in descriptors {
                     self?.cache.updateValue(descriptor, forKey: descriptor.id)
+                }
+            }, onError: { [weak self] (error) in
+                // retry query on error
+                if let location = self?.lastLocation {
+                    self?.query(location)
                 }
             })
             .disposed(by: disposeBag)
@@ -48,8 +57,6 @@ final class DescriptorCache {
     
     // Make new query using location
     func query(_ location: CLLocation) {
-        print("DescriptorCache: querying")
-        
         lastLocation = location
         refresh()
     }
@@ -109,6 +116,8 @@ final class DescriptorCache {
         return bestMatchInCache
         
     }
+    
+    
 }
 
 
