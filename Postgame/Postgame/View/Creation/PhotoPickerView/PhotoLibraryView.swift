@@ -11,14 +11,14 @@ import Photos
 import RxCocoa
 import RxSwift
 
-class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+final class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     /// Publish image to subscriber
     public var imageSubject = PublishSubject<UIImage>()
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 1
-        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 0.2
+        layout.minimumInteritemSpacing = 0
         layout.scrollDirection = .horizontal
         
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -57,7 +57,7 @@ class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionViewDele
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let length = frame.height / 2 - 2
+        let length = frame.height / 2 - 0.2
         return CGSize.init(width: length, height: length)
     }
     
@@ -123,7 +123,7 @@ fileprivate class GridCell: UICollectionViewCell {
         
         addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.setTopConstraint(equalTo: topAnchor, offset: 0)
+        imageView.setTopConstraint(equalTo: topAnchor, offset: -0.1)
         imageView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
         imageView.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
         imageView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)

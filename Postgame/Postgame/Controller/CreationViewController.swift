@@ -93,6 +93,10 @@ final class CreationViewController: UIViewController {
                 
                 // Toggle isSelected state
                 self.drawButton.isSelected = !self.drawButton.isSelected
+                
+                if self.photoPickerButton.isSelected {
+                    self.photoPickerButton.sendActions(for: .touchUpInside)
+                }
             })
             .disposed(by: disposeBag)
         
@@ -255,38 +259,24 @@ extension CreationViewController {
      */
     private func setupPhotoPickerLayoutAndRx(){
         // setup photoPicker layout
-        let photoPickerView = PhotoPickerView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 0.3 * screenHeight),
-                                              buttonSize: buttonLength)
+        let photoPickerView = PhotoLibraryView()
+        
         view.addSubview(photoPickerView)
         photoPickerView.translatesAutoresizingMaskIntoConstraints = false
-        photoPickerView.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
-        let identityBottomConstraint = photoPickerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0)
-        let translationBottomConstraint = photoPickerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: screenHeight)
-        translationBottomConstraint.isActive = true
+        photoPickerView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
+        photoPickerView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        photoPickerView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        photoPickerView.setHeightConstraint(0.21 * screenHeight)
+        
+        let translation = CGAffineTransform(translationX: 0, y: screenHeight)
+        photoPickerView.transform = translation
         
         /**
          Set slateView background image - React to photoPickerView imageSubject
          */
         photoPickerView.imageSubject
-            .subscribe(onNext: { [slateView](image) in
+            .subscribe(onNext: { [slateView] (image) in
                 slateView.image = image
-            })
-            .disposed(by: disposeBag)
-        
-        
-        /**
-         Hide PhotoPicker - React to downButton inside photoPickerView tap gesture
-         */
-        photoPickerView.downButton.rx.tap
-            .subscribe(onNext: {[weak self] (_) in
-                identityBottomConstraint.isActive = false
-                translationBottomConstraint.isActive = true
-                UIView.animate(withDuration: 0.3, animations: {
-                    self?.view.layoutIfNeeded()
-                    self?.drawButton.alpha = 1
-                    self?.photoPickerButton.alpha = 1
-                    self?.textButton.alpha = 1
-                })
             })
             .disposed(by: disposeBag)
         
@@ -294,6 +284,7 @@ extension CreationViewController {
         /**
          Show PhotoPicker - React to photoPickerButton tap gesture
          */
+        var initialTap = true
         photoPickerButton.rx.tap
             .do(onNext: { (_) in
                 if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
@@ -323,14 +314,17 @@ extension CreationViewController {
             })
             .filter{ return PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized }
             .subscribe(onNext: { [weak self] (_) in
-                translationBottomConstraint.isActive = false
-                identityBottomConstraint.isActive = true
-                UIView.animate(withDuration: 0.3, animations: {
-                    self?.view.layoutIfNeeded()
-                    self?.drawButton.alpha = 0
-                    self?.photoPickerButton.alpha = 0
-                    self?.textButton.alpha = 0
-                })
+                if self?.photoPickerButton.isSelected == true {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        photoPickerView.transform = translation
+                    })
+                     self?.photoPickerButton.isSelected = false
+                } else {
+                    UIView.animate(withDuration: 0.3, animations: {
+                        photoPickerView.transform = .identity
+                    })
+                     self?.photoPickerButton.isSelected = true
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -412,6 +406,10 @@ extension CreationViewController {
                     self.textView.endEditing(true)
                 } else {
                     self.textView.becomeFirstResponder()
+                }
+                
+                if self.photoPickerButton.isSelected {
+                    self.photoPickerButton.sendActions(for: .touchUpInside)
                 }
             }
             .disposed(by: disposeBag)
