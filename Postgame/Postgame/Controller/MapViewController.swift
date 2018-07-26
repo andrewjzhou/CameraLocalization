@@ -191,8 +191,7 @@ class CustomAnnotationView: MGLAnnotationView {
         layer.borderWidth = 2
         layer.borderColor = UIColor.white.cgColor
         layer.backgroundColor = UIColor.flatSkyBlue.cgColor
-        
-        layer.opacity = 0.75
+        layer.opacity = 0.7
     }
     
 //    override func setSelected(_ selected: Bool, animated: Bool) {

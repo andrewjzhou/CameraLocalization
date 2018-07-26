@@ -97,39 +97,33 @@ final class ViewController: UIViewController {
     func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
             .filter { _ in return self.view.window != nil }
-            .debounce(0.1, scheduler: MainScheduler.instance)
+            .debounce(0.2, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 let user = AWSCognitoIdentityUserPool.default().currentUser()
+                print("I'm woke")
                 // Authenticate user
-                user?.getDetails().continueOnSuccessWith(block: { (task) -> Any? in
+                user?.getSession().continueWith(block: { (task) -> Any? in
+                    print("now I'm getting the session")
+                    // get session token
+                    let getSessionResult = task.result
+                    if let tokenString = getSessionResult?.idToken?.tokenString {
+                        AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
+                    }
                     
-                    user?.getSession().continueWith(block: { (task) -> Any? in
-                        // get session token
-                        let getSessionResult = task.result
-                        if let tokenString = getSessionResult?.idToken?.tokenString {
-                            AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
-                        }
-                        
-                        // check AV Authoirzation then check Location Authorization
-                        guard let avAuth = self?.checkAVAuthoirzied() else { return nil }
-                        if avAuth {
-                            self?.checkLocationAuthorizationStatus()
-                        }
-                        
-                        // restart sceneView session and long press indicator animation
-                        self?.resetSession()
-                        
-                        // poll descriptors
-                        self?.descriptorCache.refresh()
-                        
-                        return nil
-                    })
+                    // poll descriptors
+                    self?.descriptorCache.refresh()
                     
                     return nil
                 })
-        
+                
+                // check AV Authoirzation then check Location Authorization
+                guard let avAuth = self?.checkAVAuthoirzied() else { return  }
+                if avAuth {
+                    self?.checkLocationAuthorizationStatus()
+                }
 
-
+                // restart sceneView session and long press indicator animation
+                self?.resetSession()
                 self?.sceneView.showsStatistics = true // For debugging
             })
             .disposed(by: disposeBag)

@@ -125,6 +125,7 @@ final class SettingsCollectionViewController: UICollectionViewController {
             cell.isHighlighted = true
             dismiss(animated: true) {
                 AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
+                AWSCognitoIdentityUserPool.default().clearAll()
                 AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
                 cell.isHighlighted = false
             }

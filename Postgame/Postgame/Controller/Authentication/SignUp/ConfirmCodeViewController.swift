@@ -84,9 +84,28 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                     
                     strongSelf.present(alertController, animated: true, completion:  nil)
                 } else {
+                    print("confirmed, should pop to root")
+                   
+                    if let username = self?.introVC?.signUpInfo.username,
+                        let password = self?.introVC?.signUpInfo.password,
+                        let phone = self?.introVC?.signUpInfo.phone,
+                        let email = self?.introVC?.signUpInfo.email {
+                        self?.user?.getSession(username, password: password, validationData: nil).continueWith(block: { (session) -> Any? in
+                            if let error = session.error {
+                                print("error found after sign up: ", error)
+                            }
+                            
+                            AppSyncService.sharedInstance.createUser(username: username, phone: phone, email: email)
+                            
+                            return nil
+                        })
+                    }
+                    
+                    
+                    
                     self?.introVC?.clearUserInfo()
                     self?.introVC = nil
-                    let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
+//                    let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
                 }
             })
             return nil
