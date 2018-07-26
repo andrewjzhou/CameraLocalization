@@ -14,6 +14,7 @@ class EmailViewController: SignUpBaseViewController {
         super.viewDidLoad()
         
         textField.placeholder = "Email"
+        textField.keyboardType = .emailAddress
 
         if let text = introVC?.signUpInfo.email {
             textField.text = text

@@ -27,9 +27,9 @@ class UpdatePasswordViewController: UpdateNameViewController {
     }
     
     override func buttonAction() {
+        button.isActive = false
         if let user = AWSCognitoIdentityUserPool.default().currentUser() {
             user.changePassword(textField.text!, proposedPassword: textField2.text!).continueWith { [weak self ](task) -> Any? in
-      
                 DispatchQueue.main.async(execute: {
                     if let error = task.error as NSError? {
                         let alertController = UIAlertController(title: error.userInfo["__type"] as? String,
@@ -37,8 +37,8 @@ class UpdatePasswordViewController: UpdateNameViewController {
                                                                 preferredStyle: .alert)
                         let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
                         alertController.addAction(retryAction)
-                        
                         self?.present(alertController, animated: true, completion:  nil)
+                         self?.button.isActive = true
                     } else {
                         self?.messageLabel.display(.passwordUpdated)
                     }
@@ -46,6 +46,18 @@ class UpdatePasswordViewController: UpdateNameViewController {
                 })
                 return nil
             }
+        } else {
+            let alertController = UIAlertController(title: "Oops",
+                                                    message: "Something went wrong. Please try again. We apologize for the inconvenience.",
+                                                    preferredStyle: .alert)
+            let exitAction = UIAlertAction(title: "Exit", style: .cancel, handler: { (_) in
+                self.navigationController?.popViewController(animated: true)
+            })
+            alertController.addAction(exitAction)
+            let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
+            alertController.addAction(retryAction)
+            present(alertController, animated: true, completion:  nil)
+            button.isActive = true
         }
     }
 

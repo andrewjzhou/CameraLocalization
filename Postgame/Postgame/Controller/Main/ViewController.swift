@@ -79,9 +79,8 @@ final class ViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         NotificationCenter.default.post(Notification(name: NSNotification.Name.UIApplicationDidBecomeActive))
-            
+        
     }
     
     func handleGeolocationService() {
@@ -97,7 +96,7 @@ final class ViewController: UIViewController {
     func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
             .filter { _ in return self.view.window != nil }
-            .debounce(0.2, scheduler: MainScheduler.instance)
+            .throttle(0.2, scheduler: MainScheduler.asyncInstance)
             .subscribe(onNext: { [weak self] _ in
                 let user = AWSCognitoIdentityUserPool.default().currentUser()
                 print("I'm woke")
@@ -111,6 +110,7 @@ final class ViewController: UIViewController {
                     }
                     
                     // poll descriptors
+                    
                     self?.descriptorCache.refresh()
                     
                     return nil

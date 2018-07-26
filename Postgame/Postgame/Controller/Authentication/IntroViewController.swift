@@ -90,7 +90,6 @@ extension IntroViewController: AWSCognitoIdentityPasswordAuthentication {
     }
     
     public func didCompleteStepWithError(_ error: Error?) {
-        print("Error found")
         DispatchQueue.main.async {
             if let error = error as NSError? {
                 let alertController = UIAlertController(title: error.userInfo["__type"] as? String,
@@ -103,7 +102,6 @@ extension IntroViewController: AWSCognitoIdentityPasswordAuthentication {
             } else {
 //                self.usernameField.text = nil
                 self.navigationController?.dismiss(animated: true, completion: nil)
-                //                self.dismiss(animated: true, completion: nil)
             }
         }
     }

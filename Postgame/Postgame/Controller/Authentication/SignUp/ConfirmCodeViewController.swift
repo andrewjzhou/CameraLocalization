@@ -20,7 +20,11 @@ class ConfirmCodeViewController: SignUpBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        backButton.setImage(UIImage(named: "ic_close"), for: .normal)
+        
         textField.placeholder = "Confirmation Code"
+        textField.keyboardType = .numberPad
+        
         button.setTitle("Confirm", for: .normal)
         button.color = .flatForestGreen
         button.highlightedColor = .flatForestGreenDark
@@ -56,13 +60,23 @@ class ConfirmCodeViewController: SignUpBaseViewController {
     }
     
     override func backButtonAction() {
-        introVC = nil
-        self.navigationController?.popToRootViewController(animated: true)
+
+        let alertController = UIAlertController(title: "Sure?",
+                                                message: "Exitting would abandon registration.",
+                                                preferredStyle: .alert)
+        let exitAction = UIAlertAction(title: "Exit", style: .destructive, handler: { (_) -> Void in
+            self.introVC = nil
+            self.navigationController?.popToRootViewController(animated: true)
+        })
+        alertController.addAction(exitAction)
+        let resumeAction = UIAlertAction(title: "Resume", style: .default)
+        alertController.addAction(resumeAction)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     override func buttonAction() {
         guard let confirmationCodeValue = textField.text, !confirmationCodeValue.isEmpty else {
-            let alertController = UIAlertController(title: "Confirmation code missing.",
+            let alertController = UIAlertController(title: "Confirmation code missing",
                                                     message: "Please enter a valid confirmation code.",
                                                     preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
@@ -84,7 +98,6 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                     
                     strongSelf.present(alertController, animated: true, completion:  nil)
                 } else {
-                    print("confirmed, should pop to root")
                    
                     if let username = self?.introVC?.signUpInfo.username,
                         let password = self?.introVC?.signUpInfo.password,
@@ -93,18 +106,41 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                         self?.user?.getSession(username, password: password, validationData: nil).continueWith(block: { (session) -> Any? in
                             if let error = session.error {
                                 print("error found after sign up: ", error)
+                                self?.retryAlert()
+                                self?.button.isActive = true
                             }
                             
-                            AppSyncService.sharedInstance.createUser(username: username, phone: phone, email: email)
+                            AppSyncService.sharedInstance.createUser(username: username, phone: phone, email: email, completion: { error in
+                                if let _ = error {
+                                    self?.retryAlert()
+                                    self?.button.isActive = true
+                                } else {
+//                                    self?.dismiss(animated: true, completion: {
+//
+//                                    })
+                                    let authDetails = AWSCognitoIdentityPasswordAuthenticationDetails(username: username,
+                                                                                                      password: password)
+                                    self?.introVC?.passwordAuthenticationCompletion?.set(result: authDetails)
+                                }
+                            })
                             
                             return nil
                         })
+                    } else {
+                        let alertController = UIAlertController(title: "Oops",
+                                                                message: "Something went wrong signing up, please try again. We apologize for the incovenience.",
+                                                                preferredStyle: .alert)
+                        let okAction = UIAlertAction(title: "Retry", style: .default, handler: { (_) -> Void in
+                            self?.navigationController?.popToViewController(UsernameViewController(), animated: true)
+                        })
+                        alertController.addAction(okAction)
+                        
+                        strongSelf.present(alertController, animated: true, completion:  nil)
                     }
                     
                     
-                    
-                    self?.introVC?.clearUserInfo()
-                    self?.introVC = nil
+//                    self?.introVC?.clearUserInfo()
+//                    self?.introVC = nil
 //                    let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
                 }
             })
@@ -178,5 +214,20 @@ class ConfirmCodeViewController: SignUpBaseViewController {
             }).disposed(by: db)
     }
 
+    private func retryAlert() {
+        let alertController = UIAlertController(title: "Try Again",
+                                                message: "Something went wrong signing up, please confirm again.",
+                                                preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        
+        self.present(alertController, animated: true, completion:  nil)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        introVC?.clearUserInfo()
+        introVC = nil
+    }
     
 }

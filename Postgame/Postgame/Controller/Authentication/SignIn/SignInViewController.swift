@@ -112,7 +112,7 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
                 print("SignIn: button clicked")
                 
             } else {
-                let alertController = UIAlertController(title: "Missing information",
+                let alertController = UIAlertController(title: "Missing Information",
                                                         message: "Please enter a valid user name and password",
                                                         preferredStyle: .alert)
                 let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
@@ -212,6 +212,11 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
         }
         
         return true
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        introVC = nil 
     }
     
 }

@@ -23,6 +23,8 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
         messageLabel.setWidthConstraint(view.bounds.width * 0.45)
         messageLabel.setHeightConstraint(view.bounds.height * 0.06)
         messageLabel.layer.cornerRadius = 12
+        
+        textField.keyboardType = .numberPad
     }
     
     override func buttonAction() {

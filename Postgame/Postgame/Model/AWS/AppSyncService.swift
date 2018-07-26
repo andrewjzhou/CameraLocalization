@@ -103,6 +103,7 @@ final class AppSyncService {
         return Observable.create { [appSyncClient] (observer) -> Disposable in
             appSyncClient?.fetch(query: query,
                                  cachePolicy: .fetchIgnoringCacheData,
+                                 queue: DispatchQueue.global(qos: .background),
                                  resultHandler: { (result, error) in
                                     if error != nil {
                                         print(error?.localizedDescription ?? "")
@@ -346,7 +347,7 @@ extension AppSyncService {
         
     }
     
-    func createUser(username: String!, phone: String!, email: String?) {
+    func createUser(username: String!, phone: String!, email: String?, completion: @escaping (AWSError?) -> Void) {
         let input = CreateUserInput(username: username,
                                     phone: phone,
                                     dateJoined: timestamp(),
@@ -358,16 +359,19 @@ extension AppSyncService {
                                resultHandler: { (result, error) in
                                 if let error = error as? AWSAppSyncClientError {
                                     print("Error occurred: \(error.localizedDescription )")
+                                    completion(.appSyncCreateError)
                                     return
                                 }
                                 if let result = result {
                                     
                                     if let errors = result.errors {
+                                        completion(.appSyncCreateError)
                                         for err in errors {
                                             print("Error occurred: \(err.localizedDescription )")
                                         }
                                     } else {
                                         print("Successful created new user, \(username)")
+                                        completion(nil)
                                     }
                                 }
         })
