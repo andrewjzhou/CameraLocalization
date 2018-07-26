@@ -84,6 +84,11 @@ final class ViewController: UIViewController {
         
         UserCache.shared.cacheUserInfo()
         
+        let verificationVC = VerificationModalViewController()
+        verificationVC.modalPresentationStyle = .overCurrentContext
+        verificationVC.modalTransitionStyle = .crossDissolve
+        self.present(verificationVC, animated: true, completion: nil)
+        
         
     }
     

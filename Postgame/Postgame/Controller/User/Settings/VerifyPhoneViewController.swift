@@ -12,7 +12,7 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
     
     let messageLabel = MessageLabel()
     
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
 
         // configure message label
@@ -27,7 +27,7 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
         textField.keyboardType = .numberPad
     }
     
-    override func buttonAction() {
+    open override func buttonAction() {
         view.endEditing(true)
         button.isActive = false
         user?.verifyAttribute("phone_number", code: textField.text!).continueWith(block: { [messageLabel, button] (task) -> Any? in
@@ -35,24 +35,24 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
                 if let _ = task.error {
                     button.isActive = true
                     messageLabel.display(.tryAgain)
+                } else {
+                     messageLabel.display(.phoneVerified)
                 }
-        
-                messageLabel.display(.phoneVerified)
             }
             return nil
         })
     }
     
-    override func resendConfirmationCode() {
+    open override func resendConfirmationCode() {
         user?.getAttributeVerificationCode("phone_number")
     }
     
-    override func backButtonAction() {
+    open override func backButtonAction() {
         self.navigationController?.popViewController(animated: true)
         textField.text = ""
     }
     
-    override func configureKeyboardDisplayAnimations() {
+    open override func configureKeyboardDisplayAnimations() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
             .subscribe(onNext: { [button] (notification) in
                 if let userInfo = notification.userInfo {

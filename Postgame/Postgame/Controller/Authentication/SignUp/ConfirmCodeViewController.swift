@@ -12,7 +12,7 @@ import RxSwift
 
 class ConfirmCodeViewController: SignUpBaseViewController {
     var sentTo: String?
-    var user: AWSCognitoIdentityUser?
+    open var user: AWSCognitoIdentityUser?
     
     private let db = DisposeBag()
     let resendButton = UIButton()
@@ -59,7 +59,7 @@ class ConfirmCodeViewController: SignUpBaseViewController {
             }.disposed(by: disposeBag)
     }
     
-    override func backButtonAction() {
+    open override func backButtonAction() {
 
         let alertController = UIAlertController(title: "Sure?",
                                                 message: "Exiting would abandon registration.",
@@ -74,7 +74,7 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         self.present(alertController, animated: true, completion: nil)
     }
     
-    override func buttonAction() {
+    open override func buttonAction() {
         guard let confirmationCodeValue = textField.text, !confirmationCodeValue.isEmpty else {
             let alertController = UIAlertController(title: "Confirmation Code Missing",
                                                     message: "Please enter a valid confirmation code.",
@@ -148,7 +148,7 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         }
     }
     
-    func resendConfirmationCode() {
+    open func resendConfirmationCode() {
         self.user?.resendConfirmationCode().continueWith {[weak self] (task: AWSTask) -> AnyObject? in
             guard let _ = self else { return nil }
             DispatchQueue.main.async(execute: {
@@ -173,7 +173,7 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         }
     }
     
-    override func configureKeyboardDisplayAnimations() {
+    open override func configureKeyboardDisplayAnimations() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
             .subscribe(onNext: { [button, resendButton](notification) in
                 if let userInfo = notification.userInfo {
