@@ -11,4 +11,5 @@ import Foundation
 enum AWSError {
     case s3UploadError
     case appSyncCreateError
+    case appSyncGetUserError
 }

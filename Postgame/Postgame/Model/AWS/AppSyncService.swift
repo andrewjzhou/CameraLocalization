@@ -325,7 +325,7 @@ final class AppSyncService {
 
 // UserTable
 extension AppSyncService {
-    func cacheUserInfo(username: String!, completion: @escaping ()->Void) {
+    func cacheUserInfo(username: String!, completion: @escaping (AWSError?)->Void) {
         let query = GetUserQuery(username: username)
         appSyncClient?.fetch(query: query,
                              cachePolicy: .returnCacheDataAndFetch,
@@ -333,16 +333,20 @@ extension AppSyncService {
                              resultHandler: { (result, error) in
                                 if error != nil {
                                     print(error?.localizedDescription ?? "")
+                                    completion(.appSyncGetUserError)
                                     return
                                 }
                                 
                                 if let attr = result?.data?.getUser {
-                                    UserCache.shared["username"] = attr.username as AnyObject
-                                    UserCache.shared["phone"] = attr.phone as AnyObject
-                                    if let email = attr.email { UserCache.shared["email"] = email as AnyObject }
-                                    if let name = attr.name { UserCache.shared["name"] = name as AnyObject }
+                                    UserCache.shared[UserCacheKey.username.rawValue] = attr.username as AnyObject
+                                    UserCache.shared[UserCacheKey.phone.rawValue] = attr.phone as AnyObject
+                                    if let email = attr.email { UserCache.shared[UserCacheKey.email.rawValue] = email as AnyObject }
+                                    if let name = attr.name { UserCache.shared[UserCacheKey.name.rawValue] = name as AnyObject }
+                                    completion(nil)
+                                } else {
+                                    completion(.appSyncGetUserError)
                                 }
-                                completion()
+                                
         })
         
     }

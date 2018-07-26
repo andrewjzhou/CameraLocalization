@@ -269,6 +269,8 @@ extension PostNode {
                     S3Service.sharedInstance.uploadPost(post!, key: id, completion: {error in
                         completion(error)
                     })
+                default:
+                    break
                 }
             } else {
                 fatalError("PostNode: No error recorded but attempting to retry")

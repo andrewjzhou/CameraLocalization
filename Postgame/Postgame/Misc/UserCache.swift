@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import AWSUserPoolsSignIn
 
 final class UserCache: NSCache<AnyObject, AnyObject> {
     static let shared = UserCache()
+    
     
     /// Observer for `UIApplicationDidReceiveMemoryWarningNotification`.
     
@@ -50,6 +52,27 @@ final class UserCache: NSCache<AnyObject, AnyObject> {
         }
     }
     
+    func cacheUserInfo(completion: @escaping (AWSError?) -> Void = { _ in }) {
+        if UserCache.shared[UserCacheKey.username.rawValue] == nil || UserCache.shared[UserCacheKey.phone.rawValue] == nil  {
+            if let username = AWSCognitoIdentityUserPool.default().currentUser()?.username {
+                AppSyncService.sharedInstance.cacheUserInfo(username: username, completion: { error in
+                    completion(error)
+                })
+            } else {
+                completion(.appSyncGetUserError)
+            }
+        } else {
+            completion(nil)
+        }
+    }
+    
+}
+
+enum UserCacheKey: String {
+    case username = "username"
+    case phone = "phone"
+    case email = "email"
+    case name = "name"
 }
 
 

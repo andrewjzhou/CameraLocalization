@@ -8,6 +8,7 @@
 
 import UIKit
 import AWSUserPoolsSignIn
+import RxSwift
 
 private let reuseIdentifier = "Cell"
 
@@ -24,6 +25,9 @@ final class SettingsCollectionViewController: UICollectionViewController {
                                           UpdateEmailViewController(),
                                           UpdatePasswordViewController()]
     
+    private let refreshPublisher = PublishSubject<Bool>()
+    private let disposeBag = DisposeBag()
+    
     override init(collectionViewLayout layout: UICollectionViewLayout) {
         let layout = UICollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 0
@@ -32,17 +36,36 @@ final class SettingsCollectionViewController: UICollectionViewController {
         
         super.init(collectionViewLayout: layout)
         
-        // get user data
-        if UserCache.shared["username"] == nil {
-            if let username = AWSCognitoIdentityUserPool.default().currentUser()?.username {
-                AppSyncService.sharedInstance.cacheUserInfo(username: username, completion: {
+        // load data 
+        refreshPublisher.asDriver(onErrorJustReturn: false).drive(onNext: { (toRefresh) in
+            if toRefresh {
+                UserCache.shared.cacheUserInfo(completion: { [weak self](error) in
                     DispatchQueue.main.async {
-                        self.collectionView?.reloadData()
+                        if error == nil {
+                            self?.collectionView?.reloadData()
+                        } else {
+                            let alertController = UIAlertController(title: "Try Reloading",
+                                                                    message: "There was a problem loading your user information.",
+                                                                    preferredStyle: .alert)
+                            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+                            alertController.addAction(cancelAction)
+                            let retryAction = UIAlertAction(title: "Reload", style: .default, handler: {(_) in
+                                self?.refresh()
+                            })
+                            alertController.addAction(retryAction)
+                            
+                            self?.present(alertController, animated: true, completion:  nil)
+                        }
                     }
                 })
             }
-        }
+        }).disposed(by: disposeBag)
         
+        refresh()
+    }
+    
+    func refresh() {
+        refreshPublisher.onNext(true)
     }
     
     
@@ -64,7 +87,6 @@ final class SettingsCollectionViewController: UICollectionViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print("View just appeared")
         collectionView?.reloadData()
     }
 
