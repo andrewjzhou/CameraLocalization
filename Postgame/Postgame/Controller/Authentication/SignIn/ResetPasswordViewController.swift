@@ -49,8 +49,8 @@ final class ResetPasswordViewController: SignUpBaseViewController {
     
     override func buttonAction() {
         guard let confirmationCodeValue = textField.text, !confirmationCodeValue.isEmpty else {
-            let alertController = UIAlertController(title: "Confirmation Code Field Empty",
-                                                    message: "",
+            let alertController = UIAlertController(title: "Confirmation Code Is Missing",
+                                                    message: "Please enter a valid confirmation code.",
                                                     preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
             alertController.addAction(okAction)

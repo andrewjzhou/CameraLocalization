@@ -40,7 +40,7 @@ final class UsernameViewController: SignUpBaseViewController {
                 passwordVC.introVC = self?.introVC
                 self?.navigationController?.pushViewController(passwordVC, animated: true)
             } else {
-                let alertController = UIAlertController(title: "Username already exists.",
+                let alertController = UIAlertController(title: "Username Already Exists",
                                                         message: "",
                                                         preferredStyle: .alert)
                 let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
@@ -57,8 +57,8 @@ final class UsernameViewController: SignUpBaseViewController {
         
         // Check if valid
         if !textField.text!.isValidUsername() {
-            let alertController = UIAlertController(title: "Invalid character exists.",
-                                                    message: "",
+            let alertController = UIAlertController(title: "Invalid Character(s)",
+                                                    message: "Only alphabet, number, and underscore are allowed.",
                                                     preferredStyle: .alert)
             let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
             alertController.addAction(retryAction)
@@ -73,7 +73,7 @@ final class UsernameViewController: SignUpBaseViewController {
         }
         
         if textField.text!.length == 0 {
-            let alertController = UIAlertController(title: "Empty username.",
+            let alertController = UIAlertController(title: "Empty Field",
                                                     message: "",
                                                     preferredStyle: .alert)
             let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
@@ -85,8 +85,8 @@ final class UsernameViewController: SignUpBaseViewController {
     }
     
     func alertTooLong() {
-        let alertController = UIAlertController(title: "Username is too long.",
-                                                message: "maximum 15 characters",
+        let alertController = UIAlertController(title: "Username Is Too Long",
+                                                message: "Maximum 15 characters.",
                                                 preferredStyle: .alert)
         let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
         alertController.addAction(retryAction)

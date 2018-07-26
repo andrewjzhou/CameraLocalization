@@ -44,8 +44,8 @@ final class SettingsCollectionViewController: UICollectionViewController {
                         if error == nil {
                             self?.collectionView?.reloadData()
                         } else {
-                            let alertController = UIAlertController(title: "Try Reloading",
-                                                                    message: "There was a problem loading your user information.",
+                            let alertController = UIAlertController(title: "Oops",
+                                                                    message: "There was a problem loading your user information. Reload if you wish.",
                                                                     preferredStyle: .alert)
                             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
                             alertController.addAction(cancelAction)

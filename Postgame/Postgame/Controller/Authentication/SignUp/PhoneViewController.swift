@@ -54,7 +54,7 @@ class PhoneViewController: SignUpBaseViewController {
       
         guard let userNameValue = signUpInfo.username, !userNameValue.isEmpty,
             let passwordValue = signUpInfo.password, !passwordValue.isEmpty else {
-                let alertController = UIAlertController(title: "Missing Required Fields",
+                let alertController = UIAlertController(title: "Missing Required Field(s)",
                                                         message: "Username / Password are required for registration.",
                                                         preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
@@ -131,8 +131,8 @@ class PhoneViewController: SignUpBaseViewController {
             return true
         }
         catch {
-            let alertController = UIAlertController(title: "Phone Number",
-                                                    message: "Incorrect.",
+            let alertController = UIAlertController(title: "Invalid Phone Number",
+                                                    message: "",
                                                     preferredStyle: .alert)
             let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
             alertController.addAction(retryAction)

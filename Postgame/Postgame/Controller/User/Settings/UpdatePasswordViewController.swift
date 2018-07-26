@@ -48,7 +48,7 @@ class UpdatePasswordViewController: UpdateNameViewController {
             }
         } else {
             let alertController = UIAlertController(title: "Oops",
-                                                    message: "Something went wrong. Please try again. We apologize for the inconvenience.",
+                                                    message: "Something went wrong. Please try again.",
                                                     preferredStyle: .alert)
             let exitAction = UIAlertAction(title: "Exit", style: .cancel, handler: { (_) in
                 self.navigationController?.popViewController(animated: true)

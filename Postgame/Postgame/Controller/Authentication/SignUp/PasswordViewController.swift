@@ -36,7 +36,7 @@ final class PasswordViewController: SignUpBaseViewController {
     
     override func buttonActionCondition() -> Bool {
         if !textField.text!.isValidPassword() {
-            let alertController = UIAlertController(title: "Invalid Password.",
+            let alertController = UIAlertController(title: "Invalid Password",
                                                     message: "Minimum 8 characters\n At least 1 Lowercase Alphabet\n At least 1 Number",
                                                     preferredStyle: .alert)
             let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)

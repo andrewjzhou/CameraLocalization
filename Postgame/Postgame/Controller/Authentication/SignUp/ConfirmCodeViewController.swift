@@ -62,7 +62,7 @@ class ConfirmCodeViewController: SignUpBaseViewController {
     override func backButtonAction() {
 
         let alertController = UIAlertController(title: "Sure?",
-                                                message: "Exitting would abandon registration.",
+                                                message: "Exiting would abandon registration.",
                                                 preferredStyle: .alert)
         let exitAction = UIAlertAction(title: "Exit", style: .destructive, handler: { (_) -> Void in
             self.introVC = nil
@@ -76,7 +76,7 @@ class ConfirmCodeViewController: SignUpBaseViewController {
     
     override func buttonAction() {
         guard let confirmationCodeValue = textField.text, !confirmationCodeValue.isEmpty else {
-            let alertController = UIAlertController(title: "Confirmation code missing",
+            let alertController = UIAlertController(title: "Confirmation Code Missing",
                                                     message: "Please enter a valid confirmation code.",
                                                     preferredStyle: .alert)
             let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
