@@ -19,6 +19,8 @@ class PhoneViewController: SignUpBaseViewController {
     
     let db = DisposeBag()
     let phoneNumberKit = PhoneNumberKit()
+    
+    private let signedUp = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,10 +87,10 @@ class PhoneViewController: SignUpBaseViewController {
 //        emailVerified?.name = "email_verified"
 //        emailVerified?.value = "true"
 //        attributes.append(emailVerified!)
-//        let phoneVerified = AWSCognitoIdentityUserAttributeType()
-//        phoneVerified?.name = "phone_verified"
-//        phoneVerified?.value = "true"
-//        attributes.append(phoneVerified!)
+        let phoneVerified = AWSCognitoIdentityUserAttributeType()
+        phoneVerified?.name = "phone_verified"
+        phoneVerified?.value = "true"
+        attributes.append(phoneVerified!)
         
         //sign up the user
         pool.signUp(userNameValue, password: passwordValue, userAttributes: attributes, validationData: nil).continueWith {[weak self] (task) -> Any? in

@@ -34,6 +34,9 @@ final class VerificationModalPhoneViewController: UIViewController, UITextFieldD
         closeButton.setImage(UIImage(named: "ic_close")!, for: .normal)
         closeButton.backgroundColor = .flatWhite
         closeButton.tintColor = .flatGray
+        closeButton.rx.tap.bind {
+            self.closeButtonAction()
+        }
         
         let instructionLabel = UILabel()
         view.addSubview(instructionLabel)
@@ -126,11 +129,29 @@ final class VerificationModalPhoneViewController: UIViewController, UITextFieldD
         }
     }
     
-    func tryAgainAlert() {
+    private func tryAgainAlert() {
         let alertController = UIAlertController(title: "Try Again",
                                                 message: "",
                                                 preferredStyle: .alert)
         let retryAction = UIAlertAction(title: "Ok", style: .default)
+        alertController.addAction(retryAction)
+        
+        self.present(alertController, animated: true, completion:  nil)
+    }
+    
+    private func closeButtonAction() {
+        let alertController = UIAlertController(title: "Sure?",
+                                                message: "You must verify your phone to use Monocle.",
+                                                preferredStyle: .alert)
+        let logOutAction = UIAlertAction(title: "Log Out", style: .destructive, handler: { [weak self] _ in
+            self?.dismiss(animated: true, completion: {
+                AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
+                AWSCognitoIdentityUserPool.default().clearAll()
+                AWSCognitoIdentityUserPool.default().currentUser()?.getDetails()
+            })
+        })
+        alertController.addAction(logOutAction)
+        let retryAction = UIAlertAction(title: "Resume", style: .default, handler: nil)
         alertController.addAction(retryAction)
         
         self.present(alertController, animated: true, completion:  nil)

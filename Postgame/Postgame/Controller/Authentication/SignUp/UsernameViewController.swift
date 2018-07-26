@@ -110,19 +110,29 @@ func checkUser(_ loginName: String, completion: @escaping (Bool) -> Void) {
                 switch exception {
                 case .notAuthorizedException, .resourceConflictException:
                     // Account with this email does exist.
-                    completion(false)
+                    if proposedUser.confirmedStatus == AWSCognitoIdentityUserStatus.confirmed {
+                        completion(true)
+                    } else {
+                         completion(false)
+                    }
                 default:
                     // Some other exception (e.g., UserNotFoundException). Allow user to proceed.
                     completion(true)
+                
                 }
             } else {
                 // Some error we did not recognize. Optimistically allow user to proceed.
                 completion(true)
+              
             }
         } else {
             // No error implies login worked (edge case where proposed email
-            // is linked with an account which has password 'deadbeef').
-            completion(false)
+            // is linked with an account which has password 'ThisIsAnIncorrectPassword').
+            if proposedUser.confirmedStatus == AWSCognitoIdentityUserStatus.confirmed {
+                completion(true)
+            } else {
+                completion(false)
+            }
         }
         return nil
     })

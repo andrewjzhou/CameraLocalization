@@ -84,13 +84,9 @@ final class ViewController: UIViewController {
         
         UserCache.shared.cacheUserInfo()
         
-        let verificationVC = VerificationModalViewController()
-        verificationVC.modalPresentationStyle = .overCurrentContext
-        verificationVC.modalTransitionStyle = .crossDissolve
-        self.present(verificationVC, animated: true, completion: nil)
-        
         
     }
+
     
     func handleGeolocationService() {
         geolocationService.location.drive(onNext: { [weak self] (location) in
@@ -603,6 +599,25 @@ extension ViewController {
             return true
         }
         
+    }
+    
+    private func verifyPhoneIfNeeded() {
+        AWSCognitoIdentityUserPool.default().currentUser()?.getDetails().continueOnSuccessWith(block: { (response) -> Any? in
+            if let attributes = response.result?.userAttributes {
+                for attr in attributes {
+                    guard let name = attr.name, let value = attr.value else { continue }
+                    if name == "phone_number_verified"  {
+                        if value == "false" {
+                            let verificationVC = VerificationModalViewController()
+                            verificationVC.modalPresentationStyle = .overCurrentContext
+                            verificationVC.modalTransitionStyle = .crossDissolve
+                            self.present(verificationVC, animated: true, completion: nil)
+                        }
+                    }
+                }
+            }
+            return nil
+        })
     }
 }
 

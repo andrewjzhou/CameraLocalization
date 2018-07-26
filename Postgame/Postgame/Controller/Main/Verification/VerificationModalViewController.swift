@@ -39,9 +39,6 @@ final class VerificationModalViewController: UIViewController {
         containerView.layer.borderWidth = 2.0
         containerView.backgroundColor = .flatWhite
         
-       
-
-        // Do any additional setup after loading the view.
         
     }
     
