@@ -8,46 +8,46 @@
 
 import UIKit
 import AWSUserPoolsSignIn
+import TextFieldEffects
 
 final class ResetPasswordViewController: SignUpBaseViewController {
     var user: AWSCognitoIdentityUser?
-    let passwordField = UITextField()
+    var passwordField = IsaoTextField(frame: CGRect(x: UIScreen.main.bounds.width * 0.15,
+                                                    y: UIScreen.main.bounds.height * 0.25,
+                                                    width: UIScreen.main.bounds.width * 0.7,
+                                                    height: UIScreen.main.bounds.height * 0.075))
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         textField.placeholder = "Confirmation Code"
-        button.setBackgroundColor(.flatRed)
+        textField.keyboardType = .numberPad
         button.setTitle("Reset Password", for: .normal)
         
         setupPasswordInput()
+        
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0 && self.passwordField.text!.count != 0)
+            }.disposed(by: disposeBag)
+        
+        passwordField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = (self.textField.text!.count != 0 && self.passwordField.text!.count != 0)
+            }.disposed(by: disposeBag)
     }
     
     func setupPasswordInput() {
-        let label = UILabel()
-        view.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.setLeadingConstraint(equalTo: view.leadingAnchor, offset: UIScreen.main.bounds.width * 0.2)
-        label.setTopConstraint(equalTo: view.topAnchor, offset: UIScreen.main.bounds.height * 0.35)
-        label.setWidthConstraint(UIScreen.main.bounds.width * 0.25)
-        label.text = "New Password:"
-        label.textColor = .flatBlack
-        
         view.addSubview(passwordField)
-        passwordField.translatesAutoresizingMaskIntoConstraints = false
-        passwordField.setLeadingConstraint(equalTo: label.leadingAnchor, offset: 0)
-        passwordField.setTopConstraint(equalTo: label.bottomAnchor,
-                                       offset: UIScreen.main.bounds.height * 0.025)
-        passwordField.setTrailingConstraint(equalTo: view.trailingAnchor,
-                                            offset: -UIScreen.main.bounds.width * 0.25)
-        passwordField.contentVerticalAlignment = .bottom
-        addUnderline(for: passwordField)
-        passwordField.isSecureTextEntry = true
+        passwordField.placeholder = "Password"
+        passwordField.activeColor = .flatSkyBlue
+        passwordField.inactiveColor = .flatGrayDark
         passwordField.autocorrectionType = .no
         passwordField.autocapitalizationType = .none
+        passwordField.isSecureTextEntry = true
+        passwordField.delegate = self
     }
     
     override func buttonAction() {
+        button.isActive = false
         guard let confirmationCodeValue = textField.text, !confirmationCodeValue.isEmpty else {
             let alertController = UIAlertController(title: "Confirmation Code Is Missing",
                                                     message: "Please enter a valid confirmation code.",
@@ -56,6 +56,7 @@ final class ResetPasswordViewController: SignUpBaseViewController {
             alertController.addAction(okAction)
             
             self.present(alertController, animated: true, completion:  nil)
+            button.isActive = true
             return
         }
         
@@ -67,12 +68,16 @@ final class ResetPasswordViewController: SignUpBaseViewController {
             alertController.addAction(okAction)
             
             self.present(alertController, animated: true, completion:  nil)
+             button.isActive = true
             return
         }
         
         //confirm forgot password with input from ui.
         self.user?.confirmForgotPassword(confirmationCodeValue, password: newPassword).continueWith {[weak self] (task: AWSTask) -> AnyObject? in
-            guard let strongSelf = self else { return nil }
+            guard let strongSelf = self else {
+                self?.button.isActive = true
+                return nil
+            }
             DispatchQueue.main.async(execute: {
                 if let error = task.error as NSError? {
                     let alertController = UIAlertController(title: error.userInfo["__type"] as? String,
@@ -82,6 +87,7 @@ final class ResetPasswordViewController: SignUpBaseViewController {
                     alertController.addAction(okAction)
                     
                     self?.present(alertController, animated: true, completion:  nil)
+                    self?.button.isActive = true
                 } else {
                     let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
                 }

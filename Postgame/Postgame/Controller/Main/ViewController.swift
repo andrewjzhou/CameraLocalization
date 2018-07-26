@@ -79,8 +79,12 @@ final class ViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
         NotificationCenter.default.post(Notification(name: NSNotification.Name.UIApplicationDidBecomeActive))
+        
         UserCache.shared.cacheUserInfo()
+        
+        
     }
     
     func handleGeolocationService() {

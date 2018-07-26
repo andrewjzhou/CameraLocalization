@@ -8,14 +8,21 @@
 
 import UIKit
 import AWSUserPoolsSignIn
+import RxSwift
 
 final class ForgotPasswordViewController: SignUpBaseViewController {
+    
+    private let db = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
     
         textField.placeholder = "Username"
-        button.setTitle("Confirm", for: .normal)
+        button.setTitle("Next", for: .normal)
+        
+        textField.rx.controlEvent([.editingChanged]).bind {
+            self.button.isActive = self.textField.text!.count != 0
+            }.disposed(by: db)
     }
     
     override func buttonAction() {
@@ -53,5 +60,9 @@ final class ForgotPasswordViewController: SignUpBaseViewController {
             })
             return nil
         }
+    }
+    
+    override func backButtonAction() {
+        navigationController?.popViewController(animated: true)
     }
 }
