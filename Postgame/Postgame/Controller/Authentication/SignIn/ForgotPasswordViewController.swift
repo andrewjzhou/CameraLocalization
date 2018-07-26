@@ -63,6 +63,7 @@ final class ForgotPasswordViewController: SignUpBaseViewController {
     }
     
     override func backButtonAction() {
+        view.endEditing(true)
         navigationController?.popViewController(animated: true)
     }
 }
