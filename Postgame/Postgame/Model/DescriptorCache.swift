@@ -11,6 +11,7 @@
 import RxSwift
 import RxCocoa
 import CoreLocation
+import AWSUserPoolsSignIn
 
 final class DescriptorCache {
     let disposeBag = DisposeBag()
@@ -47,10 +48,23 @@ final class DescriptorCache {
                     self?.cache.updateValue(descriptor, forKey: descriptor.id)
                 }
             }, onError: { [weak self] (error) in
-                // retry query on error
-                if let location = self?.lastLocation {
-                    self?.query(location)
-                }
+                // reset auth token
+                let user = AWSCognitoIdentityUserPool.default().currentUser()
+                user?.getSession().continueWith(block: { (task) -> Any? in
+                    // get session token
+                    let getSessionResult = task.result
+                    if let tokenString = getSessionResult?.idToken?.tokenString {
+                        AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
+                    }
+                    
+                    // poll descriptors
+                    // retry query on error
+                    if let location = self?.lastLocation {
+                        self?.query(location)
+                    }
+                    
+                    return nil
+                })
             })
             .disposed(by: disposeBag)
     }
