@@ -89,11 +89,11 @@ final class ViewController: UIViewController {
 
     
     func handleGeolocationService() {
-        geolocationService.location.drive(onNext: { [weak self] (location) in
-            self?.lastLocation = location
+        geolocationService.location.drive(onNext: { [unowned self] (location) in
+            self.lastLocation = location
             
             if AWSCognitoIdentityUserPool.default().currentUser()?.isSignedIn == true {
-                self?.descriptorCache.query(location)
+                self.descriptorCache.query(location)
             }
         }).disposed(by: disposeBag)
     }
@@ -115,8 +115,9 @@ final class ViewController: UIViewController {
                     }
                     
                     // poll descriptors
-                    
-                    self?.descriptorCache.refresh()
+                    if let location = self?.lastLocation {
+                        self?.descriptorCache.query(location)
+                    }
                     
                     return nil
                 })
@@ -214,7 +215,9 @@ extension ViewController {
                 
                 self.resetSession()
                 
-                self.descriptorCache.refresh()
+                if let location = self.lastLocation {
+                    self.descriptorCache.query(location)
+                }
             }
             .disposed(by: disposeBag)
     }
@@ -533,11 +536,6 @@ extension ViewController {
 
 
 extension ViewController {
-    
-    // Sign out current user
-    func signOut() {
-        AWSCognitoIdentityUserPool.default().currentUser()?.signOut()
-    }
 
     func checkLocationAuthorizationStatus() {
         switch CLLocationManager.authorizationStatus() {

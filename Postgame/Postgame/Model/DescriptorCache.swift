@@ -36,35 +36,37 @@ final class DescriptorCache {
     init() {
         // Download descriptors
         queryPublisher.asObservable()
-            .debounce(0.2,
-                      scheduler: ConcurrentDispatchQueueScheduler(qos: DispatchQoS.userInteractive))
+            .debounce(0.1,
+                      scheduler: SerialDispatchQueueScheduler(qos: DispatchQoS.userInteractive))
             .flatMap { AppSyncService.sharedInstance.observeDescriptorsByLocation($0) }
-            .subscribe(onNext: { [weak self] (descriptors) in
+            .retry(10)
+            .subscribe(onNext: { [unowned self] (descriptors) in
                 // clear cache; consider if this is optimal on large scale
-                self?.cache.removeAll()
+                self.cache.removeAll()
                 
                 // cache
                 for descriptor in descriptors {
-                    self?.cache.updateValue(descriptor, forKey: descriptor.id)
+                    self.cache.updateValue(descriptor, forKey: descriptor.id)
                 }
-            }, onError: { [weak self] (error) in
-                // reset auth token
-                let user = AWSCognitoIdentityUserPool.default().currentUser()
-                user?.getSession().continueWith(block: { (task) -> Any? in
-                    // get session token
-                    let getSessionResult = task.result
-                    if let tokenString = getSessionResult?.idToken?.tokenString {
-                        AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
-                    }
-                    
-                    // poll descriptors
-                    // retry query on error
-                    if let location = self?.lastLocation {
-                        self?.query(location)
-                    }
-                    
-                    return nil
-                })
+//            }
+//                , onError: { [weak self] (error) in
+//                // reset auth token
+//                let user = AWSCognitoIdentityUserPool.default().currentUser()
+//                user?.getSession().continueWith(block: { (task) -> Any? in
+//                    // get session token
+//                    let getSessionResult = task.result
+//                    if let tokenString = getSessionResult?.idToken?.tokenString {
+//                        AppSyncService.sharedInstance.keychain.set(tokenString, forKey: CognitoAuthTokenStringKey)
+//                    }
+//
+//                    // poll descriptors
+//                    // retry query on error
+//                    if let location = self?.lastLocation {
+//                        self?.query(location)
+//                    }
+//
+//                    return nil
+//                })
             })
             .disposed(by: disposeBag)
     }

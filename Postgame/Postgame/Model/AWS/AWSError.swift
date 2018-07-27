@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum AWSError {
+enum AWSError: Error {
     case s3UploadError
     case appSyncCreateError
     case appSyncGetUserError

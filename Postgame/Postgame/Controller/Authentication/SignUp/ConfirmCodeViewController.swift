@@ -114,8 +114,6 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                                     let authDetails = AWSCognitoIdentityPasswordAuthenticationDetails(username: username,
                                                                                                       password: password)
                                     self?.introVC?.passwordAuthenticationCompletion?.set(result: authDetails)
-                                    self?.introVC?.clearUserInfo()
-                                    self?.introVC = nil
                                 }
                             })
                             
@@ -133,10 +131,6 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                         strongSelf.present(alertController, animated: true, completion:  nil)
                     }
                     
-                    
-//                    self?.introVC?.clearUserInfo()
-//                    self?.introVC = nil
-//                    let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
                 }
             })
             return nil
