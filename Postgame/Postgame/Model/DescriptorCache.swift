@@ -36,7 +36,7 @@ final class DescriptorCache {
     init() {
         // Download descriptors
         queryPublisher.asObservable()
-            .debounce(0.1,
+            .debounce(1,
                       scheduler: SerialDispatchQueueScheduler(qos: DispatchQoS.userInteractive))
             .flatMap { AppSyncService.sharedInstance.observeDescriptorsByLocation($0) }
             .retry(10)

@@ -27,15 +27,16 @@ final class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionVi
         cv.delegate = self
         return cv
     }()
-    private lazy var fetchResult : PHFetchResult<PHAsset> = {
-        let fetchOptions = PHFetchOptions()
-        fetchOptions.sortDescriptors =  [NSSortDescriptor.init(key: "creationDate", ascending: true)]
-        let fetchResult: PHFetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: fetchOptions)
-        return fetchResult
+    private lazy var fetchResult : PHFetchResult<PHAsset>? = {
+        if photoLibraryAccessAuthorized() {
+            print("returning fetchPhotos() in fetchResult")
+            return fetchPhotos()
+        } else {
+            print("returning nil in fetchResult because photo library is not authorized")
+            return nil
+        }
     }()
-    private let assets = {
-        return PHAsset.fetchAssets(with: .image, options: nil)
-    }()
+    
     private let cellId = "cellId"
     private let manager = PHImageManager.default()
     
@@ -53,7 +54,12 @@ final class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return assets.count
+        guard photoLibraryAccessAuthorized() == true else {
+            print("number of Item in section, return 0")
+            return 0
+        }
+        print("number of Item in section")
+        return fetchResult!.count
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -63,9 +69,10 @@ final class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! GridCell
-        
-        if let _ = fetchResult.firstObject {
-            manager.requestImage(for: fetchResult.object(at: fetchResult.count - 1 - indexPath.row) as PHAsset,
+        print("inside cell for item at 1")
+        if let _ = fetchResult?.firstObject {
+            print("inside cell for item at 2")
+            manager.requestImage(for: fetchResult!.object(at: fetchResult!.count - 1 - indexPath.row) as PHAsset,
                                  targetSize: cell.bounds.size,
                                  contentMode: .aspectFill,
                                  options: PHImageRequestOptions(),
@@ -82,8 +89,8 @@ final class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionVi
      Did select item .
      */
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let _ = fetchResult.firstObject {
-            manager.requestImageData(for: fetchResult.object(at: fetchResult.count - 1 - indexPath.row),
+        if let _ = fetchResult?.firstObject {
+            manager.requestImageData(for: fetchResult!.object(at: fetchResult!.count - 1 - indexPath.row),
                                      options: PHImageRequestOptions(),
                                      resultHandler: { (data, string, ori, any) in
                                         guard let imageData = data else {
@@ -101,8 +108,29 @@ final class PhotoLibraryView: UIView, UICollectionViewDataSource, UICollectionVi
         }
     }
     
+    func reload() {
+        print("photo picker reload() called")
+        fetchResult = fetchPhotos()
+        collectionView.reloadData()
+    }
+    
+    func reloadNeeded() -> Bool{
+        return fetchResult == nil || fetchResult?.count == 0
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func fetchPhotos() -> PHFetchResult<PHAsset>{
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.sortDescriptors =  [NSSortDescriptor.init(key: "creationDate", ascending: true)]
+        let fetchResult: PHFetchResult = PHAsset.fetchAssets(with: PHAssetMediaType.image, options: fetchOptions)
+        return fetchResult
+    }
+    
+    private func photoLibraryAccessAuthorized() -> Bool{
+        return PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized
     }
 }
 

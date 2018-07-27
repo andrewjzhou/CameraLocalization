@@ -36,6 +36,18 @@ final class CreationViewController: UIViewController {
         return rv
     }()
     
+    var photoLibraryView: PhotoLibraryView? {
+        didSet {
+            if photoLibraryView != nil {
+                photoLibraryView!.imageSubject
+                    .observeOn(MainScheduler.asyncInstance)
+                    .subscribe(onNext: { [unowned self] (image) in
+                        self.slateView.image = image
+                    })
+                    .disposed(by: self.disposeBag)
+            }
+        }
+    }
     
     // Observable to publish and communicate with ViewController
     public lazy var exitSubject = PublishSubject<UIImage?>()
@@ -270,71 +282,60 @@ extension CreationViewController {
      Setup photoPickerView layout and Rx.
      */
     private func setupPhotoPickerLayoutAndRx(){
-        // setup photoPicker layout
-        let photoPickerView = PhotoLibraryView()
-        
-        view.addSubview(photoPickerView)
-        photoPickerView.translatesAutoresizingMaskIntoConstraints = false
-        photoPickerView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        photoPickerView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
-        photoPickerView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
-        photoPickerView.setHeightConstraint(0.21 * screenHeight)
-        
-        let translation = CGAffineTransform(translationX: 0, y: screenHeight)
-        photoPickerView.transform = translation
-        
-        /**
-         Set slateView background image - React to photoPickerView imageSubject
-         */
-        photoPickerView.imageSubject
-            .subscribe(onNext: { [slateView] (image) in
-                slateView.image = image
-            })
-            .disposed(by: disposeBag)
-        
-        
         /**
          Show PhotoPicker - React to photoPickerButton tap gesture
          */
+        let translation = CGAffineTransform(translationX: 0, y: screenHeight)
         photoPickerButton.rx.tap
-            .do(onNext: { (_) in
-                if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
-                    PHPhotoLibrary.requestAuthorization({ (status) in
-                        if status != PHAuthorizationStatus.authorized {
-                            let alertController = UIAlertController(title: "Photos Permission Required",
-                                                                    message: "Require permssion to add photos from library",
-                                                                    preferredStyle: .alert)
-                            let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
-                            alertController.addAction(cancelAction)
-                            let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
-                                guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
-                                    return
-                                }
-                                
-                                if UIApplication.shared.canOpenURL(settingsUrl) {
-                                    UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
-                                        print("Settings opened: \(success)") // Prints true
-                                    })
-                                }
-                            }
-                            alertController.addAction(settingsAction)
-                            self.present(alertController, animated: true, completion: nil)
+            .do(onNext: { [unowned self] (_) in
+                if self.photoLibraryView == nil {
+                    // initialize photoLibraryView
+                    self.photoLibraryView = PhotoLibraryView()
+                    self.view!.addSubview(self.photoLibraryView!)
+                    self.photoLibraryView!.translatesAutoresizingMaskIntoConstraints = false
+                    self.photoLibraryView!.setBottomConstraint(equalTo: self.view!.bottomAnchor, offset: 0)
+                    self.photoLibraryView!.setLeadingConstraint(equalTo: self.view!.leadingAnchor, offset: 0)
+                    self.photoLibraryView!.setTrailingConstraint(equalTo: self.view!.trailingAnchor, offset: 0)
+                    self.photoLibraryView!.setHeightConstraint(0.21 * screenHeight)
+                    self.photoLibraryView!.transform = translation
+                }
+                
+                if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.denied
+                    || PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.restricted {
+                    let alertController = UIAlertController(title: "Monocle Needs Access to Photo Library",
+                                                            message: "Granting access allows you to use your own photos to create AR graffiti.",
+                                                            preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+                    alertController.addAction(cancelAction)
+                    let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
+                        guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
+                            return
                         }
-                    })
+                        
+                        if UIApplication.shared.canOpenURL(settingsUrl) {
+                            UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
+                                print("Settings opened: \(success)") // Prints true
+                            })
+                        }
+                    }
+                    alertController.addAction(settingsAction)
+                    self.present(alertController, animated: true, completion: nil)
+                } else if self.photoLibraryView!.reloadNeeded() == true {
+                    self.photoLibraryView!.reload()
                 }
             })
-            .filter{ return PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized }
-            .subscribe(onNext: { [weak self] (_) in
-                if self?.photoPickerButton.isSelected == true {
+            .filter{ return PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.authorized && self.photoLibraryView != nil}
+            .subscribe(onNext: { [unowned self] (_) in
+                if self.photoPickerButton.isSelected == true {
                     UIView.animate(withDuration: 0.3, animations: {
-                        photoPickerView.transform = translation
+                        self.photoLibraryView!.transform = translation
                     })
-                     self?.photoPickerButton.isSelected = false
+                     self.photoPickerButton.isSelected = false
                 } else {
                     UIView.animate(withDuration: 0.3, animations: {
-                        photoPickerView.transform = .identity
+                        self.photoLibraryView!.transform = .identity
                     })
-                     self?.photoPickerButton.isSelected = true
+                     self.photoPickerButton.isSelected = true
                 }
             })
             .disposed(by: disposeBag)
