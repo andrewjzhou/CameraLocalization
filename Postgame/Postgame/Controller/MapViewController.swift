@@ -15,7 +15,7 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
     let mapView = MGLMapView()
     let slider = UISlider()
     
-    var presentingVC: ViewController? = nil
+    weak var presentingVC: ViewController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,16 +39,13 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
         if !noTapZone1.contains(point) && !noTapZone2.contains(point) {
             // dismiss MapViewController
             self.dismiss(animated: true) {
-                if let vc = self.presentingVC {
-                    // show buttons in presenting ViewController
-                    UIView.animate(withDuration: 0.15) {
-                        vc.indicatorButton.alpha = 1
-                        vc.createButton.alpha = 1
-                        vc.userButton.alpha = 1
-                        vc.resetButton.alpha = 1
-                        vc.screenshotButton.alpha = 1
-                    }
-                    self.presentingVC = nil
+                // show buttons in presenting ViewController
+                UIView.animate(withDuration: 0.15) {
+                    self.presentingVC?.indicatorButton.alpha = 1
+                    self.presentingVC?.createButton.alpha = 1
+                    self.presentingVC?.userButton.alpha = 1
+                    self.presentingVC?.resetButton.alpha = 1
+                    self.presentingVC?.screenshotButton.alpha = 1
                 }
             }
         }

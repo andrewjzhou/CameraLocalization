@@ -313,6 +313,11 @@ extension ViewController {
     }
     
     private func setupIndicatorButtonRx() {
+        let mapVC = MapViewController()
+        mapVC.presentingVC = self
+        mapVC.modalPresentationStyle = .overCurrentContext
+        mapVC.modalTransitionStyle = .crossDissolve
+        
         // Count number of descriptors cached
         descriptorCache.counter
             .drive(onNext: { (count) in
@@ -325,11 +330,7 @@ extension ViewController {
         indicatorButton.rx.tap.bind {
             self.checkLocationAuthorizationStatus()
             self.descriptorCache.refresh()
-            // show map
-            let mapVC = MapViewController()
-            mapVC.presentingVC = self
-            mapVC.modalPresentationStyle = .overCurrentContext
-            mapVC.modalTransitionStyle = .crossDissolve
+            
             self.present(mapVC, animated: true, completion: nil)
             // hide main buttons
             UIView.animate(withDuration: 0.3, animations: {
@@ -541,7 +542,7 @@ extension ViewController {
         switch CLLocationManager.authorizationStatus() {
         case .denied, .restricted:
             let alertController = UIAlertController(title: "Location Service",
-                                                    message: "Monocle is needs you to authoirze location service to work!",
+                                                    message: "Monocle detects and saves your graffiti at places.",
                                                     preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
             alertController.addAction(cancelAction)
@@ -551,9 +552,7 @@ extension ViewController {
                 }
                 
                 if UIApplication.shared.canOpenURL(settingsUrl) {
-                    UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
-                        print("Settings opened: \(success)") // Prints true
-                    })
+                    UIApplication.shared.open(settingsUrl, completionHandler: nil)
                 }
             }
             alertController.addAction(settingsAction)
@@ -569,7 +568,7 @@ extension ViewController {
             AVCaptureDevice.requestAccess(for: .video) { (authorized) in
                 if !authorized {
                     let alertController = UIAlertController(title: "Camera",
-                                                            message: "Monocle needs you to authoirze camera to work!",
+                                                            message: "Monocle needs access to camera for Augmented Reality.",
                                                             preferredStyle: .alert)
                     let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
                     alertController.addAction(cancelAction)
@@ -579,9 +578,7 @@ extension ViewController {
                         }
                         
                         if UIApplication.shared.canOpenURL(settingsUrl) {
-                            UIApplication.shared.open(settingsUrl, completionHandler: { (success) in
-                                print("Settings opened: \(success)") // Prints true
-                            })
+                            UIApplication.shared.open(settingsUrl, completionHandler: nil)
                         }
                     }
                     alertController.addAction(settingsAction)
