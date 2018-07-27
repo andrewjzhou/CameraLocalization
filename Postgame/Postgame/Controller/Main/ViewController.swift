@@ -163,8 +163,8 @@ extension ViewController {
                 if PHPhotoLibrary.authorizationStatus() != PHAuthorizationStatus.authorized {
                     PHPhotoLibrary.requestAuthorization({ (status) in
                         if status != PHAuthorizationStatus.authorized {
-                            let alertController = UIAlertController(title: "Photo library permission needed",
-                                                                    message: "Require permssion to save photo to library",
+                            let alertController = UIAlertController(title: "Monocle Needs Access to Your Photo Library",
+                                                                    message: "Granting permission allows you to save screenshots.",
                                                                     preferredStyle: .alert)
                             let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
                             alertController.addAction(cancelAction)
