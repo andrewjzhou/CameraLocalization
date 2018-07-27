@@ -20,8 +20,6 @@ class ConfirmCodeViewController: SignUpBaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        backButton.setImage(UIImage(named: "ic_close"), for: .normal)
-        
         textField.placeholder = "Confirmation Code"
         textField.keyboardType = .numberPad
         
@@ -31,7 +29,6 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         
         setupResendButton()
         
-        backButton.isHidden = true
         
         textField.rx.controlEvent([.editingChanged]).bind {
             self.button.isActive = (self.textField.text!.count != 0)
@@ -58,21 +55,20 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                 self.resendConfirmationCode()
             }.disposed(by: disposeBag)
     }
-    
-    open override func backButtonAction() {
 
-        let alertController = UIAlertController(title: "Sure?",
-                                                message: "Exiting would abandon registration.",
-                                                preferredStyle: .alert)
-        let exitAction = UIAlertAction(title: "Exit", style: .destructive, handler: { (_) -> Void in
-            self.introVC = nil
-            self.navigationController?.popToRootViewController(animated: true)
-        })
-        alertController.addAction(exitAction)
-        let resumeAction = UIAlertAction(title: "Resume", style: .default)
-        alertController.addAction(resumeAction)
-        self.present(alertController, animated: true, completion: nil)
-    }
+//    open override func backButtonAction() {
+//        let alertController = UIAlertController(title: "Sure?",
+//                                                message: "Exiting would abandon registration.",
+//                                                preferredStyle: .alert)
+//        let exitAction = UIAlertAction(title: "Exit", style: .destructive, handler: { (_) -> Void in
+//            self.introVC = nil
+//            self.navigationController?.popToRootViewController(animated: true)
+//        })
+//        alertController.addAction(exitAction)
+//        let resumeAction = UIAlertAction(title: "Resume", style: .default)
+//        alertController.addAction(resumeAction)
+//        self.present(alertController, animated: true, completion: nil)
+//    }
     
     open override func buttonAction() {
         guard let confirmationCodeValue = textField.text, !confirmationCodeValue.isEmpty else {
@@ -115,12 +111,11 @@ class ConfirmCodeViewController: SignUpBaseViewController {
                                     self?.retryAlert()
                                     self?.button.isActive = true
                                 } else {
-//                                    self?.dismiss(animated: true, completion: {
-//
-//                                    })
                                     let authDetails = AWSCognitoIdentityPasswordAuthenticationDetails(username: username,
                                                                                                       password: password)
                                     self?.introVC?.passwordAuthenticationCompletion?.set(result: authDetails)
+                                    self?.introVC?.clearUserInfo()
+                                    self?.introVC = nil
                                 }
                             })
                             
@@ -222,12 +217,6 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         alertController.addAction(okAction)
         
         self.present(alertController, animated: true, completion:  nil)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        introVC?.clearUserInfo()
-        introVC = nil
     }
     
 }

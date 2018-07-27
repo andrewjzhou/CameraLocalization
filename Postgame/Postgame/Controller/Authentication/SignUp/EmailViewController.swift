@@ -36,7 +36,7 @@ class EmailViewController: SignUpBaseViewController {
                 self!.navigationController?.pushViewController(phoneVC, animated: true)
             } else {
                 let alertController = UIAlertController(title: "Email Taken",
-                                                        message: "Email you entered is used for another account.",
+                                                        message: "Try another email address",
                                                         preferredStyle: .alert)
                 let retryAction = UIAlertAction(title: "Retry", style: .default, handler: nil)
                 alertController.addAction(retryAction)

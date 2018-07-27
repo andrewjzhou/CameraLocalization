@@ -44,6 +44,7 @@ class PhoneViewController: SignUpBaseViewController {
     }
     
     override func buttonAction() {
+        print("tapped")
         do {
             let phoneRaw = phoneNumberKit.format(try phoneNumberKit.parse(textField.text!), toType: .e164)
             introVC?.signUpInfo.phone = phoneRaw
@@ -82,20 +83,12 @@ class PhoneViewController: SignUpBaseViewController {
             attributes.append(email!)
         }
         
-        // Assume verified or else cannot reset password
-//        let emailVerified = AWSCognitoIdentityUserAttributeType()
-//        emailVerified?.name = "email_verified"
-//        emailVerified?.value = "true"
-//        attributes.append(emailVerified!)
-        let phoneVerified = AWSCognitoIdentityUserAttributeType()
-        phoneVerified?.name = "phone_verified"
-        phoneVerified?.value = "true"
-        attributes.append(phoneVerified!)
         
         //sign up the user
         pool.signUp(userNameValue, password: passwordValue, userAttributes: attributes, validationData: nil).continueWith {[weak self] (task) -> Any? in
             guard let strongSelf = self else { return nil }
             DispatchQueue.main.async(execute: {
+                print("signing up")
                 if let error = task.error as NSError? {
                     let alertController = UIAlertController(title: error.userInfo["__type"] as? String,
                                                             message: error.userInfo["message"] as? String,
@@ -104,6 +97,7 @@ class PhoneViewController: SignUpBaseViewController {
                     alertController.addAction(retryAction)
                     
                     self?.present(alertController, animated: true, completion:  nil)
+                    print("found error")
                 } else if let result = task.result  {
                     // handle the case where user has to confirm his identity via email / SMS
                     if (result.user.confirmedStatus != AWSCognitoIdentityUserStatus.confirmed) {
@@ -113,11 +107,13 @@ class PhoneViewController: SignUpBaseViewController {
                         confirmVC.sentTo = strongSelf.sentTo
                         confirmVC.user = strongSelf.pool.getUser(signUpInfo.username!)
                         
-                        
+                         print("should go to confirm")
                         self?.navigationController?.pushViewController(confirmVC, animated: true)
                     } else {
                         let _ = strongSelf.navigationController?.popToRootViewController(animated: true)
                     }
+                } else {
+                    print("limbo")
                 }
                 
             })
@@ -126,6 +122,7 @@ class PhoneViewController: SignUpBaseViewController {
     }
     
     override func buttonActionCondition() -> Bool {
+        print("checking condition")
         if !button.isActive { return false }
         
         do {

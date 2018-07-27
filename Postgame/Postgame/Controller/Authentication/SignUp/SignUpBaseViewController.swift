@@ -159,11 +159,6 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
         button.sendActions(for: .touchUpInside)
         return true
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        self.introVC = nil
-    }
 }
 
 final class SubmitButton: UIButton {

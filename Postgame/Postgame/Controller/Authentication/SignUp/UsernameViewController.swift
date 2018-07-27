@@ -122,7 +122,7 @@ func checkUser(_ loginName: String, completion: @escaping (Bool) -> Void) {
                 }
             } else {
                 // Some error we did not recognize. Optimistically allow user to proceed.
-                completion(true)
+               completion(true)
               
             }
         } else {
