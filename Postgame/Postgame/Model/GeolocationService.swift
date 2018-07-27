@@ -38,9 +38,18 @@ final class GeolocationService {
                 return $0.last.map(Driver.just) ?? Driver.empty()
             }
     
-        locationManager.requestWhenInUseAuthorization()
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedWhenInUse:
+            locationManager.requestAlwaysAuthorization()
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        default:
+            break
+        }
+        
         locationManager.startUpdatingLocation()
     }
+    
     
     
 }

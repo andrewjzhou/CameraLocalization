@@ -539,15 +539,11 @@ extension ViewController {
 
     func checkLocationAuthorizationStatus() {
         switch CLLocationManager.authorizationStatus() {
-        case .authorizedWhenInUse:
-            geolocationService.locationManager.requestAlwaysAuthorization()
-        case .authorizedAlways:
-            break
         case .denied, .restricted:
             let alertController = UIAlertController(title: "Location Service",
-                                                    message: "Monocle needs you to authoirze location services to work!",
+                                                    message: "Monocle is needs you to authoirze location service to work!",
                                                     preferredStyle: .alert)
-            let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
             alertController.addAction(cancelAction)
             let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
                 guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
@@ -563,6 +559,7 @@ extension ViewController {
             alertController.addAction(settingsAction)
             self.present(alertController, animated: true, completion: nil)
         default:
+            print("default in switch")
             geolocationService.locationManager.requestWhenInUseAuthorization()
         }
     }
@@ -574,7 +571,7 @@ extension ViewController {
                     let alertController = UIAlertController(title: "Camera",
                                                             message: "Monocle needs you to authoirze camera to work!",
                                                             preferredStyle: .alert)
-                    let cancelAction = UIAlertAction(title: "Cancel", style: .default, handler: nil)
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: nil)
                     alertController.addAction(cancelAction)
                     let settingsAction = UIAlertAction(title: "Settings", style: .default) { (_) -> Void in
                         guard let settingsUrl = URL(string: UIApplicationOpenSettingsURLString) else {
