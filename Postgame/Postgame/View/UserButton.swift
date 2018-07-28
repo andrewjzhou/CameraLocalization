@@ -18,6 +18,8 @@ final class UserButton: UIButton {
     private(set) lazy var colorDriver = colorPublisher.asDriver(onErrorJustReturn: .flatRed)
     private let colorPublisher = PublishSubject<UIColor>()
     
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -36,11 +38,34 @@ final class UserButton: UIButton {
                     default: continue
                     }
                 }
-                if nodeObservered { self?.backgroundColor = UIColor.green }
-                else if rectObservered { self?.backgroundColor = UIColor.flatGreen }
-                else if planeObservered { self?.backgroundColor = UIColor.flatForestGreen }
-                else if highFPObservered { self?.backgroundColor = UIColor.flatYellow }
-                else { self?.backgroundColor = UIColor.flatRed }
+                if nodeObservered {
+//                    self?.backgroundColor = UIColor.green
+                    self?.setBackgroundImage(.from(color: UIColor.green.withAlphaComponent(buttonAlpha)), for: .normal)
+                    self?.setBackgroundImage(.from(color: UIColor.green.withAlphaComponent(0.75)), for: .selected)
+                }
+                else if rectObservered {
+//                    self?.backgroundColor = UIColor.flatGreen
+                    self?.setBackgroundImage(.from(color: UIColor.flatGreen.withAlphaComponent(buttonAlpha)), for: .normal)
+                    self?.setBackgroundImage(.from(color: UIColor.flatGreenDark.withAlphaComponent(buttonAlpha)), for: .selected)
+                }
+                else if planeObservered {
+//                    self?.backgroundColor = UIColor.flatForestGreen
+                    self?.setBackgroundImage(.from(color: UIColor.flatForestGreen.withAlphaComponent(buttonAlpha)), for: .normal)
+                    self?.setBackgroundImage(.from(color: UIColor.flatForestGreenDark.withAlphaComponent(buttonAlpha)), for: .selected)
+                     self?.setImage(UIImage(named: "Smile")!, for: .normal)
+                }
+                else if highFPObservered {
+//                    self?.backgroundColor = UIColor.flatYellow
+                    self?.setBackgroundImage(.from(color: UIColor.flatYellow.withAlphaComponent(buttonAlpha)), for: .normal)
+                    self?.setBackgroundImage(.from(color: UIColor.flatYellowDark.withAlphaComponent(buttonAlpha)), for: .selected)
+                    self?.setImage(UIImage(named: "Neutral")!, for: .normal)
+                }
+                else {
+//                    self?.backgroundColor = UIColor.flatRed
+                    self?.setBackgroundImage(.from(color: UIColor.flatRed.withAlphaComponent(buttonAlpha)), for: .normal)
+                    self?.setBackgroundImage(.from(color: UIColor.flatRedDark.withAlphaComponent(0.75)), for: .selected)
+                    self?.setImage(UIImage(named: "Frown")!, for: .normal)
+                }
                 
                 self?.colorPublisher.onNext(self?.backgroundColor ?? .flatRed)
             }).disposed(by: disposeBag)
@@ -54,3 +79,5 @@ final class UserButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+fileprivate let buttonAlpha: CGFloat = 0.5

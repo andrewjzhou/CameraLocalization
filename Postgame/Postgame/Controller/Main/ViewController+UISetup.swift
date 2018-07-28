@@ -91,9 +91,11 @@ extension ViewController {
     private func setupUserButton() {
         view.addSubview(userButton)
         setButtonBasics(userButton)
-        userButton.setImage(UIImage(named: "ic_perm_identity"), for: .normal)
+        userButton.setImage(UIImage(named: "Frown"), for: .normal)
         userButton.setTopConstraint(equalTo: view.topAnchor, offset: screenHeight * 0.02)
         userButton.setCenterXConstraint(equalTo: view.centerXAnchor, offset: 0)
+        userButton.layer.borderColor = UIColor.flatBlack.withAlphaComponent(0.8).cgColor
+        userButton.layer.borderWidth = 1.5
     }
     
     private func colorButtonsRealTime() {
