@@ -21,6 +21,7 @@ final class ResetPasswordViewController: SignUpBaseViewController {
         super.viewDidLoad()
 
         textField.placeholder = "Confirmation Code"
+        textField.activeColor = .flatRed
         textField.keyboardType = .numberPad
         button.setTitle("Reset Password", for: .normal)
         

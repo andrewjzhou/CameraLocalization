@@ -70,7 +70,8 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
     func setupUsernameInput() {
         view.addSubview(usernameField)
         usernameField.placeholder = "Username"
-        usernameField.activeColor = .flatSkyBlue
+        usernameField.font = UIFont(name: "Montserrat-Regular", size: 16)
+        usernameField.activeColor = .flatGreen
         usernameField.inactiveColor = .flatGrayDark
         usernameField.autocorrectionType = .no
         usernameField.autocapitalizationType = .none
@@ -80,7 +81,8 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
     func setupPasswordInput() {
         view.addSubview(passwordField)
         passwordField.placeholder = "Password"
-        passwordField.activeColor = .flatSkyBlue
+        passwordField.font = UIFont(name: "Montserrat-Regular", size: 16)
+        passwordField.activeColor = .flatGreen
         passwordField.inactiveColor = .flatGrayDark
         passwordField.autocorrectionType = .no
         passwordField.autocapitalizationType = .none
@@ -96,10 +98,10 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
         signInButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
         signInButton.setHeightConstraint(UIScreen.main.bounds.height * 0.1)
         signInButton.setTitle("Sign In", for: .normal)
-        signInButton.titleLabel?.font =  UIFont(name: "Catatan Perjalanan", size: 25)
+        signInButton.titleLabel?.font =  UIFont(name: "Montserrat-Bold", size: 25)
         signInButton.titleLabel?.textColor = .flatWhite
-        signInButton.color = .flatSkyBlue
-        signInButton.highlightedColor = .flatSkyBlueDark
+        signInButton.color = .flatGreen
+        signInButton.highlightedColor = .flatGreenDark
         
         // tapped
         signInButton.rx.tap
@@ -149,7 +151,7 @@ final class SignInViewController: UIViewController, UITextFieldDelegate {
         fpButton.layer.cornerRadius = 0.12 * fpWidth
         fpButton.setTitle("Forgot Password", for: .normal)
         fpButton.backgroundColor = .flatGray
-        fpButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        fpButton.titleLabel?.font = UIFont(name: "Montserrat-Light", size: 12)
         fpButton.titleLabel?.textColor = .flatWhite
         fpButton.rx.tap.bind {
             self.navigationController?.pushViewController(ForgotPasswordViewController(), animated: true)

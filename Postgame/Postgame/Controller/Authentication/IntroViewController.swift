@@ -28,20 +28,20 @@ final class IntroViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.isNavigationBarHidden = true
-        view.backgroundColor = .flatGray
+        view.backgroundColor = .white
 
         // configure sign-in button
         let signInButton = UIButton()
         view.addSubview(signInButton)
         signInButton.translatesAutoresizingMaskIntoConstraints = false
-        signInButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        signInButton.setLeadingConstraint(equalTo: view.centerXAnchor, offset: 0)
         signInButton.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        signInButton.setTrailingConstraint(equalTo: view.centerXAnchor, offset: 0)
+        signInButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
         signInButton.setHeightConstraint(UIScreen.main.bounds.height * 0.1)
         signInButton.setTitle("Sign In", for: .normal)
-        signInButton.titleLabel?.font =  UIFont(name: "Catatan Perjalanan", size: 25)
+        signInButton.titleLabel?.font =  UIFont(name: "Montserrat-Bold", size: 25)
         signInButton.titleLabel?.textColor = .flatWhite
-        signInButton.backgroundColor = .flatBlue
+        signInButton.backgroundColor = .flatGreen
         signInButton.rx.tap.bind {
             let signInVC = SignInViewController()
             signInVC.introVC = self
@@ -52,12 +52,12 @@ final class IntroViewController: UIViewController {
         let signUpButton = UIButton()
         view.addSubview(signUpButton)
         signUpButton.translatesAutoresizingMaskIntoConstraints = false
-        signUpButton.setLeadingConstraint(equalTo: view.centerXAnchor, offset: 0)
+        signUpButton.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
         signUpButton.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
-        signUpButton.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+        signUpButton.setTrailingConstraint(equalTo: view.centerXAnchor, offset: 0)
         signUpButton.setHeightConstraint(UIScreen.main.bounds.height * 0.1)
         signUpButton.setTitle("Sign Up", for: .normal)
-        signUpButton.titleLabel?.font =  UIFont(name: "Catatan Perjalanan", size: 25)
+        signUpButton.titleLabel?.font =  UIFont(name: "Montserrat-Bold", size: 25)
         signUpButton.titleLabel?.textColor = .flatWhite
         signUpButton.backgroundColor = .flatRed
         signUpButton.rx.tap.bind {
@@ -66,6 +66,17 @@ final class IntroViewController: UIViewController {
             self.navigationController?.pushViewController(usernameVC, animated: true)
         }.disposed(by: disposeBag)
         
+        // logo
+        let logoView = UIImageView(image: UIImage(named: "launchscreen")!)
+        view.addSubview(logoView)
+        logoView.contentMode = .scaleAspectFit
+        logoView.translatesAutoresizingMaskIntoConstraints = false
+        logoView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
+        logoView.setTopConstraint(equalTo: view.topAnchor, offset: 0)
+        logoView.setTrailingConstraint(equalTo: view.trailingAnchor,
+                                       offset: -0.02 * UIScreen.main.bounds.width)
+        logoView.setBottomConstraint(equalTo: signInButton.topAnchor,
+                                     offset: -0.03 * UIScreen.main.bounds.height)
     }
     
     func clearUserInfo() {

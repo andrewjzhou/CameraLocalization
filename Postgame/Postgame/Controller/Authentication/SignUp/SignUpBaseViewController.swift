@@ -59,7 +59,8 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
     func setupInput() {
         view.addSubview(textField)
         textField.placeholder = "Placeholder"
-        textField.activeColor = .flatSkyBlue
+        textField.font = UIFont(name: "Montserrat-Regular", size: 16)
+        textField.activeColor = .flatRed
         textField.inactiveColor = .flatGrayDark
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
@@ -101,7 +102,7 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
         button.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
         button.setHeightConstraint(UIScreen.main.bounds.height * 0.1)
         button.setTitle("Next", for: .normal)
-        button.titleLabel?.font =  UIFont(name: "Catatan Perjalanan", size: 25)
+        button.titleLabel?.font =  UIFont(name: "Montserrat-Bold", size: 25)
         button.titleLabel?.textColor = .flatWhite
         
         button.rx.tap

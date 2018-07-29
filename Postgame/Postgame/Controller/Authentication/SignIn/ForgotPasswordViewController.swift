@@ -18,6 +18,7 @@ final class ForgotPasswordViewController: SignUpBaseViewController {
         super.viewDidLoad()
     
         textField.placeholder = "Username"
+        textField.activeColor = .flatRed
         button.setTitle("Next", for: .normal)
         
         textField.rx.controlEvent([.editingChanged]).bind {

@@ -187,7 +187,7 @@ class CustomAnnotationView: MGLAnnotationView {
         layer.cornerRadius = bounds.width / 2
         layer.borderWidth = 2
         layer.borderColor = UIColor.white.cgColor
-        layer.backgroundColor = UIColor.flatSkyBlue.cgColor
+        layer.backgroundColor = UIColor.flatRed.cgColor
         layer.opacity = 0.7
     }
     

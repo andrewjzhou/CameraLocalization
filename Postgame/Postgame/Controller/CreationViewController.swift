@@ -229,8 +229,8 @@ extension CreationViewController {
         view.addSubview(finishButton)
         finishButton.translatesAutoresizingMaskIntoConstraints = false
         finishButton.setImage(UIImage(named: "baseline_done_white_24pt"), for: .normal)
-        finishButton.setBackgroundImage(.from(color: UIColor.flatSkyBlue.withAlphaComponent(0.2)), for: .normal)
-        finishButton.setBackgroundImage(.from(color: UIColor.flatSkyBlueDark.withAlphaComponent(0.2)), for: .selected)
+        finishButton.setBackgroundImage(.from(color: UIColor.flatGreen.withAlphaComponent(0.2)), for: .normal)
+        finishButton.setBackgroundImage(.from(color: UIColor.flatGreenDark.withAlphaComponent(0.2)), for: .selected)
         finishButton.setLeadingConstraint(equalTo: view.centerXAnchor, offset: 2)
         finishButton.setTopConstraint(equalTo: slateView.bottomAnchor, offset: 0.065 * screenHeight)
         finishButton.setHeightConstraint(0.088 * screenHeight)
