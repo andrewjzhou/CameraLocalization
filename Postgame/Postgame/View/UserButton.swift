@@ -22,11 +22,11 @@ final class UserButton: UIButton {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+    
         perceptionStatusObservable
             .buffer(timeSpan: 0.2, count: 10, scheduler: MainScheduler.asyncInstance)
             .asDriver(onErrorJustReturn: [])
-            .drive(onNext: { [weak self] (statusArr) in
+            .drive(onNext: { [unowned self] (statusArr) in
                 var highFPObservered = false, planeObservered = false,
                 rectObservered = false, nodeObservered = false
                 for status in statusArr {
@@ -39,34 +39,34 @@ final class UserButton: UIButton {
                     }
                 }
                 if nodeObservered {
-                    self?.colorPublisher.onNext(.green)
-                    self?.setBackgroundImage(.from(color: UIColor.green.withAlphaComponent(buttonAlpha)), for: .normal)
-                    self?.setBackgroundImage(.from(color: UIColor.green.withAlphaComponent(0.75)), for: .selected)
-                    self?.setImage(UIImage(named: "Smile")!, for: .normal)
+                    self.colorPublisher.onNext(.green)
+                    self.setBackgroundImage(self.nodeNormalBI, for: .normal)
+                    self.setBackgroundImage(self.nodeSelectedBI, for: .selected)
+                    self.setImage(self.smileImage, for: .normal)
                 }
                 else if rectObservered {
-                    self?.colorPublisher.onNext(.flatGreen)
-                    self?.setBackgroundImage(.from(color: UIColor.flatGreen.withAlphaComponent(buttonAlpha)), for: .normal)
-                    self?.setBackgroundImage(.from(color: UIColor.flatGreenDark.withAlphaComponent(buttonAlpha)), for: .selected)
-                    self?.setImage(UIImage(named: "Smile")!, for: .normal)
+                    self.colorPublisher.onNext(.flatGreen)
+                    self.setBackgroundImage(self.rectNormalBI, for: .normal)
+                    self.setBackgroundImage(self.rectSelectedBI, for: .selected)
+                    self.setImage(self.smileImage, for: .normal)
                 }
                 else if planeObservered {
-                    self?.colorPublisher.onNext(.flatForestGreen)
-                    self?.setBackgroundImage(.from(color: UIColor.flatForestGreen.withAlphaComponent(buttonAlpha)), for: .normal)
-                    self?.setBackgroundImage(.from(color: UIColor.flatForestGreenDark.withAlphaComponent(buttonAlpha)), for: .selected)
-                    self?.setImage(UIImage(named: "Smile")!, for: .normal)
+                    self.colorPublisher.onNext(.flatForestGreen)
+                    self.setBackgroundImage(self.planeNormalBI, for: .normal)
+                    self.setBackgroundImage(self.planeSelectedBI, for: .selected)
+                    self.setImage(self.smileImage, for: .normal)
                 }
                 else if highFPObservered {
-                    self?.colorPublisher.onNext(.flatYellow)
-                    self?.setBackgroundImage(.from(color: UIColor.flatYellow.withAlphaComponent(buttonAlpha)), for: .normal)
-                    self?.setBackgroundImage(.from(color: UIColor.flatYellowDark.withAlphaComponent(buttonAlpha)), for: .selected)
-                    self?.setImage(UIImage(named: "Neutral")!, for: .normal)
+                    self.colorPublisher.onNext(.flatYellow)
+                    self.setBackgroundImage(self.highFPNormalBI, for: .normal)
+                    self.setBackgroundImage(self.highFPSelectedBI, for: .selected)
+                    self.setImage(self.neutralImage, for: .normal)
                 }
                 else {
-                    self?.colorPublisher.onNext(.flatRed)
-                    self?.setBackgroundImage(.from(color: UIColor.flatRed.withAlphaComponent(buttonAlpha)), for: .normal)
-                    self?.setBackgroundImage(.from(color: UIColor.flatRedDark.withAlphaComponent(0.75)), for: .selected)
-                    self?.setImage(UIImage(named: "Frown")!, for: .normal)
+                    self.colorPublisher.onNext(.flatRed)
+                    self.setBackgroundImage(self.lowFPNormalBI, for: .normal)
+                    self.setBackgroundImage(self.lowFPSelectedBI, for: .selected)
+                    self.setImage(self.frownImage, for: .normal)
                 }
             
             }).disposed(by: disposeBag)
@@ -80,9 +80,27 @@ final class UserButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // Color background images
+    let nodeNormalBI = UIImage.from(color: UIColor.green.withAlphaComponent(buttonAlpha))
+    let nodeSelectedBI = UIImage.from(color: UIColor.green.withAlphaComponent(0.75))
+    let rectNormalBI = UIImage.from(color: UIColor.flatGreen.withAlphaComponent(buttonAlpha))
+    let rectSelectedBI = UIImage.from(color: UIColor.flatGreenDark.withAlphaComponent(buttonAlpha))
+    let planeNormalBI = UIImage.from(color: UIColor.flatForestGreen.withAlphaComponent(buttonAlpha))
+    let planeSelectedBI = UIImage.from(color: UIColor.flatForestGreenDark.withAlphaComponent(buttonAlpha))
+    let highFPNormalBI = UIImage.from(color: UIColor.flatYellow.withAlphaComponent(buttonAlpha))
+    let highFPSelectedBI = UIImage.from(color: UIColor.flatYellowDark.withAlphaComponent(buttonAlpha))
+    let lowFPNormalBI = UIImage.from(color: UIColor.flatRed.withAlphaComponent(buttonAlpha))
+    let lowFPSelectedBI = UIImage.from(color: UIColor.flatRedDark.withAlphaComponent(buttonAlpha))
+    
+    // Expression background images
+    let frownImage = UIImage(named: "Frown")!
+    let neutralImage = UIImage(named: "Neutral")!
+    let smileImage = UIImage(named: "Smile")!
+    
     
 }
 
-fileprivate let buttonAlpha: CGFloat = 0.5
+
+fileprivate let buttonAlpha: CGFloat = 0.8
 
 

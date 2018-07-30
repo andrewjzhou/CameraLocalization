@@ -103,6 +103,7 @@ final class UserViewController: UIViewController {
             case 0:
                 countView.isHidden = false
                 navigationView.isHidden = true
+                navigationView.endEditing(true)
             case 1:
                 countView.isHidden = true
                 navigationView.isHidden = false

@@ -13,7 +13,7 @@ import RxCocoa
 import ChameleonFramework
 
 fileprivate let buttonLength : CGFloat = 54.0
-fileprivate let buttonAlpha : CGFloat = 0.5
+fileprivate let buttonAlpha : CGFloat = 0.4
 fileprivate let screenHeight = UIScreen.main.bounds.height
 fileprivate let screenWidth = UIScreen.main.bounds.width
 
@@ -147,8 +147,8 @@ fileprivate func setButtonBasics(_ button: UIButton) {
     button.translatesAutoresizingMaskIntoConstraints = false
     button.clipsToBounds = true
     button.layer.cornerRadius = 0.5 * buttonLength
-    button.setBackgroundImage(.from(color: UIColor.white.withAlphaComponent(buttonAlpha)), for: .normal)
-    button.setBackgroundImage(.from(color: UIColor.gray.withAlphaComponent(buttonAlpha)), for: .selected)
+    button.setBackgroundImage(.from(color: UIColor.flatWhite.withAlphaComponent(buttonAlpha)), for: .normal)
+    button.setBackgroundImage(.from(color: UIColor.flatGrayDark.withAlphaComponent(buttonAlpha)), for: .selected)
     button.setWidthConstraint(buttonLength)
     button.setHeightConstraint(buttonLength)
 }

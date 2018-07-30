@@ -93,7 +93,6 @@ final class UsernameViewController: SignUpBaseViewController {
         
         self.present(alertController, animated: true, completion:  nil)
     }
-  
 
 }
 
@@ -136,6 +135,7 @@ func checkUser(_ loginName: String, completion: @escaping (Bool) -> Void) {
         }
         return nil
     })
+    
 }
 
 fileprivate extension String {
