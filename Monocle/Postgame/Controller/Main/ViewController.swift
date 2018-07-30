@@ -31,7 +31,7 @@ final class ViewController: UIViewController {
     }()
     
     
-    let geolocationService = GeolocationService.instance
+    lazy var geolocationService = GeolocationService.instance
     var lastLocation: CLLocation?
     
     lazy var descriptorCache = DescriptorCache()
@@ -73,8 +73,6 @@ final class ViewController: UIViewController {
         
         handleWakeFromBackground()
         
-        handleGeolocationService()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -82,9 +80,12 @@ final class ViewController: UIViewController {
         
         NotificationCenter.default.post(Notification(name: NSNotification.Name.UIApplicationDidBecomeActive))
         
-        UserCache.shared.cacheUserInfo()
-        
-        
+        let user = AWSCognitoIdentityUserPool.default().currentUser()
+        if user?.isSignedIn == true {
+            handleGeolocationService()
+        } else {
+            user?.getSession()
+        }
     }
 
     
@@ -100,14 +101,19 @@ final class ViewController: UIViewController {
     
     func handleWakeFromBackground() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIApplicationDidBecomeActive)
-            .filter { _ in return self.view.window != nil }
+            .filter({ (_) -> Bool in
+                if let user = AWSCognitoIdentityUserPool.default().currentUser() {
+                    return user.isSignedIn
+                } else {
+                    return false
+                }
+            })
             .throttle(0.2, scheduler: MainScheduler.asyncInstance)
             .subscribe(onNext: { [weak self] _ in
                 let user = AWSCognitoIdentityUserPool.default().currentUser()
-                print("I'm woke")
                 // Authenticate user
                 user?.getSession().continueWith(block: { (task) -> Any? in
-                    print("now I'm getting the session")
+                    
                     // get session token
                     let getSessionResult = task.result
                     if let tokenString = getSessionResult?.idToken?.tokenString {
@@ -119,18 +125,20 @@ final class ViewController: UIViewController {
                         self?.descriptorCache.query(location)
                     }
                     
+                    UserCache.shared.cacheUserInfo()
+                    
                     return nil
                 })
                 
                 // check AV Authoirzation then check Location Authorization
-                guard let avAuth = self?.checkAVAuthoirzied() else { return  }
+                guard let avAuth = self?.checkAVAuthoirzied() else { return }
                 if avAuth {
                     self?.checkLocationAuthorizationStatus()
                 }
 
                 // restart sceneView session and long press indicator animation
                 self?.resetSession()
-//                self?.sceneView.showsStatistics = true // For debugging
+                
             })
             .disposed(by: disposeBag)
         

@@ -25,7 +25,7 @@ final class GeolocationService {
     let locationManager = CLLocationManager()
     
     private init() {
-        
+        print("Location service instantiated")
         locationManager.distanceFilter = 20.0
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
