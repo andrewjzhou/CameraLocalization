@@ -25,6 +25,11 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
         messageLabel.layer.cornerRadius = 12
         
         textField.keyboardType = .numberPad
+        
+        button.setTitle("Confirm", for: .normal)
+        button.color = .flatRed
+        button.highlightedColor = .flatRedDark
+    
     }
     
     open override func buttonAction() {
@@ -54,7 +59,7 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
     
     open override func configureKeyboardDisplayAnimations() {
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillShow)
-            .subscribe(onNext: { [button] (notification) in
+            .subscribe(onNext: { [button, resendButton] (notification) in
                 if let userInfo = notification.userInfo {
                     let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
                     let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
@@ -69,13 +74,15 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
                                     let scale = CGAffineTransform(scaleX: 0.8, y: 0.9)
                                     button.transform = translation.concatenating(scale)
                                     button.layer.cornerRadius = 10.0
+                                    
+                                    resendButton.transform = translation
                     },
                                    completion: nil)
                 }
             }).disposed(by: disposeBag)
         
         NotificationCenter.default.rx.notification(NSNotification.Name.UIKeyboardWillHide)
-            .subscribe(onNext: { [button] (notification) in
+            .subscribe(onNext: { [button, resendButton] (notification) in
                 if let userInfo = notification.userInfo {
                     let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
                     let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
@@ -87,6 +94,8 @@ class VerifyPhoneViewController: ConfirmCodeViewController {
                                    animations: {
                                     button.transform = .identity
                                     button.layer.cornerRadius = 0
+                                    
+                                    resendButton.transform = .identity
                     },
                                    completion: nil)
                 }
