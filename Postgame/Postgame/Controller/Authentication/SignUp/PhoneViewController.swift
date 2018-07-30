@@ -30,10 +30,6 @@ class PhoneViewController: SignUpBaseViewController {
         
         textField.placeholder = "Phone"
         textField.keyboardType = .phonePad
-        
-        button.color = .flatForestGreen
-        button.highlightedColor = .flatForestGreenDark
-        button.setTitle("Sign Up", for: .normal)
 
         
         let formatter = PartialFormatter()

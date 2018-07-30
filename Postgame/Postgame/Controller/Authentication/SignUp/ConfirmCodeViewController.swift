@@ -23,9 +23,9 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         textField.placeholder = "Confirmation Code"
         textField.keyboardType = .numberPad
         
-        button.setTitle("Confirm", for: .normal)
-        button.color = .flatForestGreen
-        button.highlightedColor = .flatForestGreenDark
+        button.setTitle("Sign Up", for: .normal)
+        button.color = .flatGreen
+        button.highlightedColor = .flatGreenDark
         
         setupResendButton()
         
@@ -47,7 +47,7 @@ class ConfirmCodeViewController: SignUpBaseViewController {
         resendButton.layer.cornerRadius = 0.12 * rbWidth
         resendButton.setTitle("Resend Code", for: .normal)
         resendButton.backgroundColor = .flatGray
-        resendButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        resendButton.titleLabel?.font = UIFont(name: "Montserrat-Light", size: 12)
         resendButton.titleLabel?.textColor = .flatWhite
         resendButton.rx.tap
             .throttle(5.0, scheduler: MainScheduler.instance)

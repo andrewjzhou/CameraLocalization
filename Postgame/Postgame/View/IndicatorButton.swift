@@ -25,7 +25,7 @@ final class IndicatorButton: UIButton {
         indicator.setBottomConstraint(equalTo: self.bottomAnchor, offset: frame.height * -0.1)
         
         // Display text formatting
-        indicator.font = UIFont(name: "Catatan Perjalanan", size: 36)
+        indicator.font = UIFont(name: "Montserrat-Medium", size: 28)
         indicator.backgroundColor = .clear
         indicator.text = "0"
         indicator.textAlignment = .center

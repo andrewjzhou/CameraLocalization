@@ -146,7 +146,7 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
         mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         mapView.logoView.isHidden = true
         mapView.attributionButton.isHidden = true
-        mapView.tintColor = .flatGreen
+        mapView.tintColor = .flatGreenDark
         mapView.delegate = self
         mapView.showsUserLocation = true
         mapView.allowsTilting = false
@@ -170,7 +170,7 @@ final class MapViewController: UIViewController, MGLMapViewDelegate {
         slider.center = CGPoint(x: view.center.x,
                                 y: 0.75 * view.bounds.height)
         slider.alpha = 0.65
-        slider.tintColor = .flatGreen
+        slider.tintColor = .flatGreenDark
         slider.maximumValue = Float(mapView.maximumZoomLevel)
         slider.minimumValue = Float(mapView.minimumZoomLevel)
         slider.value = Float(16)
