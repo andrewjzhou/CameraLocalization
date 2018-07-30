@@ -39,8 +39,9 @@ final class CountView: UIView {
     func refresh() {
         // Total Views
         AppSyncService.sharedInstance.queryTotalViews().asDriver(onErrorJustReturn: 0)
-            .drive(onNext: { [totalView] (viewCount) in
-                totalView.setNumber(viewCount)
+            .drive(onNext: { [unowned self] (viewCount) in
+                self.totalView.setNumber(viewCount)
+                self.historyView.showOnboarding = (viewCount == 0)
             }).disposed(by: disposeBag)
         
         // Top Viewed

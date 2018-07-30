@@ -50,6 +50,11 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         }
     }
     
+    let onboardingView = UIImageView(image: UIImage(named: "history_onboarding")!)
+    var showOnboarding = false {
+        didSet { onboardingView.isHidden = !showOnboarding}
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -81,6 +86,15 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         titleLabel.addGestureRecognizer(tap)
         titleLabel.isUserInteractionEnabled = true
         
+        onboardingView.contentMode = .scaleAspectFill
+        addSubview(onboardingView)
+        onboardingView.translatesAutoresizingMaskIntoConstraints = false
+        onboardingView.setTopConstraint(equalTo: titleLabel.bottomAnchor, offset: 0)
+        onboardingView.setLeadingConstraint(equalTo: leadingAnchor, offset: 0)
+        onboardingView.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
+        onboardingView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
+        onboardingView.isHidden = !showOnboarding
+    
     }
     @objc func handleTap (sender: UITapGestureRecognizer) {
         currState = (currState == .top) ? .recent : .top

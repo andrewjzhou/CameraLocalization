@@ -237,18 +237,28 @@ final class AppSyncService {
                                  cachePolicy: .returnCacheDataAndFetch,
                                  queue: DispatchQueue.global(qos: .background),
                                  resultHandler: { (result, error) in
-                                    if error != nil {
-                                        print(error?.localizedDescription ?? "")
-                                        observer.onCompleted()
-                                        return
-                                    }
                                     
                                     if let views = result?.data?.queryTotalViewsByUsername {
+                                        
                                         observer.onNext(views)
                                         observer.onCompleted()
+                                        
+                                    } else if let errors = result?.errors {
+                                        for error in errors {
+                                            print(error.localizedDescription)
+                                            observer.onError(error)
+                                        }
+                                        
+                                    } else if error != nil {
+                                        
+                                        print(error?.localizedDescription ?? "")
+                                        observer.onError(error!)
+                                        
                                     } else {
-                                        observer.onCompleted()
+                                        observer.onError(AWSError.noResultFound)
                                     }
+                                    
+                                    
             })
             return Disposables.create()
         }

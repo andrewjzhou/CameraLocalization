@@ -29,10 +29,10 @@ class ResizableView: UITextView, UIGestureRecognizerDelegate {
     }
     
     override func didMoveToSuperview() {
-        let resizeFillColor = UIColor.cyan
-        let resizeStrokeColor = UIColor.black
-        let rotateFillColor = UIColor.orange
-        let rotateStrokeColor = UIColor.black
+        let resizeFillColor = UIColor.green.withAlphaComponent(0.25)
+        let resizeStrokeColor = UIColor.flatBlack.withAlphaComponent(0.7)
+        let rotateFillColor = UIColor.flatRed.withAlphaComponent(0.85)
+        let rotateStrokeColor = UIColor.flatBlack.withAlphaComponent(0.7)
         topLeft = DragHandle(fillColor:resizeFillColor, strokeColor: resizeStrokeColor)
         topRight = DragHandle(fillColor:resizeFillColor, strokeColor: resizeStrokeColor)
         bottomLeft = DragHandle(fillColor:resizeFillColor, strokeColor: resizeStrokeColor)
@@ -74,7 +74,7 @@ class ResizableView: UITextView, UIGestureRecognizerDelegate {
         
         showHandles = false
         backgroundColor = UIColor.clear
-        font = UIFont(name: "Helvetica", size: 30)
+        font = UIFont(name: "Montserrat-Medium", size: 20)
         
         textColor = UIColor.black
         textAlignment = .center

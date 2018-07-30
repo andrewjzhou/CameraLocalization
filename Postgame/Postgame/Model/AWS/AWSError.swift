@@ -12,4 +12,5 @@ enum AWSError: Error {
     case s3UploadError
     case appSyncCreateError
     case appSyncGetUserError
+    case noResultFound
 }

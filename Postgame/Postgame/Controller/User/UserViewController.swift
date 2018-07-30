@@ -24,8 +24,6 @@ final class UserViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .clear
         
-        countView.refresh()
-        
         blurBackground()
         
         let margin: CGFloat = 8
@@ -138,6 +136,11 @@ final class UserViewController: UIViewController {
         effectView.setBottomConstraint(equalTo: view.bottomAnchor, offset: 0)
         effectView.setLeadingConstraint(equalTo: view.leadingAnchor, offset: 0)
         effectView.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        countView.refresh()
+        print("appeared")
     }
 
 }
