@@ -1,6 +1,0 @@
-framework module Pods_Postgame {
-  umbrella header "Pods-Postgame-umbrella.h"
-
-  export *
-  module * { export * }
-}

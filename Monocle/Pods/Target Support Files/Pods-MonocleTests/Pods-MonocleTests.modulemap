@@ -1,0 +1,6 @@
+framework module Pods_MonocleTests {
+  umbrella header "Pods-MonocleTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
