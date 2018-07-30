@@ -48,7 +48,7 @@ final class MessageLabel: UIView {
         label.setTrailingConstraint(equalTo: effectView.contentView.trailingAnchor, offset: 0)
         label.textAlignment = .center
         label.textColor = .flatWhite
-        label.font = UIFont.systemFont(ofSize: 15)
+        label.font = UIFont(name: "Montserrat-Medium", size: 15)
     }
     
     func display(_ message: Message) {

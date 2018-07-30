@@ -123,12 +123,16 @@ final class SettingsCollectionViewController: UICollectionViewController {
     
         if indexPath.section == 0 {
             if let cell = cell as? UserProfileCell {
-                if indexPath.item == 0 { cell.moreButton.isHidden = true }
+                if indexPath.item == 0 {
+                    cell.moreButton.isHidden = true
+                } else {
+                    cell.moreButton.isHidden = false
+                }
                 let attr = UserProfileKeys[indexPath.item]
                 cell.keyLabel.text = attr
                 
-                cell.valueLabel.text = (UserCache.shared[attr] as? String) ?? ""
-               
+             cell.valueLabel.text = UserCache.shared[attr] as? String ?? ""
+              
             }
         } else {
             cell = collectionView.dequeueReusableCell(withReuseIdentifier: SignOutCell.reuseIdentifier, for: indexPath)
@@ -213,12 +217,13 @@ final class UserProfileCell: UICollectionViewCell {
         contentView.addSubview(keyLabel)
         keyLabel.translatesAutoresizingMaskIntoConstraints = false
         keyLabel.setLeadingConstraint(equalTo: contentView.leadingAnchor, offset: 0.02 * contentView.bounds.width)
-        keyLabel.setWidthConstraint(0.2 * contentView.bounds.width)
-        keyLabel.setHeightConstraint(0.3 * contentView.bounds.height)
+        keyLabel.setWidthConstraint(0.3 * contentView.bounds.width)
+        keyLabel.setHeightConstraint(contentView.bounds.height)
         keyLabel.setCenterYConstraint(equalTo: contentView.centerYAnchor, offset: 0)
         keyLabel.textColor = .flatBlack
         keyLabel.textAlignment = .left
-        keyLabel.text = "Name: "
+        keyLabel.text = ""
+        valueLabel.font = UIFont(name: "Montserrat-Regular", size: 17)
         
         // more button
         contentView.addSubview(moreButton)
@@ -234,12 +239,13 @@ final class UserProfileCell: UICollectionViewCell {
         contentView.addSubview(valueLabel)
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueLabel.setTrailingConstraint(equalTo: moreButton.leadingAnchor, offset: -0.03 * contentView.bounds.width)
-        valueLabel.setWidthConstraint(0.4 * contentView.bounds.width)
-        valueLabel.setHeightConstraint(0.3 * contentView.bounds.height)
+        valueLabel.setWidthConstraint(0.6 * contentView.bounds.width)
+        valueLabel.setHeightConstraint(contentView.bounds.height)
         valueLabel.setCenterYConstraint(equalTo: contentView.centerYAnchor, offset: 0)
         valueLabel.textColor = .flatGrayDark
         valueLabel.textAlignment = .right
-        valueLabel.text = "Andrew Zhou"
+        valueLabel.text = ""
+        valueLabel.font = UIFont(name: "Montserrat-Regular", size: 15)
 
     }
     
@@ -254,7 +260,7 @@ final class SignOutCell: UICollectionViewCell {
     
     override public var isHighlighted: Bool {
         didSet {
-            signOutButton.backgroundColor = isHighlighted ? .flatSkyBlueDark : .flatSkyBlue
+            signOutButton.backgroundColor = isHighlighted ? UIColor.flatBlack.withAlphaComponent(0.8) : UIColor.flatBlackDark.withAlphaComponent(0.9)
         }
     }
     
@@ -271,9 +277,10 @@ final class SignOutCell: UICollectionViewCell {
         signOutButton.layer.borderColor = UIColor.flatWhite.cgColor
         signOutButton.layer.borderWidth = 1
         signOutButton.text = "Sign Out"
+        signOutButton.font = UIFont(name: "Montserrat-Medium", size: 17)
         signOutButton.textAlignment = .center
         signOutButton.textColor = .flatWhite
-        signOutButton.backgroundColor = .flatSkyBlue
+        signOutButton.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.55)
       
     }
     

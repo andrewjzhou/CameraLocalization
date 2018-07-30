@@ -56,8 +56,9 @@ final class UserViewController: UIViewController {
         let exitButton = UIButton()
         containerView.addSubview(exitButton)
         exitButton.translatesAutoresizingMaskIntoConstraints = false
-        exitButton.backgroundColor = .flatSkyBlueDark
-        exitButton.setTitle("Cancel", for: .normal)
+        exitButton.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.65)
+        exitButton.setTitle("Done", for: .normal)
+        exitButton.titleLabel?.font = UIFont(name: "Montserrat-Medium", size: 15)
         exitButton.titleLabel?.textColor = .flatWhite
         exitButton.alpha = 0.85
         exitButton.setBottomConstraint(equalTo: containerView.bottomAnchor, offset: 0)

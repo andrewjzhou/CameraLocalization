@@ -23,6 +23,7 @@ final class TotalView: UIView {
         titleLabel.setTrailingConstraint(equalTo: trailingAnchor, offset: 0)
         titleLabel.setHeightConstraint(32)
         titleLabel.text = "Total : "
+        titleLabel.font = UIFont(name: "Montserrat-Regular", size: 15)
         titleLabel.textAlignment = .center
         titleLabel.textColor = .flatWhite
         
@@ -34,10 +35,11 @@ final class TotalView: UIView {
         numberLabel.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
         numberLabel.text = "0 0 0 , 0 0 0 , 0 0 0"
         numberLabel.textAlignment = .center
+        numberLabel.font = UIFont(name: "Montserrat-Black", size: 34)
         
         // debugging
-        titleLabel.backgroundColor = UIColor.flatSkyBlue
-        numberLabel.backgroundColor = UIColor.flatWhiteDark
+        titleLabel.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.65)
+        numberLabel.backgroundColor = UIColor.flatWhiteDark.withAlphaComponent(0.97)
     
     }
     

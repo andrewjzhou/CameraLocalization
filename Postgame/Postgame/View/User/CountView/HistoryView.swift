@@ -63,6 +63,7 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         titleLabel.textAlignment = .center
         titleLabel.textColor = .flatWhite
         titleLabel.text = "Top 5 : "
+        titleLabel.font = UIFont(name: "Montserrat-Regular", size: 15)
         
         addSubview(collectionView)
         collectionView.register(HistoryViewCell.self, forCellWithReuseIdentifier: cellId)
@@ -73,8 +74,8 @@ final class HistoryView: UIView, UICollectionViewDataSource, UICollectionViewDel
         collectionView.setBottomConstraint(equalTo: bottomAnchor, offset: 0)
         collectionView.isScrollEnabled = false
         
-        titleLabel.backgroundColor = UIColor.flatSkyBlue
-        collectionView.backgroundColor = UIColor.flatWhiteDark
+        titleLabel.backgroundColor = UIColor.flatBlack.withAlphaComponent(0.65)
+        collectionView.backgroundColor = UIColor.flatWhiteDark.withAlphaComponent(0.97)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
         titleLabel.addGestureRecognizer(tap)
@@ -176,7 +177,7 @@ final class HistoryViewCell: BaseCell {
         super.setupViews()
         
         addSubview(imageView)
-        imageView.layer.cornerRadius = 2
+        imageView.layer.cornerRadius = 8
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.setLeadingConstraint(equalTo: leadingAnchor, offset: 5)
         imageView.setTopConstraint(equalTo: topAnchor, offset: 5)
@@ -197,6 +198,7 @@ final class HistoryViewCell: BaseCell {
         numberLabel.setBottomConstraint(equalTo: bottomAnchor, offset: 5)
         numberLabel.setWidthConstraint(frame.width / 4)
         numberLabel.textAlignment = .center
+        numberLabel.font = UIFont(name: "Montserrat-Bold", size: 17)
         
         addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -204,7 +206,8 @@ final class HistoryViewCell: BaseCell {
         titleLabel.setTrailingConstraint(equalTo: numberLabel.leadingAnchor, offset: 5)
         titleLabel.setTopConstraint(equalTo: topAnchor, offset: 5)
         titleLabel.setBottomConstraint(equalTo: bottomAnchor, offset: 5)
-        titleLabel.text = "This is my image at Capital Factory and I am proud of it"
+        titleLabel.text = ""
+        titleLabel.font = UIFont(name: "Montserrat-Regular", size: 17)
         titleLabel.textAlignment = .center
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.numberOfLines = 2

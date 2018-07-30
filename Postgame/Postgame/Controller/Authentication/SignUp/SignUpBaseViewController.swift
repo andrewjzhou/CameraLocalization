@@ -102,7 +102,7 @@ class SignUpBaseViewController: UIViewController, UITextFieldDelegate {
         button.setTrailingConstraint(equalTo: view.trailingAnchor, offset: 0)
         button.setHeightConstraint(UIScreen.main.bounds.height * 0.1)
         button.setTitle("Next", for: .normal)
-        button.titleLabel?.font =  UIFont(name: "Montserrat-Bold", size: 25)
+        button.titleLabel?.font = UIFont(name: "Montserrat-Bold", size: 25)
         button.titleLabel?.textColor = .flatWhite
         
         button.rx.tap

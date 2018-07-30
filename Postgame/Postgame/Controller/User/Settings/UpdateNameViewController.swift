@@ -30,7 +30,7 @@ class UpdateNameViewController: SignUpBaseViewController {
         // configure bottom textField
         view.addSubview(textField2)
         textField2.placeholder = "Last name"
-        textField2.activeColor = .flatSkyBlue
+        textField2.activeColor = .flatRed
         textField2.inactiveColor = .flatGrayDark
         textField2.autocapitalizationType = .words
         textField2.delegate = self
@@ -39,6 +39,7 @@ class UpdateNameViewController: SignUpBaseViewController {
         textField2.setTopConstraint(equalTo: view.topAnchor, offset: view.bounds.height * 0.25)
         textField2.setWidthConstraint(view.bounds.width * 0.7)
         textField2.setHeightConstraint(view.bounds.height * 0.075)
+        textField2.font = UIFont(name: "Montserrat-Regular", size: 16)
     
         // configure button
         button.color = .flatRed

@@ -225,8 +225,8 @@ extension ViewController {
     private func runClearScreenAnimation() {
         let stormAnimationView = UIView(frame: self.resetButton.frame)
         stormAnimationView.layer.cornerRadius = 0.5 * self.resetButton.bounds.width
-        stormAnimationView.backgroundColor = .flatSkyBlue
-        stormAnimationView.layer.borderColor = UIColor.flatSkyBlue.cgColor
+        stormAnimationView.backgroundColor = .flatRed
+        stormAnimationView.layer.borderColor = UIColor.flatRed.cgColor
         stormAnimationView.layer.borderWidth = 0.1
         stormAnimationView.alpha = 0.2
         self.view.addSubview(stormAnimationView)

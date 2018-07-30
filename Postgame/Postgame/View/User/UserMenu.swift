@@ -15,7 +15,7 @@ final class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelega
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = UIColor.flatSkyBlueDark
+        cv.backgroundColor = UIColor.flatBlackDark.withAlphaComponent(0.98)
         cv.dataSource = self
         cv.delegate = self
         return cv
@@ -72,7 +72,13 @@ final class UserMenu: UIView, UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! UserMenuCell
         
-        cell.imageView.image = UIImage(named: "ic_camera_alt")?.withRenderingMode(.alwaysTemplate)
+        switch indexPath.item{
+        case 0:
+            cell.imageView.image = UIImage(named: "baseline_timeline_white_48pt")?.withRenderingMode(.alwaysTemplate)
+        case 1:
+            cell.imageView.image = UIImage(named: "baseline_settings_white_48pt")?.withRenderingMode(.alwaysTemplate)
+        default: break
+        }
         cell.tintColor = UIColor.flatGray
         
         return cell
