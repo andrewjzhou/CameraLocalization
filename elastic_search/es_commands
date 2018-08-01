@@ -59,7 +59,7 @@ curl -X PUT "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.a
 {
     "settings" : {
         "index" : {
-            "number_of_shards" : 5, 
+            "number_of_shards" : 10, 
             "number_of_replicas" : 1
         }
     }
@@ -305,4 +305,26 @@ curl -X PUT 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.a
    }
 }
 
-### --------------------------------------------------------------------------------------------------------
+### -----------------------------------------Access Policy--------------------------------------------
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::115064176234:root"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:us-east-2:115064176234:domain/postdomain/*"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::115064176234:role/appsync-resolve-es"
+      },
+      "Action": "es:*",
+      "Resource": "arn:aws:es:us-east-2:115064176234:domain/postdomain/*"
+    }
+  ]
+}
