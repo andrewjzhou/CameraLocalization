@@ -37,7 +37,7 @@ final class DescriptorComputer {
         var imagesToProcess = [UIImage]()
         
         
-        // get images to process
+        // pick images to process
         if jumps > 0 {
             let interval = Int( floor( Double(imageArr.count-1) / Double(jumps) ) )
             for index in stride(from: 0, through: imageArr.count-1, by: interval) {

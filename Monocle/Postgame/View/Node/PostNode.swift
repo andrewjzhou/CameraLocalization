@@ -143,14 +143,19 @@ final class PostNode: SCNNode {
         // Download post and set content
         let postDownloadObservable = S3Service.sharedInstance.downloadPost(key)
         postDownloadObservable.observeOn(MainScheduler.instance)
+            .retry(3)
             .subscribe(onNext: { [weak self] (image) in
                 self?.setContent(image, username: username, timestamp: timestamp)
                 ImageCache.shared[key] = image
+            }, onError: { (error) in
+                print(error)
+                self.removeFromParentNode()
             })
             .disposed(by: disposeBag)
     }
     
     func setContentAndRecord(image: UIImage, location: CLLocation) {
+        print("setContentAndRecord()")
         setContent(image, username: recorder.username, timestamp: timestamp())
         recorder.location = location
         recorder.record { [weak self] (error) in
@@ -207,12 +212,9 @@ extension PostNode {
             }
         }
         var idToDeactivate: String?
-        var descriptors = [[Double]]() {
-            didSet {
-                if descriptors.count > 0 { descriptorToRecord = descriptors[0] }
-            }
-        }
+        var descriptors = [[Double]]()
         var descriptorToRecord: [Double]?
+        
         var post: UIImage?
         var location: CLLocation? {
             didSet {
@@ -227,7 +229,11 @@ extension PostNode {
         }
         
         mutating func record(completion: @escaping (AWSError?) -> Void) {
-            guard let id = id, let location = location, let descriptor = descriptorToRecord else { return }
+            print("record")
+            
+            guard let id = id, let location = location else { return }
+            if descriptorToRecord == nil && descriptors.count < 1 { return }
+            let descriptor = descriptorToRecord != nil ? descriptorToRecord! : descriptors[0]
             
             // 1. deactivate post if necessary
             if idToDeactivate != nil { AppSyncService.sharedInstance.deactivatePost(id: idToDeactivate!) }
@@ -239,6 +245,7 @@ extension PostNode {
                                                         timestamp: timestamp(),
                                                         descriptor: descriptor.base64EncodedString(),
                                                         completion: { [post] error in
+                                                            print("createNewPost() completed")
                                                             if let error = error {
                                                                 completion(error)
                                                             } else {

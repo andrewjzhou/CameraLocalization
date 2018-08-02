@@ -64,6 +64,7 @@ extension ViewController {
             postNode.retryUpload()
         } else if postNode.state == .prompt && createButton.post != nil { // Adding / Updating
             // Do NOT switch function orders inside scope without purpose
+            print("Adding / Updating")
             
             if lastLocation != nil  && CLLocationManager.locationServicesEnabled() {
                 // Add created image to current post node

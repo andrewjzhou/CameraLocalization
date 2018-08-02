@@ -3,6 +3,9 @@ curl -X POST 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.
 
 curl -X GET 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/posttable_type/_mapping' | json_pp 
 
+GET /_cluster/allocation/explain
+
+curl -X GET 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/_cluster/allocation/explain' | json_pp 
 
 ### ------------------------------------------ Search Requests -----------------------------------------------
 curl -X GET "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.amazonaws.com/posttable/_search" -H 'Content-Type: application/json' -d'
@@ -59,7 +62,7 @@ curl -X PUT "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.a
 {
     "settings" : {
         "index" : {
-            "number_of_shards" : 10, 
+            "number_of_shards" : 5, 
             "number_of_replicas" : 1
         }
     }
@@ -123,22 +126,16 @@ curl -X PUT "https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.a
                   "type" : "geo_point"
                },
                "verAcc" : {
-				  "type" : "float"
+                  "type" : "float"
                },
                "horAcc" : {
-				  "type" : "float"
+                  "type" : "float"
                },
                "altitude" : {
-               	  "type" : "float"
+                   "type" : "float"
                },
                "image" : {
-                  "fields" : {
-                     "keyword" : {
-                        "type" : "keyword",
-                        "ignore_above" : 256
-                     }
-                  },
-                  "type" : "text"
+                  "type": "nested" 
                }
             }
 }
@@ -289,15 +286,6 @@ curl -X PUT 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.a
                },
                "location" : {
                   "type" : "geo_point"
-               },
-               "image" : {
-                  "fields" : {
-                     "keyword" : {
-                        "type" : "keyword",
-                        "ignore_above" : 256
-                     }
-                  },
-                  "type" : "text"
                }
             }
          }
@@ -313,7 +301,7 @@ curl -X PUT 'https://search-postdomain-5dr2k7wtwppw3gjtirjw5ecoaq.us-east-2.es.a
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": "arn:aws:iam::115064176234:root"
+        "AWS": "arn:aws:iam::115064176234:role/dynamodb-to-es"
       },
       "Action": "es:*",
       "Resource": "arn:aws:es:us-east-2:115064176234:domain/postdomain/*"

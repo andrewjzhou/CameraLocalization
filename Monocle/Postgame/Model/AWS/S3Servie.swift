@@ -238,16 +238,19 @@ struct S3Service {
                 // On failed downloads, `error` contains the error object.
                 if let error = error {
                     print("Error: \(error)")
-                    observer.onCompleted()
+                    observer.onError(error)
+                    return 
                 }
                 
-                if let _ = data {
-                    let decoded: Data = Data(base64Encoded: data!, options: .ignoreUnknownCharacters)!
+                if let data = data {
+                    let decoded: Data = Data(base64Encoded: data, options: .ignoreUnknownCharacters)!
                     guard let post = UIImage(data: decoded) else {return}
                     
                     observer.onNext(post)
                     observer.onCompleted()
                      
+                } else {
+                    observer.onCompleted()
                 }
                 
                 
